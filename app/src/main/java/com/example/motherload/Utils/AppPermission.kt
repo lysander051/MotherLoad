@@ -18,7 +18,6 @@ class AppPermission {
                     .setTitle("Permission Requise")
                     .setMessage(explanationMessage)
                     .setPositiveButton("OK") { _, _ ->
-                        // Demander la permission une fois que l'utilisateur a compris l'explication.
                         ActivityCompat.requestPermissions(
                             context as Activity,
                             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -29,9 +28,10 @@ class AppPermission {
             }
             else if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                val explanationMessage = "Merci d'activer la géolocalisation précise dans vos paramètres pour profiter de notre jeu"
                 AlertDialog.Builder(context)
                     .setTitle("Permission gps")
-                    .setMessage("Merci d'activer la géolocalisation précise dans vos paramètres pour profiter de notre jeu")
+                    .setMessage(explanationMessage)
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show()

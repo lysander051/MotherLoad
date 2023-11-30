@@ -1,26 +1,27 @@
 package com.example.motherland.view
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.motherload.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import android.location.LocationListener
-import androidx.core.app.ActivityCompat
-import com.example.motherload.UI.Connexion.ConnexionActivity
-import com.example.motherload.UI.Game.MainActivity
-import org.osmdroid.util.BoundingBox
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.OverlayItem
@@ -30,19 +31,48 @@ class HomeFragment : Fragment() {
 
     private lateinit var map: MapView
     private lateinit var playerPosition: GeoPoint
-    private lateinit var locationManager: LocationManager
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        locationManager = requireActivity().applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (ActivityCompat.checkSelfPermission(requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            startActivity(Intent(context, ConnexionActivity::class.java))
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                p0 ?: return
+                for (location in p0.locations){
+                    getLocation(location)
+                }
+            }
         }
 
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            0, 1.0f, locationListener
-        )
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity().applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity().applicationContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
+
         Configuration.getInstance().load(requireActivity().applicationContext,
             activity?.let { PreferenceManager.getDefaultSharedPreferences(it.applicationContext) })
     }
@@ -55,6 +85,25 @@ class HomeFragment : Fragment() {
         map.setBuiltInZoomControls(true)
         val mapController = map.controller
         mapController.setZoom(19.5)
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // reuqest for permission
+        } else {
+            // already permission granted
+            // get location here
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity()) { location ->
+                if (location != null) {
+                    getLocation(location)
+                }
+            }
+        }
         return ret
     }
 
@@ -63,21 +112,27 @@ class HomeFragment : Fragment() {
 
     }
 
-    private val locationListener: LocationListener =
-        LocationListener { location -> // Obtenez la latitude et la longitude de la localisation mise à jour
+    fun getLocation(location: Location) {
             val latitude = location.latitude
             val longitude = location.longitude
             map.overlays.clear()
-            playerPosition = GeoPoint(latitude,longitude)
+            playerPosition = GeoPoint(latitude, longitude)
             map.controller.setCenter(playerPosition)
             val overlayItems = ArrayList<OverlayItem>()
             overlayItems.add(OverlayItem("Ma Position", "", playerPosition))
             val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
                 ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
-                override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean { return false }
-                override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean { return false } })
+                override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                    return false
+                }
+
+                override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                    return false
+                }
+            })
             map.overlays.add(mOverlay)
-        }
+
+    }
 
 
     override fun onPause() {
