@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -34,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private var center = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,6 @@ class HomeFragment : Fragment() {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
-                p0 ?: return
                 for (location in p0.locations){
                     getLocation(location)
                 }
@@ -51,27 +52,6 @@ class HomeFragment : Fragment() {
 
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
             .build()
-
-        if (ActivityCompat.checkSelfPermission(
-                requireActivity().applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireActivity().applicationContext,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-            locationCallback,
-            Looper.getMainLooper())
 
         Configuration.getInstance().load(requireActivity().applicationContext,
             activity?.let { PreferenceManager.getDefaultSharedPreferences(it.applicationContext) })
@@ -84,21 +64,23 @@ class HomeFragment : Fragment() {
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setBuiltInZoomControls(true)
         val mapController = map.controller
-        mapController.setZoom(19.5)
+        mapController.setZoom(19)
+
         if (ActivityCompat.checkSelfPermission(
-                requireActivity(),
+                requireActivity().applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                requireActivity(),
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity().applicationContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // reuqest for permission
-        } else {
-            // already permission granted
-            // get location here
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity()) { location ->
+        }
+        else{
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper())
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
                 if (location != null) {
                     getLocation(location)
                 }
@@ -113,27 +95,28 @@ class HomeFragment : Fragment() {
     }
 
     fun getLocation(location: Location) {
-            val latitude = location.latitude
-            val longitude = location.longitude
-            map.overlays.clear()
-            playerPosition = GeoPoint(latitude, longitude)
+        val latitude = location.latitude
+        val longitude = location.longitude
+        map.overlays.clear()
+        playerPosition = GeoPoint(latitude, longitude)
+        if (!center) {
             map.controller.setCenter(playerPosition)
-            val overlayItems = ArrayList<OverlayItem>()
-            overlayItems.add(OverlayItem("Ma Position", "", playerPosition))
-            val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
-                ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
-                override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
-                    return false
-                }
+            center = true
+        }
+        val overlayItems = ArrayList<OverlayItem>()
+        overlayItems.add(OverlayItem("Ma Position", "", playerPosition))
+        val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
+            ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
+            override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                return false
+            }
 
-                override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
-                    return false
-                }
-            })
-            map.overlays.add(mOverlay)
-
+            override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                return false
+            }
+        })
+        map.overlays.add(mOverlay)
     }
-
 
     override fun onPause() {
         super.onPause()
