@@ -14,6 +14,8 @@ import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.Data.ConnexionCallback
 import com.example.motherload.UI.Game.MainActivity
 import com.example.motherload.R
+import com.example.motherload.Utils.SafeClickListener
+import com.example.motherload.Utils.setSafeOnClickListener
 
 class ConnexionActivity : AppCompatActivity(){
 
@@ -25,16 +27,15 @@ class ConnexionActivity : AppCompatActivity(){
 
         AppPermission.requestLocation(this)
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ConnexionViewModel::class.java]
-
         var connexion = findViewById<Button>(R.id.boutonConnexion)
-        connexion.setOnClickListener(View.OnClickListener {
+        connexion.setSafeOnClickListener {
             var connected = viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }
                })
-        })
+        }
     }
 
     fun checkConnexion(connected:Boolean){

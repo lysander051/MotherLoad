@@ -36,6 +36,7 @@ class HomeFragment : Fragment() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var center = false
+    private var requestingLocationUpdate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,14 +78,15 @@ class HomeFragment : Fragment() {
             // reuqest for permission
         }
         else{
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                locationCallback,
-                Looper.getMainLooper())
+            requestingLocationUpdate = true
             fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
                 if (location != null) {
                     getLocation(location)
                 }
             }
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper())
         }
         return ret
     }
@@ -121,11 +123,35 @@ class HomeFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         map.onPause()
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        requestingLocationUpdate = false
     }
 
     override fun onResume() {
         super.onResume()
         map.onResume()
+        if (!requestingLocationUpdate) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper())
+        }
     }
 
 }
