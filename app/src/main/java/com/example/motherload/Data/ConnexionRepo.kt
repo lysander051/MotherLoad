@@ -34,7 +34,6 @@ class ConnexionRepo {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
                             Log.d(TAG, "Connexion avec succès")
-                            //Créer un data objet connexion
                             val session: Long =
                                 doc.getElementsByTagName("SESSION").item(0).textContent.toLong()
                             val signature: Long = doc.getElementsByTagName("SIGNATURE")
