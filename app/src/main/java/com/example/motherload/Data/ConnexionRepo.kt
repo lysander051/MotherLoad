@@ -17,7 +17,7 @@ class ConnexionRepo {
     val TAG: String = "ConnexionRepo"
 
 
-    fun getConnected(login: String, password: String, callback: ConnexionCallback): Boolean {
+    fun getConnected(login: String, password: String, callback: ConnexionCallback){
         val BASE_URL = "https://test.vautard.fr/creuse_srv/connexion.php"
         val url = BASE_URL+"?login=$login&passwd=$password"
         var connected = false
@@ -40,6 +40,7 @@ class ConnexionRepo {
                                 .item(0).textContent.toLong()
                             val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
+                            Log.d(TAG, "session: $session|signature: $signature")
                             editor.putLong("SessionId", session)
                             editor.putLong("Signature", signature)
                             editor.apply()
@@ -64,6 +65,5 @@ class ConnexionRepo {
         )
 
         MotherLoad.instance.requestQueue?.add(stringRequest)
-        return connected
     }
 }

@@ -7,12 +7,15 @@ import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.Data.HomeCallback
 import com.example.motherload.R
+import com.example.motherload.UI.Game.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -26,37 +29,53 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.OverlayItem
+import java.util.Timer
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var map: MapView
-    private lateinit var playerPosition: GeoPoint
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private lateinit var playerPosition: GeoPoint
+    private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
+    private var lastExecutionTime: Long = 0
     private var center = false
     private var requestingLocationUpdate = false
+    private var viewModel: HomeViewModel? = null
+    private var timer: Timer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[HomeViewModel::class.java]
+        timer = Timer()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
-                for (location in p0.locations){
+                for (location in p0.locations) {
                     getLocation(location)
+                    if (System.currentTimeMillis() - lastExecutionTime >= 15000) {
+                        viewModel!!.deplacement(location, object :
+                            HomeCallback {
+                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
+                                affichageVoisin(voisin)
+                            }
+                        }
+                        )
+                        lastExecutionTime = System.currentTimeMillis();
+                    }
                 }
             }
         }
-
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
             .build()
 
         Configuration.getInstance().load(requireActivity().applicationContext,
             activity?.let { PreferenceManager.getDefaultSharedPreferences(it.applicationContext) })
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -78,15 +97,10 @@ class HomeFragment : Fragment() {
             // reuqest for permission
         }
         else{
-            requestingLocationUpdate = true
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
-                if (location != null) {
-                    getLocation(location)
-                }
-            }
             fusedLocationProviderClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper())
+            requestingLocationUpdate = true
         }
         return ret
     }
@@ -99,24 +113,48 @@ class HomeFragment : Fragment() {
     fun getLocation(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
-        map.overlays.clear()
         playerPosition = GeoPoint(latitude, longitude)
         if (!center) {
             map.controller.setCenter(playerPosition)
             center = true
         }
         val overlayItems = ArrayList<OverlayItem>()
-        overlayItems.add(OverlayItem("Ma Position", "", playerPosition))
-        val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
+        var joueur = OverlayItem("Moi", "", playerPosition)
+        var icone_joueur = requireActivity().resources.getDrawable(R.drawable.player_icon)
+        joueur.setMarker(icone_joueur)
+        overlayItems.add(joueur)
+        joueurOverlay = ItemizedOverlayWithFocus(context, overlayItems, object :
             ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
             override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
                 return false
+            }
+            override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                return false
+            }
+        })
+        if(map.overlays.size == 0)
+            map.overlays.add(joueurOverlay)
+        map.overlays.set(0, joueurOverlay)
+    }
+
+    fun affichageVoisin(voisin: MutableMap<String, GeoPoint>){
+        map.overlays.clear()
+        map.overlays.add(joueurOverlay)
+        val overlayItems = ArrayList<OverlayItem>()
+        voisin.forEach { (cle, valeur) ->
+            overlayItems.add(OverlayItem(cle, "", valeur))
+        }
+        val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
+            ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
+            override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                return true
             }
 
             override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                 return false
             }
         })
+        mOverlay.setFocusItemsOnTap(true)
         map.overlays.add(mOverlay)
     }
 

@@ -29,12 +29,12 @@ class ConnexionActivity : AppCompatActivity(){
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ConnexionViewModel::class.java]
         var connexion = findViewById<Button>(R.id.boutonConnexion)
         connexion.setSafeOnClickListener {
-            var connected = viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
-                ConnexionCallback {
+            viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
+            ConnexionCallback {
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }
-               })
+            })
         }
     }
 
