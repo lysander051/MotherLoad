@@ -97,6 +97,18 @@ class HomeFragment : Fragment() {
             // reuqest for permission
         }
         else{
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                if (location != null) {
+                    getLocation(location)
+                    viewModel!!.deplacement(location, object :
+                        HomeCallback {
+                        override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
+                            affichageVoisin(voisin)
+                        }
+                    }
+                    )
+                }
+            }
             fusedLocationProviderClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper())
