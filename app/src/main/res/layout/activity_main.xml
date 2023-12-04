@@ -18,35 +18,13 @@
         <androidx.appcompat.widget.ActionMenuView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/gotoCreuser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Creuser" />
-
-            <Button
-                android:id="@+id/boutonAchat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Achat/Vente" />
-
-            <Button
-                android:id="@+id/boutonCraft"
-                android:layout_width="119dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Option" />
-        </androidx.appcompat.widget.ActionMenuView>
+            android:orientation="horizontal"/>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:name="com.example.motherland.view.HomeFragment"
             android:layout_width="match_parent"
-            android:layout_height="684dp" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

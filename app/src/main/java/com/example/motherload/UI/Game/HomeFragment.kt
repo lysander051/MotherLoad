@@ -8,6 +8,9 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -69,6 +72,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
             .build()
 
@@ -80,6 +84,30 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val ret = inflater.inflate(R.layout.fragment_home, container, false)
+        var inventaire = ret.findViewById<ImageView>(R.id.boutonInventaire)
+        var shop = ret.findViewById<ImageView>(R.id.boutonShop)
+        var creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
+        var profil = ret.findViewById<ImageView>(R.id.boutonProfil)
+
+        profil.setOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+            profil.startAnimation(animation)
+        }
+        creuser.setOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+            creuser.startAnimation(animation)
+        }
+
+        shop.setOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+            shop.startAnimation(animation)
+        }
+
+        inventaire.setOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+            inventaire.startAnimation(animation)
+        }
+
         map = ret.findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setBuiltInZoomControls(true)
