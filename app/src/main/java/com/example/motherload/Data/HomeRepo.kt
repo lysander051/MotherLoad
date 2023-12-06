@@ -1,7 +1,6 @@
 package com.example.motherload.Data
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import org.osmdroid.util.GeoPoint
 import com.android.volley.Request
@@ -51,6 +50,65 @@ class HomeRepo {
                                     callback.deplacement(voisin)
                                 }
                             }
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+
+    fun creuser(latitude: Double, longitude: Double, callback: HomeCallback) {
+        getSessionSignature()
+        Log.d(TAG, "session: $session|signature: $signature")
+        val BASE_URL = "https://test.vautard.fr/creuse_srv/creuse.php"
+        val url = "$BASE_URL?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
+        Log.d(TAG, url)
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Creuse")
+                            var itemId: String
+                            try {
+                                itemId = doc.getElementsByTagName("ITEM_ID").item(0).textContent
+                            }
+                            catch (e: NullPointerException){
+                                itemId = "-1"
+                            }
+                            Log.d(TAG,"itemId: "+itemId)
+                            callback.creuse(itemId.toInt())
+                        }
+                        else if (status.subSequence(0, 14) == "KO  - TOO FAST"){
+                            Log.d(TAG, "Trop rapide")
+                            callback.erreur(0)
+                        }
+                        else if (status == "KO  - BAD PICKAXE"){
+                            Log.d(TAG, "Trop profond pour cette pickaxe")
+                            callback.erreur(1)
+                        }
+                        else if(status == "KO - OUT OF BOUNDS"){
+                            Log.d(TAG,"En dehors de l'université")
+                            callback.erreur(2)
                         }
                         else {
                             Log.d(TAG, "Erreur - $status")
