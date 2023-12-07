@@ -1,16 +1,20 @@
 package com.example.motherland.view
 
 import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -21,6 +25,7 @@ import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherload.Data.HomeCallback
 import com.example.motherload.R
 import com.example.motherload.UI.Game.HomeViewModel
+import com.example.motherload.Utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -67,6 +72,8 @@ class HomeFragment : Fragment() {
                             override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
                                 affichageVoisin(voisin)
                             }
+                            override fun creuse(itemId: Int) {}
+                            override fun erreur(erreurId: Int) {}
                         }
                         )
                         lastExecutionTime = System.currentTimeMillis();
@@ -91,21 +98,41 @@ class HomeFragment : Fragment() {
         var creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
         var profil = ret.findViewById<ImageView>(R.id.boutonProfil)
 
-        profil.setOnClickListener {
+        profil.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             profil.startAnimation(animation)
         }
-        creuser.setOnClickListener {
+        creuser.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             creuser.startAnimation(animation)
+            viewModel!!.creuser(playerPosition, object :
+                HomeCallback {
+                override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                override fun creuse(itemId: Int) {
+                    Log.d("coucou", itemId.toString())
+                    if (itemId != -1) {
+                        var toast = Toast.makeText(
+                            requireActivity(),
+                            "Objet trouvé: $itemId",
+                            Toast.LENGTH_SHORT
+                        )
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
+                }
+                override fun erreur(erreurId: Int) {
+                    gestionErreur(erreurId)
+                }
+            }
+            )
         }
 
-        shop.setOnClickListener {
+        shop.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             shop.startAnimation(animation)
         }
 
-        inventaire.setOnClickListener {
+        inventaire.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             inventaire.startAnimation(animation)
             activity?.supportFragmentManager?.beginTransaction()
@@ -141,6 +168,8 @@ class HomeFragment : Fragment() {
                         override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
                             affichageVoisin(voisin)
                         }
+                        override fun creuse(itemId: Int) {}
+                        override fun erreur(erreurId: Int) {}
                     }
                     )
                 }
@@ -156,6 +185,48 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    fun gestionErreur(erreurId: Int){
+        if (erreurId == 0){
+            val explanationMessage = "Vous cliquez comme un fou, il faut ralentir."
+            AlertDialog.Builder(context)
+                .setTitle("Trop Rapide")
+                .setMessage(explanationMessage)
+                .setPositiveButton("OK") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        1
+                    )
+                }.show()
+        }
+        if (erreurId == 1){
+            val explanationMessage = "Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche."
+            AlertDialog.Builder(context)
+                .setTitle("Trop profond")
+                .setMessage(explanationMessage)
+                .setPositiveButton("OK") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        1
+                    )
+                }.show()
+        }
+        if (erreurId == 2){
+            val explanationMessage = "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer."
+            AlertDialog.Builder(context)
+                .setTitle("Trop loin")
+                .setMessage(explanationMessage)
+                .setPositiveButton("OK") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        1
+                    )
+                }.show()
+        }
     }
 
     fun getLocation(location: Location) {
