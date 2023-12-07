@@ -15,8 +15,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class HomeRepo {
     private val TAG: String = "HomeRepo"
-    private var session: Long = 0
-    private var signature: Long = 0
+    private var session: Long = -1
+    private var signature: Long = -1
     fun deplacement(latitude:Double, longitude:Double, callback: HomeCallback){
         getSessionSignature()
         Log.d(TAG, "session: $session|signature: $signature")
@@ -71,7 +71,7 @@ class HomeRepo {
 
     private fun getSessionSignature(){
         val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
-        session = sharedPreferences.getLong("SessionId", 0)
-        signature = sharedPreferences.getLong("Signature", 0)
+        session = sharedPreferences.getLong("SessionId", -1)
+        signature = sharedPreferences.getLong("Signature", -1)
     }
 }

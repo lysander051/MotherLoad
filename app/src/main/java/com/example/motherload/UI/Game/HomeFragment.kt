@@ -13,6 +13,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
@@ -106,6 +108,12 @@ class HomeFragment : Fragment() {
         inventaire.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             inventaire.startAnimation(animation)
+            activity?.supportFragmentManager?.beginTransaction()
+            activity?.supportFragmentManager?.commit {
+                replace(R.id.fragmentContainerView, InventoryFragment())
+                setReorderingAllowed(true)
+                addToBackStack("Inventory")
+            }
         }
 
         map = ret.findViewById(R.id.map)
@@ -203,6 +211,7 @@ class HomeFragment : Fragment() {
         map.onPause()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         requestingLocationUpdate = false
+        center = false
     }
 
     override fun onResume() {

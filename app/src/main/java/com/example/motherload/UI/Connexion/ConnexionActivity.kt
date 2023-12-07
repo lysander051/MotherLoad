@@ -1,6 +1,8 @@
 package com.example.motherload.UI.Connexion
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.UI.Connexion.ConnexionViewModel
 import com.example.motherLoad.Utils.AppPermission
+import com.example.motherland.MotherLoad
 import com.example.motherload.Data.ConnexionCallback
 import com.example.motherload.UI.Game.MainActivity
 import com.example.motherload.R
@@ -40,7 +43,11 @@ class ConnexionActivity : AppCompatActivity(){
 
     fun checkConnexion(connected:Boolean){
         if(connected){
-            startActivity(Intent(this, MainActivity::class.java))
+            var intent = Intent(this, MainActivity::class.java)
+            val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
+            intent = intent.putExtra("SessionId", sharedPreferences.getLong("SessionId",-1))
+            intent = intent.putExtra("Signature", sharedPreferences.getLong("Signature",-1))
+            startActivity(intent)
         }
         else{
             Toast.makeText(
