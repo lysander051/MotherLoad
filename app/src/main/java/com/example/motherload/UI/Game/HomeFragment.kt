@@ -25,6 +25,7 @@ import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherload.Data.HomeCallback
 import com.example.motherload.R
 import com.example.motherload.UI.Game.HomeViewModel
+import com.example.motherload.UI.Game.ProfileFragment
 import com.example.motherload.Utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -101,6 +102,12 @@ class HomeFragment : Fragment() {
         profil.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             profil.startAnimation(animation)
+            activity?.supportFragmentManager?.beginTransaction()
+            activity?.supportFragmentManager?.commit {
+                replace(R.id.fragmentContainerView, ProfileFragment())
+                setReorderingAllowed(true)
+                addToBackStack("Profile")
+            }
         }
         creuser.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
@@ -116,7 +123,6 @@ class HomeFragment : Fragment() {
                             "Objet trouvé: $itemId",
                             Toast.LENGTH_SHORT
                         )
-                        toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
                     }
                 }
@@ -145,7 +151,8 @@ class HomeFragment : Fragment() {
 
         map = ret.findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
-        map.setBuiltInZoomControls(true)
+        map.setBuiltInZoomControls(false)
+        map.setMultiTouchControls(true)
         val mapController = map.controller
         mapController.setZoom(19)
 
