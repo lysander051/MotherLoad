@@ -1,6 +1,7 @@
 package com.example.motherland.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.pm.PackageManager
@@ -8,9 +9,9 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -18,7 +19,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
@@ -26,6 +26,7 @@ import com.example.motherload.Data.HomeCallback
 import com.example.motherload.R
 import com.example.motherload.UI.Game.HomeViewModel
 import com.example.motherload.UI.Game.ProfileFragment
+import com.example.motherload.Utils.SafeClickListener
 import com.example.motherload.Utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -52,7 +53,7 @@ class HomeFragment : Fragment() {
     private lateinit var playerPosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
     private var lastExecutionTime: Long = 0
-    private var center = false
+    private var center = true
     private var requestingLocationUpdate = false
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
@@ -91,6 +92,9 @@ class HomeFragment : Fragment() {
     }
 
 
+
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val ret = inflater.inflate(R.layout.fragment_home, container, false)
@@ -98,6 +102,20 @@ class HomeFragment : Fragment() {
         var shop = ret.findViewById<ImageView>(R.id.boutonShop)
         var creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
         var profil = ret.findViewById<ImageView>(R.id.boutonProfil)
+        val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
+
+        bcenter.setSafeOnClickListener{
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+            bcenter.startAnimation(animation)
+            if(center){
+                center = false
+                bcenter.setImageResource(R.drawable.center_black_icon)
+            }
+            else{
+                center = true
+                bcenter.setImageResource(R.drawable.center_blue_icon)
+            }
+        }
 
         profil.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
@@ -155,6 +173,14 @@ class HomeFragment : Fragment() {
         map.setMultiTouchControls(true)
         val mapController = map.controller
         mapController.setZoom(19)
+        map.setOnTouchListener { v, event ->
+            if (center) {
+                center = false
+                bcenter.setImageResource(R.drawable.center_black_icon)
+            }
+            v.performClick()
+            false
+        }
 
         if (ActivityCompat.checkSelfPermission(
                 requireActivity().applicationContext,
@@ -240,9 +266,8 @@ class HomeFragment : Fragment() {
         val latitude = location.latitude
         val longitude = location.longitude
         playerPosition = GeoPoint(latitude, longitude)
-        if (!center) {
+        if (center) {
             map.controller.setCenter(playerPosition)
-            center = true
         }
         val overlayItems = ArrayList<OverlayItem>()
         var joueur = OverlayItem("Moi", "", playerPosition)
@@ -317,6 +342,7 @@ class HomeFragment : Fragment() {
                 locationCallback,
                 Looper.getMainLooper())
         }
+        center = true
     }
 
 }
