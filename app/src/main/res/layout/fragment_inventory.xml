@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_inventory"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.Game.MainActivity">
 
-    <Button
-        android:id="@+id/gotoHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Retour"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="160dp" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/inventory"
-        android:layout_width="409dp"
-        android:layout_height="655dp"
-        android:layout_marginTop="11dp"
-        app:layout_constraintTop_toBottomOf="@+id/gotoHome"
-        tools:layout_editor_absoluteX="1dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/gotoHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Retour"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="160dp" />
+
+        <!--<androidx.fragment.app.FragmentContainerView
+            android:id="@+id/itemFrag"
+            android:name="com.example.motherland.view.InventoryFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="parent"
+            tools:layout="@layout/fragment_item_list" />-->
+    </LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

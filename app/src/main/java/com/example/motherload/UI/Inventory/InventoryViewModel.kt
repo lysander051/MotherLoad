@@ -10,7 +10,7 @@ import com.example.motherload.Data.Item
 
 class InventoryViewModel(var inventoryRepo: InventoryRepo): ViewModel() {
     val inventory : LiveData<List<Item>> = inventoryRepo.inventory
-    fun UpdateInventory(session : Long?, signature : Long?){
+    fun updateInventory(session : Long?, signature : Long?){
         if (session != null && signature != null) {
             inventoryRepo.updateInventory(session, signature)
         }

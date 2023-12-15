@@ -103,7 +103,7 @@ class HomeRepo {
                             callback.erreur(0)
                         }
                         else if (status == "KO  - BAD PICKAXE"){
-                            Log.d(TAG, "Trop profond pour cette pickaxe")
+                            Log.d(TAG, "Trop profond pour cette pioche")
                             callback.erreur(1)
                         }
                         else if(status == "KO - OUT OF BOUNDS"){

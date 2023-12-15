@@ -48,6 +48,7 @@ class InventoryRepo {
                                     val quantity = item.getElementsByTagName("QUANTITE")
                                         .item(0).textContent.toInt()
                                     itemsMap.add(Item(id, quantity))
+                                    Log.d(TAG, "id = $id et quantity = $quantity \n")
                                 }
                             }
                             _inventory.value = itemsMap
