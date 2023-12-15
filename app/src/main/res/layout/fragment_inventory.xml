@@ -11,25 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/gotoHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Retour"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="160dp" />
+        <ImageView
+            android:id="@+id/boutonRetour"
+            android:layout_width="52dp"
+            android:layout_height="44dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/back" />
 
-        <!--<androidx.fragment.app.FragmentContainerView
-            android:id="@+id/itemFrag"
-            android:name="com.example.motherland.view.InventoryFragment"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/itemInventory"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_weight="1"
-            app:layout_constraintTop_toBottomOf="parent"
-            tools:layout="@layout/fragment_item_list" />-->
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

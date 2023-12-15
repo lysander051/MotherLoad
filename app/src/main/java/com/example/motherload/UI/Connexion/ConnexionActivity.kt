@@ -44,9 +44,7 @@ class ConnexionActivity : AppCompatActivity(){
     fun checkConnexion(connected:Boolean){
         if(connected){
             var intent = Intent(this, MainActivity::class.java)
-            val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
-            intent = intent.putExtra("SessionId", sharedPreferences.getLong("SessionId",-1))
-            intent = intent.putExtra("Signature", sharedPreferences.getLong("Signature",-1))
+            val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
             startActivity(intent)
         }
         else{

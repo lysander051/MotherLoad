@@ -11,7 +11,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -25,8 +24,8 @@ import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherload.Data.HomeCallback
 import com.example.motherload.R
 import com.example.motherload.UI.Game.HomeViewModel
+import com.example.motherload.UI.Game.InventoryFragment
 import com.example.motherload.UI.Game.ProfileFragment
-import com.example.motherload.Utils.SafeClickListener
 import com.example.motherload.Utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback

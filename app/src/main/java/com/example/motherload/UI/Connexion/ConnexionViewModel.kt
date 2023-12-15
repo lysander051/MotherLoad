@@ -1,12 +1,12 @@
 package com.example.motherLoad.UI.Connexion
 
 import androidx.lifecycle.ViewModel
-import com.example.motherLoad.Data.ConnexionRepo
 import com.example.motherLoad.Utils.SHA256Hasher
 import com.example.motherload.Data.ConnexionCallback
+import com.example.motherload.Data.Repository
 import java.net.URLEncoder
 
-class ConnexionViewModel(var connexionRepo: ConnexionRepo) : ViewModel() {
+class ConnexionViewModel(var connexionRepo: Repository) : ViewModel() {
 
     fun getConnected(login: String, password: String, callback: ConnexionCallback) {
         val hasher = SHA256Hasher()

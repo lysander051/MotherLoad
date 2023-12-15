@@ -3,10 +3,10 @@ package com.example.motherload.UI.Game
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.example.motherload.Data.HomeCallback
-import com.example.motherload.Data.HomeRepo
+import com.example.motherload.Data.Repository
 import org.osmdroid.util.GeoPoint
 
-class HomeViewModel(var homeRepo: HomeRepo): ViewModel() {
+class HomeViewModel(var homeRepo: Repository): ViewModel() {
     fun deplacement(location: Location, callback: HomeCallback){
         val latitude = location.latitude
         val longitude = location.longitude

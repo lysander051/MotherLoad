@@ -1,27 +1,78 @@
 package com.example.motherload.Data
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
-import org.osmdroid.util.GeoPoint
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.motherland.MotherLoad
+import org.osmdroid.util.GeoPoint
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-class HomeRepo {
-    private val TAG: String = "HomeRepo"
+class Repository {
+
+    private val TAG: String = "Repo"
     private var session: Long = -1
     private var signature: Long = -1
+    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    fun getConnected(login: String, password: String, callback: ConnexionCallback){
+        val url = BASE_URL_CREUSER+"connexion.php?login=$login&passwd=$password"
+        var connected = false
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Connexion avec succès")
+                            val session: Long =
+                                doc.getElementsByTagName("SESSION").item(0).textContent.toLong()
+                            val signature: Long = doc.getElementsByTagName("SIGNATURE")
+                                .item(0).textContent.toLong()
+                            val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            Log.d(TAG, "session: $session|signature: $signature")
+                            editor.putLong("SessionId", session)
+                            editor.putLong("Signature", signature)
+                            editor.apply()
+                            callback.onConnexion(true)
+                        } else if (status == "KO - WRONG CREDENTIALS") {
+                            Log.d(TAG, "Mauvais Login/passwd")
+                            Log.d(TAG, "login - $login & password - $password")
+                            callback.onConnexion(false)
+                        } else {
+                            Log.d(TAG, "Erreur - $status")
+                            callback.onConnexion(false)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
     fun deplacement(latitude:Double, longitude:Double, callback: HomeCallback){
         getSessionSignature()
+        val url = BASE_URL_CREUSER+"deplace.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, "session: $session|signature: $signature")
-        val BASE_URL = "https://test.vautard.fr/creuse_srv/deplace.php"
-        val url = "$BASE_URL?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
-        Log.d(TAG, url)
 
         val stringRequest = StringRequest(
             Request.Method.GET, url,
@@ -64,7 +115,6 @@ class HomeRepo {
                 error.printStackTrace()
             }
         )
-
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
@@ -72,8 +122,7 @@ class HomeRepo {
     fun creuser(latitude: Double, longitude: Double, callback: HomeCallback) {
         getSessionSignature()
         Log.d(TAG, "session: $session|signature: $signature")
-        val BASE_URL = "https://test.vautard.fr/creuse_srv/creuse.php"
-        val url = "$BASE_URL?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
+        val url = BASE_URL_CREUSER+"creuse.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, url)
 
         val stringRequest = StringRequest(
@@ -109,6 +158,58 @@ class HomeRepo {
                         else if(status == "KO - OUT OF BOUNDS"){
                             Log.d(TAG,"En dehors de l'université")
                             callback.erreur(2)
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun getStatus(callback: InventoryCallback){
+        getSessionSignature()
+        val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
+        var connected = false
+        Log.d(TAG, "session: $session|signature: $signature")
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Acces inventaire")
+                            var pickaxe = doc.getElementsByTagName("PICKAXE").item(0).textContent.toInt()
+                            var money = doc.getElementsByTagName("MONEY").item(0).textContent.toInt()
+                            var items = mutableListOf<Item>()
+
+                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            for (i in 0 until listItems.length) {
+                                val node = listItems.item(i)
+                                if (node.nodeType == Node.ELEMENT_NODE) {
+                                    val elem = node as Element
+                                    val id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
+                                    val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
+                                    items.add(Item(id,quantity))
+                                }
+                            }
+                            Log.d(TAG, "pickaxe:$pickaxe / money:$money / inventory:${items.size}")
+                            callback.getStatus(pickaxe,money,items)
                         }
                         else {
                             Log.d(TAG, "Erreur - $status")
