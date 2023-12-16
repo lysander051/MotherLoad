@@ -1,3 +1,3 @@
 package com.example.motherload.Data
 
-data class Item(val id : Int, val Quantity : Int)
+data class Item(val id : String, val quantity : String)

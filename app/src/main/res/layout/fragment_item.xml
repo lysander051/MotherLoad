@@ -6,27 +6,35 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/backgroundInventory"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="75dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:background="@drawable/stroke_for_list"
+        tools:ignore="MissingConstraints">
+
 
         <ImageView
-            android:id="@+id/image"
-            android:layout_width="52dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="25dp" />
+            android:id="@+id/imageItem"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp">
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="Nom" />
 
             <TextView
@@ -39,15 +47,17 @@
 
         <TextView
             android:id="@+id/rarity"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="Rareté" />
+            android:text="Rareté"
+            android:layout_marginEnd="10dp"/>
 
         <TextView
             android:id="@+id/quantity"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="quantité" />
+            android:text="quantité"
+            android:layout_marginEnd="10dp"/>
 
     </LinearLayout>
 

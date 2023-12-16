@@ -112,6 +112,7 @@ class HomeFragment : Fragment() {
             }
             else{
                 center = true
+                map.controller.setCenter(playerPosition)
                 bcenter.setImageResource(R.drawable.center_blue_icon)
             }
         }
@@ -226,11 +227,6 @@ class HomeFragment : Fragment() {
                 .setTitle("Trop Rapide")
                 .setMessage(explanationMessage)
                 .setPositiveButton("OK") { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        1
-                    )
                 }.show()
         }
         if (erreurId == 1){
@@ -239,11 +235,6 @@ class HomeFragment : Fragment() {
                 .setTitle("Trop profond")
                 .setMessage(explanationMessage)
                 .setPositiveButton("OK") { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        1
-                    )
                 }.show()
         }
         if (erreurId == 2){
@@ -252,11 +243,6 @@ class HomeFragment : Fragment() {
                 .setTitle("Trop loin")
                 .setMessage(explanationMessage)
                 .setPositiveButton("OK") { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        1
-                    )
                 }.show()
         }
     }
@@ -292,7 +278,8 @@ class HomeFragment : Fragment() {
         map.overlays.add(joueurOverlay)
         val overlayItems = ArrayList<OverlayItem>()
         voisin.forEach { (cle, valeur) ->
-            overlayItems.add(OverlayItem(cle, "", valeur))
+            if(String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() || String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble())
+                overlayItems.add(OverlayItem(cle, "", valeur))
         }
         val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
             ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {

@@ -22,7 +22,6 @@ class Repository {
 
     fun getConnected(login: String, password: String, callback: ConnexionCallback){
         val url = BASE_URL_CREUSER+"connexion.php?login=$login&passwd=$password"
-        var connected = false
 
         val stringRequest = StringRequest(
             Request.Method.GET, url,
@@ -179,7 +178,6 @@ class Repository {
     fun getStatus(callback: InventoryCallback){
         getSessionSignature()
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
-        var connected = false
         Log.d(TAG, "session: $session|signature: $signature")
 
         val stringRequest = StringRequest(
@@ -205,7 +203,7 @@ class Repository {
                                     val elem = node as Element
                                     val id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
                                     val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
-                                    items.add(Item(id,quantity))
+                                    items.add(Item(id.toString(),quantity.toString()))
                                 }
                             }
                             Log.d(TAG, "pickaxe:$pickaxe / money:$money / inventory:${items.size}")
@@ -226,6 +224,55 @@ class Repository {
         )
 
         MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun getItems(items: List<Item>, callback: InventoryCallback){
+        getSessionSignature()
+        var itemDescription = mutableListOf<ItemDescription>()
+        var requestCount = 0
+        for (e in items) {
+            val url = BASE_URL_CREUSER + "item_detail.php?session=$session&signature=$signature&item_id=${e.id}"
+
+            val stringRequest = StringRequest(
+                Request.Method.GET, url,
+                { response ->
+                    try {
+                        val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                        val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                        val doc: Document = docBuilder.parse(response.byteInputStream())
+                        val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                        if (statusNode != null) {
+                            val status = statusNode.textContent.trim()
+                            if (status == "OK") {
+                                val nom =doc.getElementsByTagName("NOM").item(0).textContent.toString()
+                                val type =doc.getElementsByTagName("TYPE").item(0).textContent.toString()
+                                val rarity = doc.getElementsByTagName("RARETE").item(0).textContent.toString()
+                                val image = "https://test.vautard.fr/creuse_imgs/" + doc.getElementsByTagName("IMAGE").item(0).textContent.toString()
+                                val desc_fr = doc.getElementsByTagName("DESC_FR").item(0).textContent.toString()
+                                val desc_en = doc.getElementsByTagName("DESC_EN").item(0).textContent.toString()
+                                itemDescription.add(ItemDescription(e.id, nom, type, rarity,image,desc_fr,desc_en,e.quantity))
+                                requestCount++
+                                if (requestCount == items.size) {
+                                    callback.getItems(itemDescription)
+                                }
+                            } else {
+                                Log.d(TAG, "Erreur - $status")
+                                if (requestCount == items.size) {
+                                    callback.getItems(itemDescription)
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    }
+                },
+                { error ->
+                    Log.d(TAG, "connexion error")
+                    error.printStackTrace()
+                }
+            )
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+        }
     }
 
     private fun getSessionSignature(){
