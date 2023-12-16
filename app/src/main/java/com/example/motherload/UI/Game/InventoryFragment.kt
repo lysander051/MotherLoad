@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +20,7 @@ import com.example.motherload.Data.InventoryCallback
 import com.example.motherload.Data.Item
 import com.example.motherload.Data.ItemDescription
 import com.example.motherload.R
+import com.example.motherload.Utils.setSafeOnClickListener
 import com.squareup.picasso.Picasso
 
 
@@ -39,6 +41,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     ): View {
         ret = inflater.inflate(R.layout.fragment_inventory, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
+        val amelioration = ret.findViewById<Button>(R.id.boutonAmelioration)
+        val pickaxe = ret.findViewById<ImageView>(R.id.pickaxeImage)
 
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -54,10 +58,15 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
         )
 
-        retour.setOnClickListener {
+        retour.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             retour.startAnimation(animation)
             activity?.supportFragmentManager?.popBackStack()
+        }
+
+        amelioration.setSafeOnClickListener {
+            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
+            pickaxe.startAnimation(animation)
         }
 
         return ret
