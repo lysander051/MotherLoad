@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,10 +19,13 @@ import com.example.motherload.Data.InventoryCallback
 import com.example.motherload.Data.Item
 import com.example.motherload.Data.ItemDescription
 import com.example.motherload.R
+import com.squareup.picasso.Picasso
 
 
-class InventoryFragment : Fragment() {
+class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     private var viewModel: InventoryViewModel? = null
+    private lateinit var ret: View
+    private var lastItemClick: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +36,8 @@ class InventoryFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val ret = inflater.inflate(R.layout.fragment_inventory, container, false)
+    ): View {
+        ret = inflater.inflate(R.layout.fragment_inventory, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
 
         val fragmentManager = requireActivity().supportFragmentManager
@@ -44,7 +48,7 @@ class InventoryFragment : Fragment() {
         viewModel!!.getStatus( object :
             InventoryCallback{
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
-                setIterface(pickaxe, money, inventory, ret)
+                setIterface(pickaxe, money, inventory)
             }
             override fun getItems(itemDescription: MutableList<ItemDescription>) {}
         }
@@ -59,7 +63,7 @@ class InventoryFragment : Fragment() {
         return ret
     }
 
-    private fun setIterface(pickaxe: Int, money: Int, inventory: List<Item>, ret: View){
+    private fun setIterface(pickaxe: Int, money: Int, inventory: List<Item>){
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
         var pick = R.drawable.pickaxe_1
         if (pickaxe==2) pick = R.drawable.pickaxe_2
@@ -71,19 +75,48 @@ class InventoryFragment : Fragment() {
             InventoryCallback{
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
             override fun getItems(itemDescription: MutableList<ItemDescription>) {
-                setItems(itemDescription,ret)
+                setItems(itemDescription)
             }
         }
         )
-
-
     }
 
-    private fun setItems(listItemDescription: List<ItemDescription>, ret: View){
+    private fun setItems(listItemDescription: List<ItemDescription>){
         Log.d("coucou",listItemDescription.size.toString())
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemInventory)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = InventoryAdapter(listItemDescription)
+        val adapter = InventoryAdapter(listItemDescription, this)
         recyclerView.adapter = adapter
+    }
+
+    override fun onItemClick(item: ItemDescription) {
+        if (item.id != lastItemClick){
+            ret.findViewById<LinearLayout>(R.id.descriptionItems).visibility = View.VISIBLE
+            lastItemClick = item.id
+            setOneItemDescription(item)
+        }
+        else{
+            ret.findViewById<LinearLayout>(R.id.descriptionItems).visibility = View.GONE
+            lastItemClick = ""
+        }
+    }
+
+    private fun setOneItemDescription(item: ItemDescription){
+        val image: ImageView = ret.findViewById(R.id.imageOneItem)
+        val name: TextView = ret.findViewById(R.id.nameOneItem)
+        val description: TextView = ret.findViewById(R.id.descriptionOneItem)
+        val type: TextView = ret.findViewById(R.id.typeOneItem)
+        val rarity: TextView = ret.findViewById(R.id.rarityOneItem)
+        val quantity: TextView = ret.findViewById(R.id.quantityOneItem)
+
+        Picasso.get().load(item.image).into(image)
+        name.text = item.nom
+        description.text = item.desc_fr
+        if (item.type == "M")
+            type.text = "Minerai"
+        else
+            type.text = "Artefact"
+        rarity.text = item.rarity
+        quantity.text = item.quantity
     }
 }

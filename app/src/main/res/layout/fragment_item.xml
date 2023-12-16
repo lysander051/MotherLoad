@@ -23,32 +23,21 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Nom" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description" />
-
-        </LinearLayout>
+            android:textStyle="bold"
+            android:text="Nom"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/rarity"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textAlignment="center"
             android:text="Rareté"
             android:layout_marginEnd="10dp"/>
 
@@ -56,6 +45,8 @@
             android:id="@+id/quantity"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textAlignment="center"
             android:text="quantité"
             android:layout_marginEnd="10dp"/>
 
