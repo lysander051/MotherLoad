@@ -1,4 +1,4 @@
-package com.example.motherload.Utils
+package com.example.motherload.utils
 
 import android.os.SystemClock
 import android.view.View

@@ -1,4 +1,4 @@
-package com.example.motherload.Data
+package com.example.motherload.data
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -273,6 +273,170 @@ class Repository {
             )
         MotherLoad.instance.requestQueue?.add(stringRequest)
         }
+    }
+
+    fun upgradePickaxe(pickaxeLevel: Int, callback: InventoryCallback){
+        getSessionSignature()
+        val url = BASE_URL_CREUSER+"maj_pioche.php?session=$session&signature=$signature&pickaxe_id=$pickaxeLevel"
+        Log.d(TAG, url)
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Amelioration pioche")
+                            callback.upgradePickaxe()
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun recipePickaxe(callback: InventoryCallback){
+        getSessionSignature()
+        val url = BASE_URL_CREUSER+"recettes_pioches.php?session=$session&signature=$signature"
+        Log.d(TAG, url)
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Liste recette de pioche")
+                            var recipeList = mutableMapOf<String,List<Item>>()
+                            var listItem = mutableListOf<Item>()
+                            val listPickaxe = doc.getElementsByTagName("UPGRADES").item(0).childNodes
+                            Log.d(TAG, "taille liste pickaxe: ${listPickaxe.length}")
+                            for (i in 0 until listPickaxe.length) {
+                                val pickaxeNode = listPickaxe.item(i) as Element
+                                val pickaxeId = pickaxeNode.getElementsByTagName("PICKAXE_ID").item(0).textContent.trim()
+                                val itemsNode = pickaxeNode.getElementsByTagName("ITEMS").item(0)
+                                val itemList = itemsNode.childNodes
+                                listItem = mutableListOf<Item>()
+                                for (j in 0 until itemList.length) {
+                                    if (itemList.item(j) is Element) {
+                                        val itemNode = itemList.item(j) as Element
+                                        val itemId = itemNode.getElementsByTagName("ITEM_ID").item(0).textContent.trim()
+                                        val quantity = itemNode.getElementsByTagName("QUANTITY").item(0).textContent.trim()
+                                        listItem.add(Item(itemId,quantity))
+                                    }
+                                }
+                                Log.d(TAG, "$pickaxeId, size item ${listItem.size}")
+                                recipeList.put(pickaxeId,listItem)
+                            }
+                            callback.recipePickaxe(recipeList)
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun changerPseudo(pseudo: String, callback: ProfilCallback){
+        getSessionSignature()
+        val BASE_URL = "https://test.vautard.fr/creuse_srv/changenom.php"
+        val url = BASE_URL+"?session=$session&signature=$signature&nom=$pseudo"
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        Log.d(TAG,"nouveau pseudo $pseudo")
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK" && pseudo.length > 3) {
+                            callback.changerPseudo(pseudo)
+                        } else {
+                            Log.d(TAG, "Erreur - $status")
+                            callback.changerPseudo("")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "profile error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun resetUser(callback: ProfilCallback){
+        getSessionSignature()
+        val url = BASE_URL_CREUSER+"reinit_joueur.php?session=$session&signature=$signature"
+        Log.d(TAG, url)
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Reset player")
+                            callback.resetUser()
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+
+        MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
     private fun getSessionSignature(){

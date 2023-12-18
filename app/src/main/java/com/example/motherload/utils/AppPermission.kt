@@ -3,15 +3,14 @@ package com.example.motherLoad.Utils
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.motherload.UI.Game.MainActivity
 
 
 class AppPermission {
     companion object {
-        fun requestLocation(context: AppCompatActivity){
+        fun requestLocation(context: Context){
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 val explanationMessage = "Nous avons besoin de votre permission pour accéder à votre localisation précise afin que vous puissiez jouer."
                 AlertDialog.Builder(context)

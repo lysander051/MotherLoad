@@ -1,4 +1,4 @@
-package com.example.motherload.UI.Game
+package com.example.motherload.ui.game.inventory
 
 import android.os.Bundle
 import android.view.LayoutInflater

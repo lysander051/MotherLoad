@@ -1,6 +1,5 @@
-package com.example.motherload.Data
+package com.example.motherload.data
 
-import android.location.Location
 import org.osmdroid.util.GeoPoint
 
 interface HomeCallback {

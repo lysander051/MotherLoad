@@ -1,6 +1,4 @@
-package com.example.motherload.Data
-
-import android.media.Image
+package com.example.motherload.data
 
 data class ItemDescription(
     val id : String,

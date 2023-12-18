@@ -1,7 +1,8 @@
-package com.example.motherload.UI.Game
+package com.example.motherload.ui.game.inventory
 
-import InventoryAdapter
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +17,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherload.Data.InventoryCallback
-import com.example.motherload.Data.Item
-import com.example.motherload.Data.ItemDescription
+import com.example.motherload.data.InventoryCallback
+import com.example.motherload.data.Item
+import com.example.motherload.data.ItemDescription
 import com.example.motherload.R
-import com.example.motherload.Utils.setSafeOnClickListener
+import com.example.motherload.utils.PopUpDisplay
+import com.example.motherload.utils.setSafeOnClickListener
 import com.squareup.picasso.Picasso
 
 
@@ -28,6 +30,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     private var viewModel: InventoryViewModel? = null
     private lateinit var ret: View
     private var lastItemClick: String = ""
+    private var pickaxeLevel = 0
+    private var recipeString = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
         val amelioration = ret.findViewById<Button>(R.id.boutonAmelioration)
         val pickaxe = ret.findViewById<ImageView>(R.id.pickaxeImage)
+        val recette = ret.findViewById<Button>(R.id.boutonRecette)
 
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -52,9 +57,12 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         viewModel!!.getStatus( object :
             InventoryCallback{
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
-                setIterface(pickaxe, money, inventory)
+                pickaxeLevel = pickaxe
+                setIterface(money, inventory)
             }
             override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+            override fun upgradePickaxe() {}
+            override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
         }
         )
 
@@ -66,28 +74,92 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
-            pickaxe.startAnimation(animation)
+            viewModel!!.upgradePickaxe(pickaxeLevel, object :
+                InventoryCallback{
+                override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+                override fun upgradePickaxe() {
+                    pickaxeLevel++
+                    pickaxe.startAnimation(animation)
+                    Handler(Looper.getMainLooper()).postDelayed({ setPickaxe() }, 1000)
+                }
+                override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
+            }
+            )
+        }
+
+        recette.setSafeOnClickListener {
+            viewModel!!.recipePickaxe(object : InventoryCallback {
+                override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+
+                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+
+                override fun upgradePickaxe() {}
+
+                override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
+                    val keys = recipeList.keys.toList()
+                    for ((key, value) in recipeList){
+                        Log.d("inventory", "$key, ${value.size}")
+                    }
+                    recipePickaxeDisplay(keys, 0, recipeList)
+                }
+            })
         }
 
         return ret
     }
 
-    private fun setIterface(pickaxe: Int, money: Int, inventory: List<Item>){
+    private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
+        if (index < recipeList.size) {
+            recipeString += "Pickaxe ${keys[index]} :\n"
+            recipeList[keys[index]]?.let {
+                viewModel!!.getItems(it, object : InventoryCallback {
+                    override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                    override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                        for (e in itemDescription) {
+                            recipeString += "${e.quantity} * ${e.nom}\n"
+                            if (index < recipeList.size-1) {
+                                recipeString += "--------------------------\n"
+                            }
+                        }
+                        recipePickaxeDisplay(keys, index + 1, recipeList)
+                    }
+
+                    override fun upgradePickaxe() {}
+                    override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
+                })
+            }
+
+        } else {
+            if (index == recipeList.size) {
+                PopUpDisplay.simplePopUp(requireActivity(), "recette", recipeString)
+                recipeString = ""
+            }
+        }
+    }
+
+    private fun setIterface(money: Int, inventory: List<Item>){
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
-        var pick = R.drawable.pickaxe_1
-        if (pickaxe==2) pick = R.drawable.pickaxe_2
-        if (pickaxe==3) pick = R.drawable.pickaxe_3
-        if (pickaxe==4) pick = R.drawable.pickaxe_4
-        if (pickaxe==5) pick = R.drawable.pickaxe_5
-        ret.findViewById<ImageView>(R.id.pickaxeImage).setImageResource(pick)
+        setPickaxe()
         viewModel!!.getItems(inventory, object :
             InventoryCallback{
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
             override fun getItems(itemDescription: MutableList<ItemDescription>) {
                 setItems(itemDescription)
             }
+            override fun upgradePickaxe() {}
+            override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
         }
         )
+    }
+
+    private fun setPickaxe(){
+        var pick = R.drawable.pickaxe_5
+        if (pickaxeLevel==1) pick = R.drawable.pickaxe_1
+        if (pickaxeLevel==2) pick = R.drawable.pickaxe_2
+        if (pickaxeLevel==3) pick = R.drawable.pickaxe_3
+        if (pickaxeLevel==4) pick = R.drawable.pickaxe_4
+        ret.findViewById<ImageView>(R.id.pickaxeImage).setImageResource(pick)
     }
 
     private fun setItems(listItemDescription: List<ItemDescription>){

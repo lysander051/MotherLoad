@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.Game.MainActivity">
+    tools:context=".ui.game.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -16,13 +16,14 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/boutonRetour"
                 android:layout_width="52dp"
                 android:layout_height="44dp"
-                android:layout_margin="25dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -62,8 +63,8 @@
 
             <ImageView
                 android:id="@+id/pickaxeImage"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/pickaxe_1"
@@ -197,12 +198,28 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/boutonAmelioration"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ameliorer la pioche"
-            android:layout_gravity="center"
-            />
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/boutonAmelioration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ameliorer la pioche"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                />
+            <Button
+                android:id="@+id/boutonRecette"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recette des pioches"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                />
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

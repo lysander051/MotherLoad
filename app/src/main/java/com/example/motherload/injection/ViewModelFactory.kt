@@ -3,22 +3,19 @@ package com.example.motherLoad.Injection
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.UI.Connexion.ConnexionViewModel
-import com.example.motherload.Data.ProfileRepo
-import com.example.motherload.Data.Repository
-import com.example.motherload.UI.Game.HomeViewModel
-import com.example.motherload.UI.Game.InventoryViewModel
-import com.example.motherload.UI.Game.ProfileViewModel
+import com.example.motherload.data.Repository
+import com.example.motherload.ui.game.home.HomeViewModel
+import com.example.motherload.ui.game.inventory.InventoryViewModel
+import com.example.motherload.ui.game.profile.ProfileViewModel
 
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory private constructor() : ViewModelProvider.Factory{
     private var repository: Repository? = null
-    private var profileRepo: ProfileRepo? = null
 
 
     init {
         repository = Repository()
-        profileRepo = ProfileRepo()
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -29,7 +26,7 @@ class ViewModelFactory private constructor() : ViewModelProvider.Factory{
             return HomeViewModel(repository!!) as T
         }
         if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(profileRepo!!) as T
+            return ProfileViewModel(repository!!) as T
         }
         if (modelClass.isAssignableFrom(InventoryViewModel::class.java)) {
             return InventoryViewModel(repository!!) as T

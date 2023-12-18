@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    tools:context=".UI.Game.ProfileFragment">
+    tools:context=".ui.game.profile.ProfileFragment">
 
 
     <LinearLayout
@@ -18,8 +18,8 @@
             android:layout_width="52dp"
             android:layout_height="44dp"
             android:layout_gravity="start"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/back" />
             />
 
@@ -38,7 +38,7 @@
             android:ems="10"
             android:inputType="text"
             android:minHeight="48dp"
-            android:text="nshivre" />
+            android:text="Nouveau pseudo" />
 
         <Button
             android:id="@+id/boutonConfirmer"

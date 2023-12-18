@@ -1,8 +1,5 @@
-package com.example.motherload.UI.Game
+package com.example.motherload.ui.game.profile
 
-import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +8,13 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherload.Data.ConnexionCallback
-import com.example.motherload.Data.ProfilCallback
+import com.example.motherload.data.ProfilCallback
 import com.example.motherload.R
-import com.example.motherload.Utils.setSafeOnClickListener
+import com.example.motherload.utils.PopUpDisplay
+import com.example.motherload.utils.setSafeOnClickListener
 
 class ProfileFragment: Fragment(){
 
@@ -28,11 +24,11 @@ class ProfileFragment: Fragment(){
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ProfileViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val ret = inflater.inflate(R.layout.fragment_profil, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
         val confirmer = ret.findViewById<Button>(R.id.boutonConfirmer)
+        val reset = ret.findViewById<Button>(R.id.boutonReset)
 
         retour.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
@@ -45,25 +41,39 @@ class ProfileFragment: Fragment(){
                 override fun changerPseudo(pseudo: String) {
                     ret.findViewById<EditText>(R.id.nouveauPseudo).setText(pseudo)
                     if (pseudo != ""){
-                        val explanationMessage = "Vous avez changé de pseudo pour $pseudo"
-                        AlertDialog.Builder(context)
-                            .setTitle("Changement de pseudo")
-                            .setMessage(explanationMessage)
-                            .setPositiveButton("OK") { _, _ ->
-                            }.show()
+                        PopUpDisplay.simplePopUp(requireActivity(),
+                            "Changement de pseudo",
+                            "Vous avez changé de pseudo pour $pseudo")
                     }
                     else{
-                        val explanationMessage = "Problème de changement de pseudo. Il faut qu'il soit plus long que 3"
-                        AlertDialog.Builder(context)
-                            .setTitle("problème de changement de pseudo")
-                            .setMessage(explanationMessage)
-                            .setPositiveButton("OK") { _, _ ->
-                            }.show()
+                        PopUpDisplay.simplePopUp(requireActivity(),
+                            "problème de changement de pseudo",
+                            "Problème de changement de pseudo. Il faut qu'il soit plus long que 3")
                     }
                 }
+                override fun resetUser() {}
             })
         }
+        reset.setSafeOnClickListener {
+            PopUpDisplay.cancellablePopUp(requireActivity(),
+                "Réinitialisation",
+                "êtes vous sûr de vouloir réinitialiser votre compte?"
+                ) { confirmed ->
+                if (confirmed) {viewModel!!.resetUser(object :
+                    ProfilCallback {
+                        override fun changerPseudo(pseudo: String) {}
+                        override fun resetUser() {
+                            PopUpDisplay.simplePopUp(
+                                requireActivity(),
+                                "Réinitialisation",
+                                "Votre compte a été réinitialisé"
+                            )
+                        }
+                    })
+                }
+            }
 
+        }
 
         return ret
     }

@@ -18,14 +18,14 @@
         android:theme="@style/Theme.MotherLoad"
         tools:targetApi="31">
         <activity
-            android:name=".UI.Connexion.ConnexionActivity"
+            android:name=".ui.connexion.ConnexionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Game.MainActivity">
+        <activity android:name=".ui.game.MainActivity">
 
         </activity>
     </application>

@@ -1,32 +1,31 @@
-package com.example.motherland.view
+package com.example.motherload.ui.game.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherload.Data.HomeCallback
+import com.example.motherLoad.Utils.AppPermission
+import com.example.motherload.data.HomeCallback
 import com.example.motherload.R
-import com.example.motherload.UI.Game.HomeViewModel
-import com.example.motherload.UI.Game.InventoryFragment
-import com.example.motherload.UI.Game.ProfileFragment
-import com.example.motherload.Utils.setSafeOnClickListener
+import com.example.motherload.ui.game.inventory.InventoryFragment
+import com.example.motherload.ui.game.profile.ProfileFragment
+import com.example.motherload.utils.PopUpDisplay
+import com.example.motherload.utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -51,9 +50,7 @@ class HomeFragment : Fragment() {
     private lateinit var locationRequest: LocationRequest
     private lateinit var playerPosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
-    private var lastExecutionTime: Long = 0
     private var center = true
-    private var requestingLocationUpdate = false
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
 
@@ -63,46 +60,41 @@ class HomeFragment : Fragment() {
         timer = Timer()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+        //initialisation du comportement de chaque mise à jour de la position
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 for (location in p0.locations) {
                     getLocation(location)
-                    if (System.currentTimeMillis() - lastExecutionTime >= 15000) {
-                        viewModel!!.deplacement(location, object :
-                            HomeCallback {
-                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
-                                affichageVoisin(voisin)
-                            }
-                            override fun creuse(itemId: Int) {}
-                            override fun erreur(erreurId: Int) {}
+                    viewModel!!.deplacement(location, object :
+                        HomeCallback {
+                        override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
+                            affichageVoisin(voisin)
                         }
-                        )
-                        lastExecutionTime = System.currentTimeMillis();
+                        override fun creuse(itemId: Int) {}
+                        override fun erreur(erreurId: Int) {}
                     }
+                    )
                 }
             }
         }
 
-        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+        //mise à jour de la position gps toutes les 5 secondes
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
             .build()
-
         Configuration.getInstance().load(requireActivity().applicationContext,
             activity?.let { PreferenceManager.getDefaultSharedPreferences(it.applicationContext) })
     }
 
-
-
-
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val ret = inflater.inflate(R.layout.fragment_home, container, false)
-        var inventaire = ret.findViewById<ImageView>(R.id.boutonInventaire)
-        var shop = ret.findViewById<ImageView>(R.id.boutonShop)
-        var creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
-        var profil = ret.findViewById<ImageView>(R.id.boutonProfil)
+        val inventaire = ret.findViewById<ImageView>(R.id.boutonInventaire)
+        val shop = ret.findViewById<ImageView>(R.id.boutonShop)
+        val creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
+        val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
 
+        //comportement du bouton de centrage de la map sur le joueur
         bcenter.setSafeOnClickListener{
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
             bcenter.startAnimation(animation)
@@ -117,49 +109,51 @@ class HomeFragment : Fragment() {
             }
         }
 
+        //bouton pour accéder au profil
         profil.setSafeOnClickListener {
-            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-            profil.startAnimation(animation)
-            activity?.supportFragmentManager?.beginTransaction()
+            activity?.supportFragmentManager?.beginTransaction()?.commit()
             activity?.supportFragmentManager?.commit {
                 replace(R.id.fragmentContainerView, ProfileFragment())
                 setReorderingAllowed(true)
                 addToBackStack("Profile")
             }
         }
+
+        //bouton pour creuser avec un delai de 10sec
+        val handler = Handler()
         creuser.setSafeOnClickListener {
-            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-            creuser.startAnimation(animation)
-            viewModel!!.creuser(playerPosition, object :
-                HomeCallback {
-                override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
-                override fun creuse(itemId: Int) {
-                    Log.d("coucou", itemId.toString())
-                    if (itemId != -1) {
-                        var toast = Toast.makeText(
-                            requireActivity(),
-                            "Objet trouvé: $itemId",
-                            Toast.LENGTH_SHORT
-                        )
-                        toast.show()
-                    }
-                }
-                override fun erreur(erreurId: Int) {
-                    gestionErreur(erreurId)
-                }
+            if (viewModel!!.isButtonClickEnabled.value == true) {
+                viewModel!!.disableButtonClick()
+                creuser.setImageResource(R.drawable.pickaxe_icon_bw)
+                val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
+                creuser.startAnimation(animation)
+
+                // Bloque le bouton 10secondes si on a cliqué
+                handler.postDelayed({
+                    viewModel!!.creuser(playerPosition, object : HomeCallback {
+                        override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                        override fun creuse(itemId: Int) {
+                            if (itemId != -1) {
+                                PopUpDisplay.shortToast(requireActivity(), "$itemId trouvé")
+                            }
+                        }
+                        override fun erreur(erreurId: Int) {
+                            gestionErreur(erreurId)
+                        }
+                    })
+                    creuser.setImageResource(R.drawable.pickaxe_icon)
+                    viewModel!!.enableButtonClick()
+                }, 10000)
             }
-            )
         }
 
         shop.setSafeOnClickListener {
-            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-            shop.startAnimation(animation)
+            //todo le shop
         }
 
+        //pour aller sur le fragment de l'inventaire
         inventaire.setSafeOnClickListener {
-            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-            inventaire.startAnimation(animation)
-            activity?.supportFragmentManager?.beginTransaction()
+            activity?.supportFragmentManager?.beginTransaction()?.commit()
             activity?.supportFragmentManager?.commit {
                 replace(R.id.fragmentContainerView, InventoryFragment())
                 setReorderingAllowed(true)
@@ -167,21 +161,10 @@ class HomeFragment : Fragment() {
             }
         }
 
-        map = ret.findViewById(R.id.map)
-        map.setTileSource(TileSourceFactory.MAPNIK)
-        map.setBuiltInZoomControls(false)
-        map.setMultiTouchControls(true)
-        val mapController = map.controller
-        mapController.setZoom(19)
-        map.setOnTouchListener { v, event ->
-            if (center) {
-                center = false
-                bcenter.setImageResource(R.drawable.center_black_icon)
-            }
-            v.performClick()
-            false
-        }
+        //initialisation du comportement de la map
+        mapInitialisation(ret, bcenter)
 
+        //démarrage de la géolocalisation du joueur
         if (ActivityCompat.checkSelfPermission(
                 requireActivity().applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -190,9 +173,10 @@ class HomeFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // reuqest for permission
+            AppPermission.requestLocation(requireActivity())
         }
         else{
+            //cette partie permet une initialisation rapide de la position du joueur
             fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
                 if (location != null) {
                     getLocation(location)
@@ -207,58 +191,64 @@ class HomeFragment : Fragment() {
                     )
                 }
             }
+            //on lance la géolocalisation et la mise a jour des voisins
             fusedLocationProviderClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper())
-            requestingLocationUpdate = true
         }
         return ret
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun mapInitialisation(ret: View, bcenter: ImageView){
+        map = ret.findViewById(R.id.map)
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setBuiltInZoomControls(false)
+        map.setMultiTouchControls(true)
+        val mapController = map.controller
+        mapController.setZoom(19.0)
+        //désactive le centrage sur le joueur lorsque l'on touche ou bouge la map
+        map.setOnTouchListener { v, _ ->
+            if (center) {
+                center = false
+                bcenter.setImageResource(R.drawable.center_black_icon)
+            }
+            v.performClick()
+            false
+        }
     }
 
     fun gestionErreur(erreurId: Int){
-        if (erreurId == 0){
-            val explanationMessage = "Vous cliquez comme un fou, il faut ralentir."
-            AlertDialog.Builder(context)
-                .setTitle("Trop Rapide")
-                .setMessage(explanationMessage)
-                .setPositiveButton("OK") { _, _ ->
-                }.show()
-        }
-        if (erreurId == 1){
-            val explanationMessage = "Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche."
-            AlertDialog.Builder(context)
-                .setTitle("Trop profond")
-                .setMessage(explanationMessage)
-                .setPositiveButton("OK") { _, _ ->
-                }.show()
-        }
-        if (erreurId == 2){
-            val explanationMessage = "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer."
-            AlertDialog.Builder(context)
-                .setTitle("Trop loin")
-                .setMessage(explanationMessage)
-                .setPositiveButton("OK") { _, _ ->
-                }.show()
-        }
+        //TODO gestion de toutes les erreurs
+        if (erreurId == 0)
+            PopUpDisplay.simplePopUp(requireActivity(),
+                "Trop Rapide",
+                "Vous cliquez comme un fou, il faut ralentir.")
+        if (erreurId == 1)
+            PopUpDisplay.simplePopUp(requireActivity(),
+                "Trop profond",
+                "Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche.")
+        if (erreurId == 2)
+            PopUpDisplay.simplePopUp(requireActivity(),
+                "Trop loin",
+                "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer.")
     }
 
     fun getLocation(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
         playerPosition = GeoPoint(latitude, longitude)
-        if (center) {
+        //centre la caméra sur le joueur s'il faut
+        if (center)
             map.controller.setCenter(playerPosition)
-        }
+        //création de l'icone de joueur
         val overlayItems = ArrayList<OverlayItem>()
-        var joueur = OverlayItem("Moi", "", playerPosition)
-        var icone_joueur = requireActivity().resources.getDrawable(R.drawable.player_icon)
-        joueur.setMarker(icone_joueur)
+        val joueur = OverlayItem("", "", playerPosition)
+        val iconeJoueur = requireActivity().resources.getDrawable(R.drawable.player_icon)
+        joueur.setMarker(iconeJoueur)
         overlayItems.add(joueur)
+        //désactive le clique sur l'icone du joueur
         joueurOverlay = ItemizedOverlayWithFocus(context, overlayItems, object :
             ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
             override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
@@ -268,20 +258,26 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
+        //permet de set la position du joueur et d'éviter la duplication d'icones
         if(map.overlays.size == 0)
             map.overlays.add(joueurOverlay)
-        map.overlays.set(0, joueurOverlay)
+        map.overlays[0] = joueurOverlay
     }
 
     fun affichageVoisin(voisin: MutableMap<String, GeoPoint>){
+        //clear la liste des joueurs
         map.overlays.clear()
+        //ajoute le joueur en position 0 dans la liste
         map.overlays.add(joueurOverlay)
         val overlayItems = ArrayList<OverlayItem>()
+        //cherche dans les voisins notre position pour éviter la duplication d'icone
+        //TODO voir pourquoi ça bug
         voisin.forEach { (cle, valeur) ->
             if(String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() || String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble())
                 overlayItems.add(OverlayItem(cle, "", valeur))
         }
-        val mOverlay = ItemizedOverlayWithFocus<OverlayItem>(context, overlayItems, object :
+        //active le clique sur les autres joueurs pour voir leurs pseudo
+        val mOverlay = ItemizedOverlayWithFocus(context, overlayItems, object :
             ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
             override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
                 return true
@@ -291,6 +287,7 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
+        //ajout des joueurs à la map
         mOverlay.setFocusItemsOnTap(true)
         map.overlays.add(mOverlay)
     }
@@ -299,36 +296,26 @@ class HomeFragment : Fragment() {
         super.onPause()
         map.onPause()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        requestingLocationUpdate = false
         center = false
     }
 
     override fun onResume() {
         super.onResume()
         map.onResume()
-        if (!requestingLocationUpdate) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                locationCallback,
-                Looper.getMainLooper())
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            AppPermission.requestLocation(requireActivity())
         }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
+
         center = true
     }
-
 }

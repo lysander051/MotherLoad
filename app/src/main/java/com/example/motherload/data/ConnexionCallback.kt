@@ -1,4 +1,4 @@
-package com.example.motherload.Data
+package com.example.motherload.data
 
 interface ConnexionCallback {
     fun onConnexion(isConnected: Boolean)
