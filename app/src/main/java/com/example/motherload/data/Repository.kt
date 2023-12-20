@@ -1,10 +1,6 @@
 package com.example.motherload.data
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.api.ConnexionApi
 import com.example.motherload.data.api.HomeApi
@@ -14,12 +10,6 @@ import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ProfilCallback
-import org.osmdroid.util.GeoPoint
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.Node
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 
 object Repository {
     private val TAG: String = "Repo"
@@ -68,4 +58,6 @@ object Repository {
         session = sharedPreferences.getLong("SessionId", -1)
         signature = sharedPreferences.getLong("Signature", -1)
     }
+
+
 }
