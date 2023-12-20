@@ -90,6 +90,4 @@ object Repository {
         session = sharedPreferences.getLong("SessionId", -1)
         signature = sharedPreferences.getLong("Signature", -1)
     }
-
-
 }
