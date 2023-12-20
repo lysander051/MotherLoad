@@ -1,17 +1,13 @@
 package com.example.motherload.ui.game.home
 
 import android.Manifest
-import android.R.attr.bitmap
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +22,7 @@ import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
-import com.example.motherload.data.HomeCallback
+import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
 import com.example.motherload.utils.PopUpDisplay

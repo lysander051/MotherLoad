@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherload.data.InventoryCallback
+import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.R
@@ -66,7 +66,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
-                InventoryCallback{
+                InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
                 override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                 override fun upgradePickaxe() {
@@ -105,7 +105,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
     private fun refreshInterface(){
         viewModel!!.getStatus( object :
-            InventoryCallback{
+            InventoryCallback {
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
                 pickaxeLevel = pickaxe
                 setIterface(money, inventory)
@@ -150,7 +150,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
         setPickaxe()
         viewModel!!.getItems(inventory, object :
-            InventoryCallback{
+            InventoryCallback {
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
             override fun getItems(itemDescription: MutableList<ItemDescription>) {
                 setItems(itemDescription)

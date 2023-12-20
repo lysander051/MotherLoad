@@ -2,7 +2,7 @@ package com.example.motherLoad.UI.Connexion
 
 import androidx.lifecycle.ViewModel
 import com.example.motherLoad.Utils.LoginManager
-import com.example.motherload.data.ConnexionCallback
+import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.Repository
 import java.net.URLEncoder
 

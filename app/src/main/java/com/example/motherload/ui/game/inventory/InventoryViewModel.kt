@@ -1,6 +1,6 @@
 package com.example.motherload.ui.game.inventory
 import androidx.lifecycle.ViewModel
-import com.example.motherload.data.InventoryCallback
+import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.Repository
 

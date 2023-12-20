@@ -11,7 +11,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherload.data.ProfilCallback
+import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.R
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener

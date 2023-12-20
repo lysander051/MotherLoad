@@ -15,7 +15,7 @@ class ViewModelFactory private constructor() : ViewModelProvider.Factory{
 
 
     init {
-        repository = Repository()
+        repository = Repository
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

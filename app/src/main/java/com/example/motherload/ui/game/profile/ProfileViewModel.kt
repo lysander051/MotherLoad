@@ -1,7 +1,7 @@
 package com.example.motherload.ui.game.profile
 
 import androidx.lifecycle.ViewModel
-import com.example.motherload.data.ProfilCallback
+import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.Repository
 
 class ProfileViewModel(var profileRepo: Repository): ViewModel() {

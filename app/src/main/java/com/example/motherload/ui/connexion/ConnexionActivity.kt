@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.UI.Connexion.ConnexionViewModel
 import com.example.motherLoad.Utils.AppPermission
-import com.example.motherload.data.ConnexionCallback
+import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.ui.game.MainActivity
 import com.example.motherload.R
 import com.example.motherload.utils.PopUpDisplay
@@ -50,7 +50,7 @@ class ConnexionActivity : AppCompatActivity(){
 
         connexion.setSafeOnClickListener {
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
-            ConnexionCallback {
+                ConnexionCallback {
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }

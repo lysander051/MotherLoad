@@ -1,4 +1,4 @@
-package com.example.motherload.data
+package com.example.motherload.data.callback
 
 import org.osmdroid.util.GeoPoint
 
