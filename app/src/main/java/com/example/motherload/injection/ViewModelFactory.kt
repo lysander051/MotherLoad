@@ -7,6 +7,7 @@ import com.example.motherload.data.Repository
 import com.example.motherload.ui.game.home.HomeViewModel
 import com.example.motherload.ui.game.inventory.InventoryViewModel
 import com.example.motherload.ui.game.profile.ProfileViewModel
+import com.example.motherload.ui.game.shop.ShopViewModel
 
 
 @Suppress("UNCHECKED_CAST")
@@ -30,6 +31,9 @@ class ViewModelFactory private constructor() : ViewModelProvider.Factory{
         }
         if (modelClass.isAssignableFrom(InventoryViewModel::class.java)) {
             return InventoryViewModel(repository!!) as T
+        }
+        if (modelClass.isAssignableFrom(ShopViewModel::class.java)) {
+            return ShopViewModel(repository!!) as T
         }
         throw IllegalArgumentException("La classe viewmodel choisie est inconnue")
     }

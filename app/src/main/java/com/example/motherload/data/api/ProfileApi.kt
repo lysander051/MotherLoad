@@ -12,9 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory
 object ProfileApi {
     val TAG = "InventoryApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    //todo faire le traitement des autres
     fun changerPseudo(session: Long, signature: Long, pseudo: String, callback: ProfilCallback){
-        val BASE_URL = "https://test.vautard.fr/creuse_srv/changenom.php"
-        val url = BASE_URL+"?session=$session&signature=$signature&nom=$pseudo"
+        val url = BASE_URL_CREUSER+"changenom.php?session=$session&signature=$signature&nom=$pseudo"
 
         val stringRequest = StringRequest(
             Request.Method.GET, url,

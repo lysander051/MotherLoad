@@ -25,6 +25,7 @@ import com.example.motherload.R
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
+import com.example.motherload.ui.game.shop.ShopFragment
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -161,7 +162,12 @@ class HomeFragment : Fragment() {
         }
 
         shop.setSafeOnClickListener {
-            //todo le shop
+            activity?.supportFragmentManager?.beginTransaction()?.commit()
+            activity?.supportFragmentManager?.commit {
+                replace(R.id.fragmentContainerView, ShopFragment())
+                setReorderingAllowed(true)
+                addToBackStack("Shop")
+            }
         }
 
         //pour aller sur le fragment de l'inventaire

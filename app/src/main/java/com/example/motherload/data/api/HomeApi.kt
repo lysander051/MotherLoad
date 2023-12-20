@@ -15,10 +15,11 @@ import javax.xml.parsers.DocumentBuilderFactory
 object HomeApi {
     val TAG = "HomeApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    //todo faire le traitement des autres
     fun deplacement(session: Long, signature: Long, latitude:Double, longitude:Double, callback: HomeCallback){
         val url = BASE_URL_CREUSER+"deplace.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, "session: $session|signature: $signature")
-
         val stringRequest = StringRequest(
             Request.Method.GET, url,
             { response ->
