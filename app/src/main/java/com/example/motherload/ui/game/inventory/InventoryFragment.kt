@@ -62,6 +62,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             activity?.supportFragmentManager?.popBackStack()
         }
 
+        //todo on peut faire une pioche d'un id inéxistant?
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :

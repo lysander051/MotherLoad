@@ -11,6 +11,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +61,7 @@ class HomeFragment : Fragment() {
     private var center = true
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
+    private var didDig = true
     private var depthHole = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,8 +145,8 @@ class HomeFragment : Fragment() {
                         if (itemId != -1) {
                             PopUpDisplay.shortToast(requireActivity(), "$itemId trouvé")
                         }
-                        holePosition = playerPosition
                         depthHole = true
+                        didDig = true
                         affichageVoisin(voisin)
                         val text = depth + "M"
                         depthField.text = text
@@ -230,7 +232,6 @@ class HomeFragment : Fragment() {
                 bcenter.setImageResource(R.drawable.center_black_icon)
             }
             v.performClick()
-            false
         }
     }
 
@@ -254,6 +255,7 @@ class HomeFragment : Fragment() {
         val latitude = location.latitude
         val longitude = location.longitude
         playerPosition = GeoPoint(latitude, longitude)
+        affichageTrou()
         //centre la caméra sur le joueur s'il faut
         if (center)
             map.controller.setCenter(playerPosition)
@@ -274,41 +276,45 @@ class HomeFragment : Fragment() {
             }
         })
         //permet de set la position du joueur et d'éviter la duplication d'icones
-        if(map.overlays.size == 0) {
-            map.overlays.add(null)
-            map.overlays.add(joueurOverlay)
-        }
-        else
+        if (map.overlays.size > 1)
             map.overlays[1] = joueurOverlay
+        else
+            map.overlays.add(0, joueurOverlay)
     }
 
     private fun affichageTrou() {
-        if (depthHole) {
-            val myGroundOverlay = GroundOverlay2()
-            val centerPoint = GeoPoint(holePosition.latitude, holePosition.longitude)
-            val overlayWidth = 0.0003
-            val overlayHeight = 0.00015
-            val topLeft = GeoPoint(
-                centerPoint.latitude + overlayHeight / 2,
-                centerPoint.longitude - overlayWidth / 2
-            )
-            val bottomRight = GeoPoint(
-                centerPoint.latitude - overlayHeight / 2,
-                centerPoint.longitude + overlayWidth / 2
-            )
-
-            myGroundOverlay.setPosition(topLeft, bottomRight)
-            val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
-            myGroundOverlay.setImage(d)
-
-            // Ajouter le trou à l'indice 0 dans la liste des overlays
-            if (map.overlays.size > 0) {
-                map.overlays[0] = myGroundOverlay
-            } else {
-                map.overlays.add(0, myGroundOverlay)
-            }
+        val myGroundOverlay = GroundOverlay2()
+        if(didDig) {
+            holePosition = playerPosition
+            didDig = false
         }
-    }
+        val centerPoint = GeoPoint(holePosition.latitude, holePosition.longitude)
+        val overlayWidth = 0.0003
+        val overlayHeight = 0.00015
+        val topLeft = GeoPoint(
+            centerPoint.latitude + overlayHeight / 2,
+            centerPoint.longitude - overlayWidth / 2
+        )
+        val bottomRight = GeoPoint(
+            centerPoint.latitude - overlayHeight / 2,
+            centerPoint.longitude + overlayWidth / 2
+        )
+
+        myGroundOverlay.setPosition(topLeft, bottomRight)
+        val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
+        myGroundOverlay.setImage(d)
+
+        if (depthHole)
+            myGroundOverlay.transparency = 0f
+        else
+            myGroundOverlay.transparency = 1f
+
+        // Ajouter le trou à l'indice 0 dans la liste des overlays
+        if (map.overlays.size > 0)
+            map.overlays[0] = myGroundOverlay
+        else
+            map.overlays.add(0, myGroundOverlay)
+}
 
     private fun affichageVoisin(voisin: MutableMap<String, GeoPoint>) {
         if (map.overlays.size > 2) {
