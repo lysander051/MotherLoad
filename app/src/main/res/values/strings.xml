@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MotherLoad</string>
+    <string-array name="langues">
+        <item>Français</item>
+        <item>Anglais</item>
+        <item>Coréen</item>
+    </string-array>
 </resources>

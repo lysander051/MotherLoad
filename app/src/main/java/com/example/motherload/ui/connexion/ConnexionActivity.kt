@@ -2,16 +2,20 @@ package com.example.motherload.ui.connexion
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.UI.Connexion.ConnexionViewModel
 import com.example.motherLoad.Utils.AppPermission
+import com.example.motherLoad.Utils.LoginManager
+import com.example.motherland.MotherLoad
 import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.ui.game.MainActivity
 import com.example.motherload.R
@@ -25,7 +29,9 @@ class ConnexionActivity : AppCompatActivity(){
     private lateinit var psw: EditText
     private var saveLP = false
     private var stayC = false
+    private val SHAREDPREF : String = "Connexion"
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connexion)
@@ -51,6 +57,7 @@ class ConnexionActivity : AppCompatActivity(){
         connexion.setSafeOnClickListener {
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }
@@ -59,21 +66,24 @@ class ConnexionActivity : AppCompatActivity(){
 
         stayconnected.setOnCheckedChangeListener { _, isChecked ->
             stayC = isChecked
+            val password : String = LoginManager.getDecryptedPassword()
             //todo rester connecté en permanence
         }
 
         saveLoginPsw.setOnCheckedChangeListener { _, isChecked ->
             saveLP = isChecked
+            LoginManager.savePassword(psw.text.toString())
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkConnexion(connected: Boolean) {
         if (connected) {
             val intent = Intent(this, MainActivity::class.java)
-            Log.d("connexion", saveLP.toString())
             if(saveLP) {
                 //todo save the password crypted with keystore
-                saveLoginToSharedPreferences(login.text.toString(), psw.text.toString(), saveLP)
+                val chiffrePassword = LoginManager.savePassword(psw.text.toString())
+                saveLoginToSharedPreferences(login.text.toString(), chiffrePassword, saveLP)
             }
             else {
                 saveLoginToSharedPreferences("", "", false)
@@ -86,7 +96,7 @@ class ConnexionActivity : AppCompatActivity(){
     }
 
     private fun saveLoginToSharedPreferences(loginValue: String, pswValue: String, saveLP: Boolean) {
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("login", loginValue)
             putString("psw", pswValue)
@@ -96,23 +106,24 @@ class ConnexionActivity : AppCompatActivity(){
     }
 
     private fun saveStayConnected(stayC: Boolean){
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean("stayC", stayC)
             apply()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadLoginFromSharedPreferences(): Triple<String, String, Boolean> {
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         val login = sharedPref.getString("login", "") ?: ""
-        val psw = sharedPref.getString("psw", "") ?: ""
+        val psw = LoginManager.getDecryptedPassword()
         val saveLP = sharedPref.getBoolean("saveLP", false)
         return Triple(login, psw, saveLP)
     }
 
     private fun loadStayConnected(): Boolean {
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         return sharedPref.getBoolean("stayC", false)
     }
 
@@ -127,7 +138,7 @@ class ConnexionActivity : AppCompatActivity(){
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         login.setText(savedInstanceState.getString("login", ""))
-        login.setText(savedInstanceState.getString("psw", ""))
+        psw.setText(savedInstanceState.getString("psw", ""))
         saveLP = savedInstanceState.getBoolean("saveLP", false)
         stayC = savedInstanceState.getBoolean("stayC", false)
     }
