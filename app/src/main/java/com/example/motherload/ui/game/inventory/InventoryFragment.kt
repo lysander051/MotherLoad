@@ -54,17 +54,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         transaction.replace(R.id.inventoryTitle, ItemFragment())
         transaction.commit()
 
-        viewModel!!.getStatus( object :
-            InventoryCallback{
-            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
-                pickaxeLevel = pickaxe
-                setIterface(money, inventory)
-            }
-            override fun getItems(itemDescription: MutableList<ItemDescription>) {}
-            override fun upgradePickaxe() {}
-            override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
-        }
-        )
+        refreshInterface()
 
         retour.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
@@ -81,7 +71,10 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 override fun upgradePickaxe() {
                     pickaxeLevel++
                     pickaxe.startAnimation(animation)
-                    Handler(Looper.getMainLooper()).postDelayed({ setPickaxe() }, 1000)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        setPickaxe()
+                        refreshInterface()}, 1000)
+
                 }
                 override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
             }
@@ -107,6 +100,20 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
 
         return ret
+    }
+
+    private fun refreshInterface(){
+        viewModel!!.getStatus( object :
+            InventoryCallback{
+            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
+                pickaxeLevel = pickaxe
+                setIterface(money, inventory)
+            }
+            override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+            override fun upgradePickaxe() {}
+            override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
+        }
+        )
     }
 
     private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
@@ -163,7 +170,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     }
 
     private fun setItems(listItemDescription: List<ItemDescription>){
-        Log.d("coucou",listItemDescription.size.toString())
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemInventory)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = InventoryAdapter(listItemDescription, this)

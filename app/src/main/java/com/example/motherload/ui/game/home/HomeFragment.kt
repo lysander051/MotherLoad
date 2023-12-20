@@ -1,27 +1,31 @@
 package com.example.motherload.ui.game.home
 
 import android.Manifest
+import android.R.attr.bitmap
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
-import android.os.Looper
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
-import com.example.motherload.data.HomeCallback
 import com.example.motherload.R
+import com.example.motherload.data.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
 import com.example.motherload.utils.PopUpDisplay
@@ -36,6 +40,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.GroundOverlay2
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.OverlayItem
@@ -49,10 +54,13 @@ class HomeFragment : Fragment() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private lateinit var playerPosition: GeoPoint
+    private lateinit var holePosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
+    private lateinit var creuser: ImageView
     private var center = true
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
+    private var depthHole = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +78,7 @@ class HomeFragment : Fragment() {
                         override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
                             affichageVoisin(voisin)
                         }
-                        override fun creuse(itemId: Int) {}
+                        override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -90,9 +98,10 @@ class HomeFragment : Fragment() {
         val ret = inflater.inflate(R.layout.fragment_home, container, false)
         val inventaire = ret.findViewById<ImageView>(R.id.boutonInventaire)
         val shop = ret.findViewById<ImageView>(R.id.boutonShop)
-        val creuser = ret.findViewById<ImageView>(R.id.boutonCreuser)
         val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
+        val depthField = ret.findViewById<TextView>(R.id.depth)
+        creuser = ret.findViewById(R.id.boutonCreuser)
 
         //comportement du bouton de centrage de la map sur le joueur
         bcenter.setSafeOnClickListener{
@@ -120,6 +129,7 @@ class HomeFragment : Fragment() {
         }
 
         //bouton pour creuser avec un delai de 10sec
+        //todo ajouter la profondeur à un sharedpreference
         val handler = Handler()
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
@@ -127,20 +137,25 @@ class HomeFragment : Fragment() {
                 creuser.setImageResource(R.drawable.pickaxe_icon_bw)
                 val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
                 creuser.startAnimation(animation)
+                viewModel!!.creuser(playerPosition, object : HomeCallback {
+                    override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                    override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
+                        if (itemId != -1) {
+                            PopUpDisplay.shortToast(requireActivity(), "$itemId trouvé")
+                        }
+                        holePosition = playerPosition
+                        depthHole = true
+                        affichageVoisin(voisin)
+                        val text = depth + "M"
+                        depthField.text = text
+                    }
+                    override fun erreur(erreurId: Int) {
+                        gestionErreur(erreurId)
+                    }
+                })
 
                 // Bloque le bouton 10secondes si on a cliqué
                 handler.postDelayed({
-                    viewModel!!.creuser(playerPosition, object : HomeCallback {
-                        override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
-                        override fun creuse(itemId: Int) {
-                            if (itemId != -1) {
-                                PopUpDisplay.shortToast(requireActivity(), "$itemId trouvé")
-                            }
-                        }
-                        override fun erreur(erreurId: Int) {
-                            gestionErreur(erreurId)
-                        }
-                    })
                     creuser.setImageResource(R.drawable.pickaxe_icon)
                     viewModel!!.enableButtonClick()
                 }, 10000)
@@ -185,7 +200,7 @@ class HomeFragment : Fragment() {
                         override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
                             affichageVoisin(voisin)
                         }
-                        override fun creuse(itemId: Int) {}
+                        override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -201,7 +216,7 @@ class HomeFragment : Fragment() {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    fun mapInitialisation(ret: View, bcenter: ImageView){
+    private fun mapInitialisation(ret: View, bcenter: ImageView){
         map = ret.findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setBuiltInZoomControls(false)
@@ -219,7 +234,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun gestionErreur(erreurId: Int){
+    private fun gestionErreur(erreurId: Int){
         //TODO gestion de toutes les erreurs
         if (erreurId == 0)
             PopUpDisplay.simplePopUp(requireActivity(),
@@ -235,7 +250,7 @@ class HomeFragment : Fragment() {
                 "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer.")
     }
 
-    fun getLocation(location: Location) {
+    private fun getLocation(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
         playerPosition = GeoPoint(latitude, longitude)
@@ -259,24 +274,58 @@ class HomeFragment : Fragment() {
             }
         })
         //permet de set la position du joueur et d'éviter la duplication d'icones
-        if(map.overlays.size == 0)
+        if(map.overlays.size == 0) {
+            map.overlays.add(null)
             map.overlays.add(joueurOverlay)
-        map.overlays[0] = joueurOverlay
+        }
+        else
+            map.overlays[1] = joueurOverlay
     }
 
-    fun affichageVoisin(voisin: MutableMap<String, GeoPoint>){
-        //clear la liste des joueurs
-        map.overlays.clear()
-        //ajoute le joueur en position 0 dans la liste
-        map.overlays.add(joueurOverlay)
-        val overlayItems = ArrayList<OverlayItem>()
-        //cherche dans les voisins notre position pour éviter la duplication d'icone
-        //TODO voir pourquoi ça bug
-        voisin.forEach { (cle, valeur) ->
-            if(String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() || String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble())
-                overlayItems.add(OverlayItem(cle, "", valeur))
+    private fun affichageTrou() {
+        if (depthHole) {
+            val myGroundOverlay = GroundOverlay2()
+            val centerPoint = GeoPoint(holePosition.latitude, holePosition.longitude)
+            val overlayWidth = 0.0003
+            val overlayHeight = 0.00015
+            val topLeft = GeoPoint(
+                centerPoint.latitude + overlayHeight / 2,
+                centerPoint.longitude - overlayWidth / 2
+            )
+            val bottomRight = GeoPoint(
+                centerPoint.latitude - overlayHeight / 2,
+                centerPoint.longitude + overlayWidth / 2
+            )
+
+            myGroundOverlay.setPosition(topLeft, bottomRight)
+            val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
+            myGroundOverlay.setImage(d)
+
+            // Ajouter le trou à l'indice 0 dans la liste des overlays
+            if (map.overlays.size > 0) {
+                map.overlays[0] = myGroundOverlay
+            } else {
+                map.overlays.add(0, myGroundOverlay)
+            }
         }
-        //active le clique sur les autres joueurs pour voir leurs pseudo
+    }
+
+    private fun affichageVoisin(voisin: MutableMap<String, GeoPoint>) {
+        if (map.overlays.size > 2) {
+            map.overlays.subList(2, map.overlays.size).clear()
+        }
+        affichageTrou()
+        map.overlays.add(1, joueurOverlay)
+
+        val overlayItems = ArrayList<OverlayItem>()
+        voisin.forEach { (cle, valeur) ->
+            if (String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() ||
+                String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble()
+            ) {
+                overlayItems.add(OverlayItem(cle, "", valeur))
+            }
+        }
+
         val mOverlay = ItemizedOverlayWithFocus(context, overlayItems, object :
             ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
             override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
@@ -287,9 +336,9 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
-        //ajout des joueurs à la map
+
         mOverlay.setFocusItemsOnTap(true)
-        map.overlays.add(mOverlay)
+        map.overlays.add(2, mOverlay)
     }
 
     override fun onPause() {
@@ -315,7 +364,8 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,
             locationCallback,
             Looper.getMainLooper())
-
+        if(viewModel!!.isButtonClickEnabled.value == false)
+            creuser.setImageResource(R.drawable.pickaxe_icon_bw)
         center = true
     }
 }

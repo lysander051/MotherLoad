@@ -67,7 +67,7 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
-    fun checkConnexion(connected: Boolean) {
+    private fun checkConnexion(connected: Boolean) {
         if (connected) {
             val intent = Intent(this, MainActivity::class.java)
             Log.d("connexion", saveLP.toString())

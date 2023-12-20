@@ -137,14 +137,34 @@ class Repository {
                         if (status == "OK") {
                             Log.d(TAG, "Creuse")
                             var itemId: String
+                            val depth = doc.getElementsByTagName("DEPTH").item(0).textContent.toString()
                             try {
                                 itemId = doc.getElementsByTagName("ITEM_ID").item(0).textContent
                             }
                             catch (e: NullPointerException){
                                 itemId = "-1"
                             }
-                            Log.d(TAG,"itemId: "+itemId)
-                            callback.creuse(itemId.toInt())
+                            val voisin: MutableMap<String, GeoPoint> = mutableMapOf()
+                            val listVoisin = doc.getElementsByTagName("VOISINS").item(0).childNodes
+                            for (i in 0 until listVoisin.length) {
+                                val node = listVoisin.item(i)
+                                if (node.nodeType == Node.ELEMENT_NODE) {
+                                    val elem = node as Element
+                                    val nom = elem.getElementsByTagName("NOM").item(0).textContent
+                                    val lat =
+                                        elem.getElementsByTagName("LATITUDE").item(0).textContent
+                                    val lon =
+                                        elem.getElementsByTagName("LONGITUDE").item(0).textContent
+                                    var geoPoint = GeoPoint(lat.toDouble(), lon.toDouble())
+                                    Log.d(
+                                        TAG,
+                                        "Nom" + nom + "|latitude: " + lat + "|longitude: " + lon + "|"
+                                    )
+                                    voisin[nom] = geoPoint
+                                }
+                            }
+                            Log.d(TAG, "itemId: $itemId | depth: $depth")
+                            callback.creuse(itemId.toInt(), depth, voisin)
                         }
                         else if (status.subSequence(0, 14) == "KO  - TOO FAST"){
                             Log.d(TAG, "Trop rapide")
