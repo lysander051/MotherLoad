@@ -52,9 +52,9 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="25dp"
-        android:layout_toStartOf="@+id/boutonCreuser"
+        android:layout_toStartOf="@+id/framelayoutcreuser"
         android:src="@drawable/inventory_icon"/>
 
     <ImageView
@@ -62,19 +62,38 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="0dp"
         android:layout_marginBottom="25dp"
-        android:layout_toEndOf="@+id/boutonCreuser"
+        android:layout_toEndOf="@+id/framelayoutcreuser"
         android:src="@drawable/shop_icon"/>
 
-    <ImageView
-        android:id="@+id/boutonCreuser"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <FrameLayout
+        android:id="@+id/framelayoutcreuser"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/map"
-        android:src="@drawable/pickaxe_icon"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="0dp">
+
+        <!-- Première image -->
+        <ImageView
+            android:id="@+id/boutonCreuser"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/pickaxe_icon"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"/>
+
+        <!-- Deuxième image (superposée) -->
+        <ImageView
+            android:id="@+id/boutonCreuserBW"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/pickaxe_icon_bw"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:layout_above="@+id/imageView1"/>
+    </FrameLayout>
 
 </RelativeLayout>

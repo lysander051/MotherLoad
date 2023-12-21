@@ -39,6 +39,10 @@ object Repository {
         getSessionSignature()
         HomeApi.creuser(session, signature, latitude, longitude, callback)
     }
+    fun getItems(item: List<Item>, callback: HomeCallback){
+        getSessionSignature()
+        HomeApi.getItems(session, signature, item , callback)
+    }
     fun getDepthHole(): Triple<Float, Float, Int> {
         return HomeApi.getDepthHole()
     }
