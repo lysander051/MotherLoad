@@ -127,7 +127,7 @@ class ConnexionActivity : AppCompatActivity(){
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         login.setText(savedInstanceState.getString("login", ""))
-        login.setText(savedInstanceState.getString("psw", ""))
+        psw.setText(savedInstanceState.getString("psw", ""))
         saveLP = savedInstanceState.getBoolean("saveLP", false)
         stayC = savedInstanceState.getBoolean("stayC", false)
     }

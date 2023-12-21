@@ -21,7 +21,7 @@ import com.example.motherload.data.callback.ShopCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 
-class ShopFragment  : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVenteAdapter.ShopItemClickListener {
+class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVenteAdapter.ShopItemClickListener {
     private var viewModel: ShopViewModel? = null
     private lateinit var ret: View
     private var handler: Handler = Handler(Looper.getMainLooper())
@@ -205,5 +205,10 @@ class ShopFragment  : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVe
             handler.removeCallbacksAndMessages(null)
             isRefreshing = false
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopRefreshing()
     }
 }

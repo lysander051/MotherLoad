@@ -39,6 +39,9 @@ object Repository {
         getSessionSignature()
         HomeApi.creuser(session, signature, latitude, longitude, callback)
     }
+    fun getDepthHole(): Triple<Float, Float, Int> {
+        return HomeApi.getDepthHole()
+    }
     fun getStatus(callback: InventoryCallback){
         getSessionSignature()
         InventoryApi.getStatus(session, signature, callback)
