@@ -1,6 +1,7 @@
 package com.example.motherload.ui.game.home
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -8,12 +9,10 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -24,6 +23,8 @@ import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
+import com.example.motherload.data.Item
+import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
@@ -57,7 +58,9 @@ class HomeFragment : Fragment() {
     private lateinit var holePosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
     private lateinit var creuser: ImageView
+    private lateinit var creuserBW: ImageView
     private lateinit var depthField: TextView
+    private var creuserAnimationStartTime: Long = 0L
     private var center = true
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
@@ -82,6 +85,7 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -103,7 +107,8 @@ class HomeFragment : Fragment() {
         val shop = ret.findViewById<ImageView>(R.id.boutonShop)
         val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
-        depthField = ret.findViewById<TextView>(R.id.depth)
+        creuserBW = ret.findViewById(R.id.boutonCreuserBW)
+        depthField = ret.findViewById(R.id.depth)
         creuser = ret.findViewById(R.id.boutonCreuser)
 
         //comportement du bouton de centrage de la map sur le joueur
@@ -137,15 +142,28 @@ class HomeFragment : Fragment() {
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
                 viewModel!!.disableButtonClick()
-                creuser.setImageResource(R.drawable.pickaxe_icon_bw)
+                creuserBW.visibility = View.VISIBLE
+                val animationDuration: Long = 10000
+                val fadeAnimator = ObjectAnimator.ofFloat(creuserBW, "alpha", 1f, 0f)
+                fadeAnimator.duration = animationDuration
+                creuserAnimationStartTime = System.currentTimeMillis()
+                fadeAnimator.start()
                 val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-                creuser.startAnimation(animation)
+                creuserBW.startAnimation(animation)
                 viewModel!!.creuser(playerPosition, object : HomeCallback {
                     override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                    override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                     override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
-                        if (itemId != -1) {
-                            PopUpDisplay.shortToast(requireActivity(), "$itemId trouvé")
-                        }
+                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object : HomeCallback {
+                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                            override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                                if (itemId != -1) {
+                                    PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
+                                }
+                            }
+                            override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
+                            override fun erreur(erreurId: Int) {}
+                        })
                         depthHole = true
                         didDig = true
                         affichageVoisin(voisin)
@@ -208,6 +226,7 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -330,9 +349,8 @@ class HomeFragment : Fragment() {
 
         val overlayItems = ArrayList<OverlayItem>()
         voisin.forEach { (cle, valeur) ->
-            if (String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() ||
-                String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble()
-            ) {
+            if (valeur.latitude != playerPosition.latitude ||
+                valeur.longitude != playerPosition.longitude){
                 overlayItems.add(OverlayItem(cle, "", valeur))
             }
         }
@@ -385,8 +403,11 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,
             locationCallback,
             Looper.getMainLooper())
-        if(viewModel!!.isButtonClickEnabled.value == false)
-            creuser.setImageResource(R.drawable.pickaxe_icon_bw)
+        creuserBW.visibility = View.VISIBLE
+        val fadeAnimator = ObjectAnimator.ofFloat(creuserBW, "alpha", 1f, 0f)
+        fadeAnimator.duration = 10000
+        fadeAnimator.currentPlayTime = (System.currentTimeMillis() - creuserAnimationStartTime) % 10000
+        fadeAnimator.start()
         center = true
         loadingDepthHole()
     }

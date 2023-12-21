@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.motherland.MotherLoad
+import com.example.motherload.data.Item
+import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.Repository
 import org.osmdroid.util.GeoPoint
@@ -36,5 +38,8 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
 
     fun getDepthHole(): Triple<Float, Float, Int> {
         return homeRepo.getDepthHole()
+    }
+    fun getItems(item: List<Item>, callback: HomeCallback){
+        homeRepo.getItems(item, callback)
     }
 }
