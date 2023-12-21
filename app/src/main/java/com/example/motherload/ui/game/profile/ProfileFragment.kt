@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherland.MotherLoad
@@ -123,7 +124,7 @@ class ProfileFragment: Fragment(){
             langue.setSelection(sharedPref.getInt("posLangue",0))
         }
 
-        class LanguageSelector() : Activity(), AdapterView.OnItemSelectedListener{
+        class LanguageSelector(activity: FragmentActivity) : Activity(), AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -141,14 +142,17 @@ class ProfileFragment: Fragment(){
                 }
                 val appLocales : LocaleListCompat = LocaleListCompat.forLanguageTags(lang)
                 val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                val sha = sharedPref.getInt("pos",0)
-                Log.d("LANGUE","shared = $sha et pos = $pos")
-                if (sharedPref.getInt("pos",0) != pos){
+                if (sharedPref.getInt("posLangue",0) != pos){
                     val editor = sharedPref.edit()
                     editor.putString("langue",lang)
                     editor.putInt("posLangue",pos)
                     editor.apply()
                     AppCompatDelegate.setApplicationLocales(appLocales)
+                    if (activity != null){
+                        activity?.finish()
+                        activity?.startActivity(activity?.intent)
+                    }
+
                 }
             }
 
@@ -158,10 +162,9 @@ class ProfileFragment: Fragment(){
 
         }
 
-        langue.onItemSelectedListener = LanguageSelector()
+        langue.onItemSelectedListener = LanguageSelector(requireActivity())
 
 
         return ret
     }
-
 }
