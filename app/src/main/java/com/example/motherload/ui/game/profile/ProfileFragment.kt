@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -106,6 +108,8 @@ class ProfileFragment: Fragment(){
                 editor.putInt("theme", MODE_NIGHT_NO)
             }
             editor.apply()
+            requireActivity().finish()
+            startActivity(requireActivity().intent)
         }
 
         ArrayAdapter.createFromResource(
@@ -137,11 +141,15 @@ class ProfileFragment: Fragment(){
                 }
                 val appLocales : LocaleListCompat = LocaleListCompat.forLanguageTags(lang)
                 val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                val editor = sharedPref.edit()
-                editor.putString("langue",lang)
-                editor.putInt("posLangue",pos)
-                editor.apply()
-                AppCompatDelegate.setApplicationLocales(appLocales)
+                val sha = sharedPref.getInt("pos",0)
+                Log.d("LANGUE","shared = $sha et pos = $pos")
+                if (sharedPref.getInt("pos",0) != pos){
+                    val editor = sharedPref.edit()
+                    editor.putString("langue",lang)
+                    editor.putInt("posLangue",pos)
+                    editor.apply()
+                    AppCompatDelegate.setApplicationLocales(appLocales)
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
