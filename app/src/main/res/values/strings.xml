@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">MotherLoad</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">mot de passe ou pseudo incorrect</string>
+    <string name="username">Nom d\'utilisateur :</string>
+    <string name="password">Mot de passe :</string>
+    <string name="enregistrer_pseudo_mot_de_passe">Enregistrer pseudo/mot de passe</string>
+    <string name="voulez_vous_rester_connect">Voulez-vous rester connecté?</string>
+    <string name="se_connecter">Se connecter</string>
     <string-array name="langues">
         <item>Français</item>
         <item>Anglais</item>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">마더로드</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">잘못된 비밀번호 또는 로그인</string>
+    <string name="username">로그인 :</string>
+    <string name="password">비밀번호 :</string>
+    <string name="enregistrer_pseudo_mot_de_passe">자격 증명 기억</string>
+    <string name="voulez_vous_rester_connect">대기 중?</string>
+    <string name="se_connecter">로그인</string>
+    <string-array name="langues">
+        <item>프랑스 국민</item>
+        <item>영어</item>
+        <item>한국인</item>
+    </string-array>
+</resources>

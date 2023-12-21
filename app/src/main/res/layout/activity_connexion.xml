@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="Motherload"
+        android:text="@string/app_name"
         android:textSize="40sp" />
 
     <LinearLayout
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username :"/>
+            android:text="@string/username"/>
 
         <EditText
             android:id="@+id/login"
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Password :" />
+            android:text="@string/password" />
 
         <EditText
             android:id="@+id/password"
@@ -55,20 +55,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Enregistrer pseudo/mot de passe"/>
+            android:text="@string/enregistrer_pseudo_mot_de_passe"/>
 
         <CheckBox
             android:id="@+id/stayConnected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Voulez-vous rester connecté?"/>
+            android:text="@string/voulez_vous_rester_connect"/>
 
         <Button
             android:id="@+id/boutonConnexion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Se connecter"
+            android:text="@string/se_connecter"
             android:layout_marginTop="100dp"
             />
     </LinearLayout>

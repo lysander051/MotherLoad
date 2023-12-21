@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MotherLoad</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">wrong password or login</string>
+    <string name="username">Login :</string>
+    <string name="password">Password :</string>
+    <string name="enregistrer_pseudo_mot_de_passe">Remember credentials</string>
+    <string name="voulez_vous_rester_connect">Stay connected?</string>
+    <string name="se_connecter">Login</string>
+    <string-array name="langues">
+        <item>French</item>
+        <item>English</item>
+        <item>Korean</item>
+    </string-array>
+</resources>
