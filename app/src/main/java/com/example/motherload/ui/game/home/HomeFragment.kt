@@ -24,6 +24,7 @@ import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
+import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
@@ -82,6 +83,8 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -152,6 +155,9 @@ class HomeFragment : Fragment() {
                         val text = depth + "M"
                         depthField.text = text
                     }
+
+                    override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+
                     override fun erreur(erreurId: Int) {
                         gestionErreur(erreurId)
                     }
@@ -208,6 +214,8 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+
                         override fun erreur(erreurId: Int) {}
                     }
                     )
