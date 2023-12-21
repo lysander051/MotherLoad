@@ -330,8 +330,8 @@ class HomeFragment : Fragment() {
 
         val overlayItems = ArrayList<OverlayItem>()
         voisin.forEach { (cle, valeur) ->
-            if (String.format("%.3f", valeur.latitude).toDouble() != String.format("%.3f", playerPosition.latitude).toDouble() ||
-                String.format("%.3f", valeur.longitude).toDouble() != String.format("%.3f", playerPosition.longitude).toDouble()
+            if (String.format("%.3f", valeur.latitude) != String.format("%.3f", playerPosition.latitude) ||
+                String.format("%.3f", valeur.longitude) != String.format("%.3f", playerPosition.longitude)
             ) {
                 overlayItems.add(OverlayItem(cle, "", valeur))
             }

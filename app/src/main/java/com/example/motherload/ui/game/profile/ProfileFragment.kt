@@ -1,15 +1,15 @@
 package com.example.motherload.ui.game.profile
 
-import android.app.UiModeManager
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.Injection.ViewModelFactory
@@ -94,7 +95,7 @@ class ProfileFragment: Fragment(){
         theme.isChecked = resources.configuration.isNightModeActive
 
         theme.setOnCheckedChangeListener{ buttonView, isChecked ->
-            val themeSharedPref = MotherLoad.instance.getSharedPreferences("Theme", Context.MODE_PRIVATE)
+            val themeSharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
             val editor = themeSharedPref.edit()
             if(isChecked){
                 AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
@@ -107,7 +108,6 @@ class ProfileFragment: Fragment(){
             editor.apply()
         }
 
-
         ArrayAdapter.createFromResource(
             requireActivity(),
             R.array.langues,
@@ -115,7 +115,43 @@ class ProfileFragment: Fragment(){
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             langue.adapter = adapter
+            val sharedPref = MotherLoad.instance.getSharedPreferences("Settings",Context.MODE_PRIVATE)
+            langue.setSelection(sharedPref.getInt("posLangue",0))
         }
+
+        class LanguageSelector() : Activity(), AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                var lang = "fr-FR"
+                var pos = 0
+                when(position){
+                    1 -> {lang = "en-US"
+                        pos = 1}
+                    2 -> {lang = "ko-KR"
+                        pos = 2}
+                    else -> {}
+                }
+                val appLocales : LocaleListCompat = LocaleListCompat.forLanguageTags(lang)
+                val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("langue",lang)
+                editor.putInt("posLangue",pos)
+                editor.apply()
+                AppCompatDelegate.setApplicationLocales(appLocales)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+
+        }
+
+        langue.onItemSelectedListener = LanguageSelector()
+
 
         return ret
     }
