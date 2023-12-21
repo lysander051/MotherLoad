@@ -91,7 +91,7 @@ class ConnexionActivity : AppCompatActivity(){
             saveStayConnected(stayC)
             startActivity(intent)
         } else {
-            PopUpDisplay.longToast(this, "mot de passe ou pseudo incorrect")
+            PopUpDisplay.longToast(this, getString(R.string.mot_de_passe_ou_pseudo_incorrect))
         }
     }
 
