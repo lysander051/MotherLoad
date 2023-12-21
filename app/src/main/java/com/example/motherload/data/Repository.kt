@@ -1,15 +1,27 @@
 package com.example.motherload.data
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.api.ConnexionApi
 import com.example.motherload.data.api.HomeApi
 import com.example.motherload.data.api.InventoryApi
 import com.example.motherload.data.api.ProfileApi
+import com.example.motherload.data.api.ShopApi
 import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ProfilCallback
+import com.example.motherload.data.callback.ShopCallback
+import org.osmdroid.util.GeoPoint
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 object Repository {
     private val TAG: String = "Repo"
@@ -26,6 +38,9 @@ object Repository {
     fun creuser(latitude: Double, longitude: Double, callback: HomeCallback){
         getSessionSignature()
         HomeApi.creuser(session, signature, latitude, longitude, callback)
+    }
+    fun getDepthHole(): Triple<Float, Float, Int> {
+        return HomeApi.getDepthHole()
     }
     fun getStatus(callback: InventoryCallback){
         getSessionSignature()
@@ -51,6 +66,26 @@ object Repository {
         getSessionSignature()
         ProfileApi.resetUser(session, signature, callback)
     }
+    fun getMarketItems(callback: ShopCallback) {
+        getSessionSignature()
+        ShopApi.getMarketItems(session, signature, callback)
+    }
+    fun getItems(items: List<Item>, callback: ShopCallback){
+        getSessionSignature()
+        ShopApi.getItems(session, signature, items, callback)
+    }
+    fun getInventory(callback: ShopCallback){
+        getSessionSignature()
+        ShopApi.getInventory(session, signature, callback)
+    }
+    fun buyItem(order_id: Int, callback: ShopCallback){
+        getSessionSignature()
+        ShopApi.buyItem(session, signature, order_id, callback)
+    }
+    fun sellItem(quantity: Int, id: String?, prix: Int, callback: ShopCallback) {
+        getSessionSignature()
+        ShopApi.sellItem(session, signature, quantity, id, prix, callback)
+    }
 
 
     private fun getSessionSignature() {
@@ -58,6 +93,4 @@ object Repository {
         session = sharedPreferences.getLong("SessionId", -1)
         signature = sharedPreferences.getLong("Signature", -1)
     }
-
-
 }

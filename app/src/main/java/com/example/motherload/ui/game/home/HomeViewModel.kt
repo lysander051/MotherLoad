@@ -1,9 +1,12 @@
 package com.example.motherload.ui.game.home
 
+import android.content.Context
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.motherland.MotherLoad
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.Repository
 import org.osmdroid.util.GeoPoint
@@ -29,5 +32,9 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
         val latitude = location.latitude
         val longitude = location.longitude
         homeRepo.creuser(latitude, longitude, callback)
+    }
+
+    fun getDepthHole(): Triple<Float, Float, Int> {
+        return homeRepo.getDepthHole()
     }
 }

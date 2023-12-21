@@ -8,10 +8,12 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -25,6 +27,7 @@ import com.example.motherload.R
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
+import com.example.motherload.ui.game.shop.ShopFragment
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -54,11 +57,13 @@ class HomeFragment : Fragment() {
     private lateinit var holePosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
     private lateinit var creuser: ImageView
+    private lateinit var depthField: TextView
     private var center = true
     private var viewModel: HomeViewModel? = null
     private var timer: Timer? = null
     private var didDig = true
     private var depthHole = false
+    private var firstdisp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +103,7 @@ class HomeFragment : Fragment() {
         val shop = ret.findViewById<ImageView>(R.id.boutonShop)
         val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
-        val depthField = ret.findViewById<TextView>(R.id.depth)
+        depthField = ret.findViewById<TextView>(R.id.depth)
         creuser = ret.findViewById(R.id.boutonCreuser)
 
         //comportement du bouton de centrage de la map sur le joueur
@@ -161,7 +166,12 @@ class HomeFragment : Fragment() {
         }
 
         shop.setSafeOnClickListener {
-            //todo le shop
+            activity?.supportFragmentManager?.beginTransaction()?.commit()
+            activity?.supportFragmentManager?.commit {
+                replace(R.id.fragmentContainerView, ShopFragment())
+                setReorderingAllowed(true)
+                addToBackStack("Shop")
+            }
         }
 
         //pour aller sur le fragment de l'inventaire
@@ -176,7 +186,6 @@ class HomeFragment : Fragment() {
 
         //initialisation du comportement de la map
         mapInitialisation(ret, bcenter)
-
         //démarrage de la géolocalisation du joueur
         if (ActivityCompat.checkSelfPermission(
                 requireActivity().applicationContext,
@@ -280,7 +289,7 @@ class HomeFragment : Fragment() {
 
     private fun affichageTrou() {
         val myGroundOverlay = GroundOverlay2()
-        if(didDig) {
+        if(didDig && firstdisp) {
             holePosition = playerPosition
             didDig = false
         }
@@ -343,11 +352,21 @@ class HomeFragment : Fragment() {
         map.overlays.add(2, mOverlay)
     }
 
+    private fun loadingDepthHole(){
+        val dephtHoleInfo = viewModel?.getDepthHole()
+        holePosition = GeoPoint(dephtHoleInfo?.first?.toDouble()!!, dephtHoleInfo?.second?.toDouble()!!)
+        depthField.text = dephtHoleInfo.third.toString()+"M"
+        depthHole = true
+        affichageTrou()
+        firstdisp = true
+    }
+
     override fun onPause() {
         super.onPause()
         map.onPause()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         center = false
+        firstdisp = false
     }
 
     override fun onResume() {
@@ -369,5 +388,6 @@ class HomeFragment : Fragment() {
         if(viewModel!!.isButtonClickEnabled.value == false)
             creuser.setImageResource(R.drawable.pickaxe_icon_bw)
         center = true
+        loadingDepthHole()
     }
 }

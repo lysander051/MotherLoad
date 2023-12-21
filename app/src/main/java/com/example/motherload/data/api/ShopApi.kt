@@ -7,18 +7,19 @@ import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.InventoryCallback
+import com.example.motherload.data.callback.ShopCallback
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-object InventoryApi {
-    val TAG = "InventoryApi"
+object ShopApi {
+    val TAG = "ShopApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    //todo faire le traitement des autres
-    fun getStatus(session: Long, signature: Long, callback: InventoryCallback){
-        val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
+
+    fun getMarketItems(session: Long, signature: Long, callback: ShopCallback) {
+        val url = BASE_URL_CREUSER + "market_list.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
 
         val stringRequest = StringRequest(
@@ -32,25 +33,23 @@ object InventoryApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(TAG, "Acces inventaire")
-                            var pickaxe = doc.getElementsByTagName("PICKAXE").item(0).textContent.toInt()
-                            var money = doc.getElementsByTagName("MONEY").item(0).textContent.toInt()
-                            var items = mutableListOf<Item>()
-
-                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            Log.d(TAG, "Acces market")
+                            Log.d(TAG, url)
+                            var items = mutableListOf<Triple<Int, Item, Int>>()
+                            var listItems = doc.getElementsByTagName("OFFERS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
                                     val elem = node as Element
-                                    val id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
+                                    val offer_id = elem.getElementsByTagName("OFFER_ID").item(0).textContent.toInt()
+                                    val item_id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
                                     val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
-                                    items.add(Item(id.toString(),quantity.toString()))
+                                    val price = elem.getElementsByTagName("PRIX").item(0).textContent.toInt()
+                                    items.add(Triple(offer_id.toInt(), Item(item_id.toString(),quantity.toString()), price.toInt()))
                                 }
                             }
-                            Log.d(TAG, "pickaxe:$pickaxe / money:$money / inventory:${items.size}")
-                            callback.getStatus(pickaxe,money,items)
-                        }
-                        else {
+                            callback.getMarketItems(items)
+                        } else {
                             Log.d(TAG, "Erreur - $status")
                         }
                     }
@@ -63,11 +62,9 @@ object InventoryApi {
                 error.printStackTrace()
             }
         )
-
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
-
-    fun getItems(session: Long, signature: Long, items: List<Item>, callback: InventoryCallback){
+    fun getItems(session: Long, signature: Long, items: List<Item>, callback: ShopCallback){
         var itemDescription = mutableListOf<ItemDescription>()
         var requestCount = 0
         for (e in items) {
@@ -93,12 +90,12 @@ object InventoryApi {
                                 itemDescription.add(ItemDescription(e.id, nom, type, rarity,image,desc_fr,desc_en,e.quantity))
                                 requestCount++
                                 if (requestCount == items.size) {
-                                    callback.getItems(itemDescription)
+                                    callback.getItemsDescription(itemDescription)
                                 }
                             } else {
                                 Log.d(TAG, "Erreur - $status")
                                 if (requestCount == items.size) {
-                                    callback.getItems(itemDescription)
+                                    callback.getItemsDescription(itemDescription)
                                 }
                             }
                         }
@@ -115,9 +112,9 @@ object InventoryApi {
         }
     }
 
-    fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback){
-        val url = BASE_URL_CREUSER+"maj_pioche.php?session=$session&signature=$signature&pickaxe_id=${pickaxeLevel}"
-        Log.d(TAG, url)
+    fun getInventory(session: Long, signature: Long, callback: ShopCallback){
+        val url = BASE_URL_CREUSER +"status_joueur.php?session=$session&signature=$signature"
+        Log.d(TAG, "session: $session|signature: $signature")
 
         val stringRequest = StringRequest(
             Request.Method.GET, url,
@@ -130,28 +127,73 @@ object InventoryApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(TAG, "Amelioration pioche")
-                            callback.upgradePickaxe()
+                            Log.d(InventoryApi.TAG, "Acces inventaire")
+                            var items = mutableListOf<Item>()
+
+                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            for (i in 0 until listItems.length) {
+                                val node = listItems.item(i)
+                                if (node.nodeType == Node.ELEMENT_NODE) {
+                                    val elem = node as Element
+                                    val id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
+                                    val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
+                                    items.add(Item(id.toString(),quantity.toString()))
+                                }
+                            }
+                            callback.getInventory(items)
                         }
                         else {
-                            Log.d(TAG, "Erreur - $status")
+                            Log.d(InventoryApi.TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(TAG, "connexion error")
+                Log.d(InventoryApi.TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+    fun buyItem(session: Long, signature: Long, order_id: Int, callback: ShopCallback){
+        val url = BASE_URL_CREUSER +"market_acheter.php?session=$session&signature=$signature&offer_id=$order_id"
+        Log.d(TAG, "session: $session|signature: $signature")
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(InventoryApi.TAG, "Acces buy item")
+                            callback.buyItem()
+                        }
+                        else {
+                            Log.d(InventoryApi.TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(InventoryApi.TAG, "connexion error")
                 error.printStackTrace()
             }
         )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun recipePickaxe(session: Long, signature: Long, callback: InventoryCallback){
-        val url = BASE_URL_CREUSER+"recettes_pioches.php?session=$session&signature=$signature"
-        Log.d(TAG, url)
+    fun sellItem(session: Long, signature: Long, quantity: Int, id: String?, prix: Int, callback: ShopCallback) {
+        val url = BASE_URL_CREUSER +"market_vendre.php?session=$session&signature=$signature&item_id=$id&quantite=$quantity&prix=$prix"
+        Log.d(TAG, "session: $session|signature: $signature")
 
         val stringRequest = StringRequest(
             Request.Method.GET, url,
@@ -164,40 +206,19 @@ object InventoryApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(TAG, "Liste recette de pioche")
-                            var recipeList = mutableMapOf<String,List<Item>>()
-                            var listItem = mutableListOf<Item>()
-                            val listPickaxe = doc.getElementsByTagName("UPGRADES").item(0).childNodes
-                            Log.d(TAG, "taille liste pickaxe: ${listPickaxe.length}")
-                            for (i in 0 until listPickaxe.length) {
-                                val pickaxeNode = listPickaxe.item(i) as Element
-                                val pickaxeId = pickaxeNode.getElementsByTagName("PICKAXE_ID").item(0).textContent.trim()
-                                val itemsNode = pickaxeNode.getElementsByTagName("ITEMS").item(0)
-                                val itemList = itemsNode.childNodes
-                                listItem = mutableListOf<Item>()
-                                for (j in 0 until itemList.length) {
-                                    if (itemList.item(j) is Element) {
-                                        val itemNode = itemList.item(j) as Element
-                                        val itemId = itemNode.getElementsByTagName("ITEM_ID").item(0).textContent.trim()
-                                        val quantity = itemNode.getElementsByTagName("QUANTITY").item(0).textContent.trim()
-                                        listItem.add(Item(itemId,quantity))
-                                    }
-                                }
-                                Log.d(TAG, "$pickaxeId, size item ${listItem.size}")
-                                recipeList.put(pickaxeId,listItem)
-                            }
-                            callback.recipePickaxe(recipeList)
+                            Log.d(InventoryApi.TAG, "Acces sell item")
+                            callback.sellItem()
                         }
                         else {
-                            Log.d(TAG, "Erreur - $status")
+                            Log.d(InventoryApi.TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(TAG, "connexion error")
+                Log.d(InventoryApi.TAG, "connexion error")
                 error.printStackTrace()
             }
         )

@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 object ConnexionApi {
     val TAG = "ConnexionApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-
+    //todo faire le traitement des autres
     fun getConnected(login: String, password: String, callback: ConnexionCallback){
         val url = BASE_URL_CREUSER+"connexion.php?login=$login&passwd=$password"
 
