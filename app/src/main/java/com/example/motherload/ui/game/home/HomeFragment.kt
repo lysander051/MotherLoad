@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
+import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
@@ -155,16 +156,16 @@ class HomeFragment : Fragment() {
                     override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
                     override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                     override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
-                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object : HomeCallback {
-                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
-                            override fun getItems(itemDescription: MutableList<ItemDescription>) {
-                                if (itemId != -1) {
+                        if (itemId != -1) {
+                            viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), requireContext(),  object : HomeCallback {
+                                override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
+                                override fun getItems(itemDescription: MutableList<ItemDescription>) {
                                     PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
                                 }
-                            }
-                            override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
-                            override fun erreur(erreurId: Int) {}
-                        })
+                                override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
+                                override fun erreur(erreurId: Int) {}
+                            })
+                        }
                         depthHole = true
                         didDig = true
                         affichageVoisin(voisin)
@@ -183,6 +184,7 @@ class HomeFragment : Fragment() {
                 }, 10000)
             }
         }
+
 
         shop.setSafeOnClickListener {
             activity?.supportFragmentManager?.beginTransaction()?.commit()
