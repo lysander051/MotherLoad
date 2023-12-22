@@ -52,6 +52,7 @@
     <string name="mode_nuit">ナイトモード</string>
     <string name="achat">購入</string>
     <string name="vente">セール</string>
+    <string name="votre_collection_d_artefact">あなたのアーティファクトコレクション</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

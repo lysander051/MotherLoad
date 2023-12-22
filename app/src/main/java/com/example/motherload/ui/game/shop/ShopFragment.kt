@@ -3,6 +3,7 @@ package com.example.motherload.ui.game.shop
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,9 +85,13 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                             ShopCallback {
                             override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
                             override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
+
                                 val updatedItems = items.map { item ->
-                                    val correspondingItemDescription = itemsDescription.find { it.id == item.second.id }
+                                    val correspondingItemDescription = itemsDescription.find { it.id == item.second.id && it.quantity == item.second.quantity}
                                     Triple(item.first, correspondingItemDescription, item.third)
+                                }
+                                for(e in updatedItems){
+                                    e.second?.let { Log.d("coucou", it.quantity) }
                                 }
                                 setItemsBuy(updatedItems)
                             }

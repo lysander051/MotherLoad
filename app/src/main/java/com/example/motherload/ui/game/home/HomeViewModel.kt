@@ -2,7 +2,9 @@ package com.example.motherload.ui.game.home
 
 import android.content.Context
 import android.location.Location
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +29,7 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
     fun enableButtonClick() {
         _isButtonClickEnabled.value = true
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(location: Location, callback: HomeCallback){
         val latitude = location.latitude
         val longitude = location.longitude

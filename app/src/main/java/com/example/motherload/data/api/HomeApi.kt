@@ -2,16 +2,22 @@ package com.example.motherload.data.api
 
 import AppDatabase
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.callback.InventoryCallback
+import com.example.motherload.ui.game.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -27,6 +33,7 @@ object HomeApi {
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
     //todo faire le traitement des autres
+    @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(session: Long, signature: Long, latitude:Double, longitude:Double, callback: HomeCallback){
         val url = BASE_URL_CREUSER+"deplace.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -57,6 +64,9 @@ object HomeApi {
                                     callback.deplacement(voisin)
                                 }
                             }
+                        }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            connectAgain()
                         }
                         else {
                             Log.d(TAG, "Erreur - $status")
@@ -209,4 +219,67 @@ object HomeApi {
         Log.d(TAG, "latitude: $latitude, longitude: $longitude, depth: $depth, ")
         return Triple(latitude, longitude, depth)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun connectAgain(){
+        Log.d("coucou", "try to connect")
+        val sharedPref = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
+        val login = sharedPref.getString("login", "") ?: ""
+        val psw = LoginManager.getDecryptedPassword()
+        val keepConnected = sharedPref.getBoolean("stayC", false)
+        if (keepConnected) {
+            for (i in 0..5) {
+                val url = BASE_URL_CREUSER + "connexion.php?login=$login&passwd=$psw"
+
+                val stringRequest = StringRequest(
+                    Request.Method.GET, url,
+                    { response ->
+                        try {
+                            val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                            val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                            val doc: Document = docBuilder.parse(response.byteInputStream())
+                            val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                            if (statusNode != null) {
+                                val status = statusNode.textContent.trim()
+                                if (status == "OK") {
+                                    Log.d("coucou", "Connexion avec succès")
+                                    val session: Long =
+                                        doc.getElementsByTagName("SESSION")
+                                            .item(0).textContent.toLong()
+                                    val signature: Long = doc.getElementsByTagName("SIGNATURE")
+                                        .item(0).textContent.toLong()
+                                    val sharedPreferences: SharedPreferences =
+                                        MotherLoad.instance.getSharedPreferences(
+                                            "Connexion",
+                                            Context.MODE_PRIVATE
+                                        )
+                                    val editor = sharedPreferences.edit()
+                                    Log.d(TAG, "session: $session|signature: $signature")
+                                    editor.putLong("SessionId", session)
+                                    editor.putLong("Signature", signature)
+                                    editor.apply()
+                                    return@StringRequest
+                                } else if (status == "KO - WRONG CREDENTIALS") {
+                                    Log.d(TAG, "Mauvais Login/passwd")
+                                    Log.d(TAG, "login - $login & password - $psw")
+                                } else {
+                                    Log.d(TAG, "Erreur - $status")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                        }
+                    },
+                    { error ->
+                        Log.d(TAG, "connexion error")
+                        error.printStackTrace()
+                    }
+                )
+                MotherLoad.instance.requestQueue?.add(stringRequest)
+            }
+        }
+        Log.d("coucou", "pas connecté")
+        val intent = Intent(MotherLoad.instance, MainActivity::class.java)
+        MotherLoad.instance.startActivity(intent)
+    }
+
 }

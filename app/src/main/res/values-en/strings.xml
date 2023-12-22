@@ -52,6 +52,7 @@
     <string name="mode_nuit">Night mode</string>
     <string name="achat">Buy</string>
     <string name="vente">Sell</string>
+    <string name="votre_collection_d_artefact">Your artifact collection</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>
