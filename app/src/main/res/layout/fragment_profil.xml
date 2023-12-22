@@ -28,14 +28,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
+            android:textSize="20sp"
             android:text="@string/changer_de_pseudo"/>
 
         <EditText
             android:id="@+id/nouveauPseudo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:ems="10"
+            android:textSize="15sp"
             android:inputType="text"
             android:minHeight="48dp"
             android:text="@string/nouveau_pseudo" />
@@ -59,11 +60,13 @@
         <Switch
             android:id="@+id/theme"
             android:text="@string/mode_nuit"
+            android:layout_marginTop="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <Spinner
             android:id="@+id/selecteurLangue"
+            android:layout_marginTop="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
