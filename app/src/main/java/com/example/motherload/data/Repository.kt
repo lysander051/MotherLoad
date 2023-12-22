@@ -1,7 +1,9 @@
 package com.example.motherload.data
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.annotation.experimental.R
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherland.MotherLoad
@@ -47,6 +49,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
         ConnexionApi.getConnected(login, password, callback)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(latitude: Double, longitude: Double, callback: HomeCallback) {
         getSessionSignature()
         HomeApi.deplacement(session, signature, latitude, longitude, callback)
@@ -106,6 +109,15 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     fun resetUser(callback: ProfilCallback) {
         getSessionSignature()
         ProfileApi.resetUser(session, signature, callback)
+    }
+    fun getArtifact(callback: ProfilCallback){
+        getSessionSignature()
+        ProfileApi.getArtifact(session, signature, callback)
+    }
+    fun getItems(item: List<Item>, callback: ProfilCallback){
+        getSessionSignature()
+        //val dao = AppDatabase.getInstance(motherLoad).itemDescriptionDao()
+        ProfileApi.getItems(session, signature, item, callback)
     }
 
     fun getMarketItems(callback: ShopCallback) {

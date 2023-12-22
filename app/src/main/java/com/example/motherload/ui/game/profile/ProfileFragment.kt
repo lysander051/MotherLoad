@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -21,21 +19,27 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherland.MotherLoad
-import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.R
+import com.example.motherload.data.Item
+import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
+import java.lang.Double.max
 
 class ProfileFragment: Fragment(){
 
     private var viewModel: ProfileViewModel? = null
+    private lateinit var ret: View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ProfileViewModel::class.java]
@@ -43,7 +47,7 @@ class ProfileFragment: Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val ret = inflater.inflate(R.layout.fragment_profil, container, false)
+        ret = inflater.inflate(R.layout.fragment_profil, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
         val confirmer = ret.findViewById<Button>(R.id.boutonConfirmer)
         val reset = ret.findViewById<Button>(R.id.boutonReset)
@@ -72,6 +76,8 @@ class ProfileFragment: Fragment(){
                     }
                 }
                 override fun resetUser() {}
+                override fun getArtifact(inventory: List<Item>) {}
+                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
             })
         }
         reset.setSafeOnClickListener {
@@ -82,6 +88,8 @@ class ProfileFragment: Fragment(){
                 if (confirmed) {viewModel!!.resetUser(object :
                     ProfilCallback {
                         override fun changerPseudo(pseudo: String) {}
+                        override fun getArtifact(inventory: List<Item>) {}
+                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun resetUser() {
                             PopUpDisplay.simplePopUp(
                                 requireActivity(),
@@ -157,16 +165,45 @@ class ProfileFragment: Fragment(){
 
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-
-
         }
-
         langue.onItemSelectedListener = LanguageSelector(requireActivity())
-
-
+        setArtifact()
         return ret
+    }
+
+    private fun setArtifact() {
+        viewModel!!.getArtifact(object :
+            ProfilCallback {
+            override fun changerPseudo(pseudo: String) {}
+            override fun resetUser() {}
+            override fun getArtifact(inventory: List<Item>) {
+                viewModel!!.getItems(inventory, object :
+                    ProfilCallback {
+                    override fun changerPseudo(pseudo: String) {}
+                    override fun resetUser() {}
+                    override fun getArtifact(inventory: List<Item>) {}
+                    override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                        val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
+                        val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
+                        recyclerView.layoutManager = layoutManager
+                        val adapter = ProfileAdapter(itemDescription)
+                        recyclerView.adapter = adapter
+                    }
+                }
+                )
+            }
+            override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+            }
+        )
+    }
+
+    private fun calculateSpanCount(): Int {
+        val screenWidth = resources.displayMetrics.widthPixels
+        val itemWidth = resources.getDimensionPixelSize(R.dimen.column_width)
+        val minSpanCount = 1
+
+        return max(minSpanCount.toDouble(), (screenWidth / itemWidth).toDouble()).toInt()
     }
 }

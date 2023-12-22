@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     tools:context=".ui.game.profile.ProfileFragment">
 
@@ -68,7 +70,24 @@
             android:id="@+id/selecteurLangue"
             android:layout_marginTop="25dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:background="@drawable/stroke_for_list"
+            android:padding="5dp"
+            android:text="@string/votre_collection_d_artefact"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/artefactInventory"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

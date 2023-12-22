@@ -52,6 +52,7 @@
     <string name="mode_nuit">야간 모드</string>
     <string name="achat">구입</string>
     <string name="vente">판매</string>
+    <string name="votre_collection_d_artefact">당신의 유물 컬렉션</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>
