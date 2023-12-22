@@ -1,6 +1,5 @@
 package com.example.motherland
 
-import AppDatabase
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.android.volley.RequestQueue
