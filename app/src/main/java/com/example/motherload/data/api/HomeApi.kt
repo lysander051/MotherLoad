@@ -1,5 +1,6 @@
 package com.example.motherload.data.api
 
+import AppDatabase
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -11,6 +12,9 @@ import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.callback.InventoryCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -152,7 +156,7 @@ object HomeApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun getItems(session: Long, signature: Long, items: List<Item>, callback: HomeCallback){
+    fun getItems(session: Long, signature: Long, items: List<Item>, context: Context, callback: HomeCallback){
         var itemDescription = mutableListOf<ItemDescription>()
         var requestCount = 0
         for (e in items) {
@@ -182,9 +186,6 @@ object HomeApi {
                                 }
                             } else {
                                 Log.d(TAG, "Erreur - $status")
-                                if (requestCount == items.size) {
-                                    callback.getItems(itemDescription)
-                                }
                             }
                         }
                     } catch (e: Exception) {

@@ -1,8 +1,10 @@
 package com.example.motherland
 
+import AppDatabase
 import android.app.Application
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
+import com.example.motherload.data.Repository
 
 class MotherLoad : Application() {
     companion object {

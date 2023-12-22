@@ -133,6 +133,12 @@ object InventoryApi {
                             Log.d(TAG, "Amelioration pioche")
                             callback.upgradePickaxe()
                         }
+                        else if(status == "KO - NO ITEMS"){
+                            callback.erreur(0)
+                        }
+                        else if(status == "KO - UNKNOWN ID"){
+                            callback.erreur(1)
+                        }
                         else {
                             Log.d(TAG, "Erreur - $status")
                         }

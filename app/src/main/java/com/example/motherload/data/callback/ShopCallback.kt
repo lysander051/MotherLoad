@@ -9,4 +9,5 @@ interface ShopCallback {
     fun getInventory(items: MutableList<Item>)
     fun buyItem()
     fun sellItem()
+    fun erreur()
 }

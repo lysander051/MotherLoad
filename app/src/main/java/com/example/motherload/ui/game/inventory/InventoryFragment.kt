@@ -48,6 +48,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         val amelioration = ret.findViewById<Button>(R.id.boutonAmelioration)
         val pickaxe = ret.findViewById<ImageView>(R.id.pickaxeImage)
         val recette = ret.findViewById<Button>(R.id.boutonRecette)
+        val descriptionItemsLayout = ret.findViewById<LinearLayout>(R.id.descriptionItems)
+
 
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -78,6 +80,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
                 }
                 override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
+                override fun erreur(erreurId: Int) {
+                    gestionErreur(erreurId)
+                }
             }
             )
         }
@@ -85,11 +90,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         recette.setSafeOnClickListener {
             viewModel!!.recipePickaxe(object : InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-
                 override fun getItems(itemDescription: MutableList<ItemDescription>) {}
-
                 override fun upgradePickaxe() {}
-
+                override fun erreur(erreurId: Int) {}
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
                     val keys = recipeList.keys.toList()
                     for ((key, value) in recipeList){
@@ -98,6 +101,15 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                     recipePickaxeDisplay(keys, 0, recipeList)
                 }
             })
+        }
+
+        descriptionItemsLayout.setOnClickListener {
+            // Toggle visibility
+            descriptionItemsLayout.visibility = if (descriptionItemsLayout.visibility == View.VISIBLE) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
         }
 
         return ret
@@ -112,6 +124,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             }
             override fun getItems(itemDescription: MutableList<ItemDescription>) {}
             override fun upgradePickaxe() {}
+            override fun erreur(erreurId: Int) {}
             override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
         }
         )
@@ -132,8 +145,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                         }
                         recipePickaxeDisplay(keys, index + 1, recipeList)
                     }
-
                     override fun upgradePickaxe() {}
+                    override fun erreur(erreurId: Int) {}
                     override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
                 })
             }
@@ -156,6 +169,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 setItems(itemDescription)
             }
             override fun upgradePickaxe() {}
+            override fun erreur(erreurId: Int) {}
             override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
         }
         )
@@ -178,14 +192,21 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     }
 
     override fun onItemClick(item: ItemDescription) {
-        if (item.id != lastItemClick){
-            ret.findViewById<LinearLayout>(R.id.descriptionItems).visibility = View.VISIBLE
+        val descriptionItemsLayout = ret.findViewById<LinearLayout>(R.id.descriptionItems)
+
+        if (item.id != lastItemClick) {
+            descriptionItemsLayout.visibility = View.VISIBLE
             lastItemClick = item.id
             setOneItemDescription(item)
-        }
-        else{
-            ret.findViewById<LinearLayout>(R.id.descriptionItems).visibility = View.GONE
-            lastItemClick = ""
+        } else {
+            if (descriptionItemsLayout.visibility == View.VISIBLE) {
+                descriptionItemsLayout.visibility = View.GONE
+                lastItemClick = ""
+            } else {
+                descriptionItemsLayout.visibility = View.VISIBLE
+                lastItemClick = item.id
+                setOneItemDescription(item)
+            }
         }
     }
 
@@ -206,5 +227,65 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             type.text = "Artefact"
         rarity.text = item.rarity
         quantity.text = item.quantity
+    }
+
+    private fun gestionErreur(erreurId :Int){
+        if (erreurId == 0){
+            viewModel!!.recipePickaxe(object : InventoryCallback {
+                override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+                override fun upgradePickaxe() {}
+                override fun erreur(erreurId: Int) {}
+                override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
+                    val recette = recipeList[(pickaxeLevel+1).toString()]
+                    if (recette != null) {
+                        viewModel!!.getItems(recette, object : InventoryCallback {
+                            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                            override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                                viewModel!!.getStatus(object : InventoryCallback {
+                                    override fun getStatus(pickaxe: Int, money: Int, inventoryPlayer: List<Item>) {
+                                        viewModel!!.getItems(inventoryPlayer, object : InventoryCallback {
+                                            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) { }
+                                            override fun getItems(itemDescriptionPlayer: MutableList<ItemDescription>) {
+                                                var missing = "Il vous manque: \n"
+                                                for (i in 0 until itemDescription.size) {
+                                                    val requiredQuantity = itemDescription[i]
+                                                    val playerItem = itemDescriptionPlayer.find { it.id == requiredQuantity.id }
+
+                                                    if (playerItem != null) {
+                                                        val diff = requiredQuantity.quantity.toInt() - playerItem.quantity.toInt()
+                                                        if (diff > 0) {
+                                                            missing += "$diff ${requiredQuantity.nom}\n"
+                                                        }
+                                                    } else {
+                                                        missing += "${requiredQuantity.quantity.toInt()} ${requiredQuantity.nom}\n"
+                                                    }
+                                                }
+                                                PopUpDisplay.simplePopUp(requireActivity(), "Objet manquant", missing)
+                                            }
+                                            override fun upgradePickaxe() {}
+                                            override fun erreur(erreurId: Int) {}
+                                            override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
+                                        })
+                                    }
+                                    override fun getItems(itemDescription: MutableList<ItemDescription>) {}
+                                    override fun upgradePickaxe() {}
+                                    override fun erreur(erreurId: Int) {}
+                                    override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
+                                })
+                            }
+                            override fun upgradePickaxe() {}
+                            override fun erreur(erreurId: Int) {}
+                            override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
+                        })
+                    }
+                }
+            })
+        }
+        if (erreurId == 1){
+            PopUpDisplay.simplePopUp(requireActivity(),
+                "Félicitation",
+                "Bravo, votre pioche est amélioré au maximum")
+        }
     }
 }

@@ -33,7 +33,7 @@
 
         <Spinner
             android:id="@+id/quantity"
-            android:layout_width="80dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -51,8 +51,8 @@
         <ImageView
             android:id="@+id/buttonVendre"
             android:src="@drawable/buy_icon"
-            android:layout_width="52dp"
-            android:layout_height="44dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_margin="10dp"/>
 
     </LinearLayout>

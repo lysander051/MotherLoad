@@ -51,8 +51,8 @@
         <ImageView
             android:id="@+id/buttonAcheter"
             android:src="@drawable/buy_icon"
-            android:layout_width="52dp"
-            android:layout_height="44dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_margin="10dp"/>
     </LinearLayout>
 

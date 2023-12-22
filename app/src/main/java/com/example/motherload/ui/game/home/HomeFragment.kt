@@ -136,8 +136,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        //bouton pour creuser avec un delai de 10sec
-        //todo ajouter la profondeur à un sharedpreference
         val handler = Handler()
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
@@ -154,16 +152,16 @@ class HomeFragment : Fragment() {
                     override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
                     override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                     override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
-                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object : HomeCallback {
+                        if (itemId != -1) {
+                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), ret.context,  object : HomeCallback {
                             override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
                             override fun getItems(itemDescription: MutableList<ItemDescription>) {
-                                if (itemId != -1) {
                                     PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
-                                }
                             }
-                            override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
-                            override fun erreur(erreurId: Int) {}
+                        override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
+                        override fun erreur(erreurId: Int) {}
                         })
+                        }
                         depthHole = true
                         didDig = true
                         affichageVoisin(voisin)
@@ -403,11 +401,13 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,
             locationCallback,
             Looper.getMainLooper())
-        creuserBW.visibility = View.VISIBLE
-        val fadeAnimator = ObjectAnimator.ofFloat(creuserBW, "alpha", 1f, 0f)
-        fadeAnimator.duration = 10000
-        fadeAnimator.currentPlayTime = (System.currentTimeMillis() - creuserAnimationStartTime) % 10000
-        fadeAnimator.start()
+        if (System.currentTimeMillis() - creuserAnimationStartTime < 10000) {
+            creuserBW.visibility = View.VISIBLE
+            val fadeAnimator = ObjectAnimator.ofFloat(creuserBW, "alpha", 1f, 0f)
+            fadeAnimator.duration = 10000
+            fadeAnimator.currentPlayTime = System.currentTimeMillis() - creuserAnimationStartTime
+            fadeAnimator.start()
+        }
         center = true
         loadingDepthHole()
     }

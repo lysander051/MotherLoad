@@ -93,6 +93,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                             override fun getInventory(items: MutableList<Item>) {}
                             override fun buyItem() {}
                             override fun sellItem() {}
+                            override fun erreur() {}
                         }
                         )
                     }
@@ -100,6 +101,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
                     override fun sellItem() {}
+                    override fun erreur() {}
 
                 }
                 )
@@ -121,6 +123,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
             override fun getItemsDescription(items: MutableList<ItemDescription>) {}
             override fun buyItem() {}
             override fun sellItem() {}
+            override fun erreur() {}
             override fun getInventory(items: MutableList<Item>) {
                 viewModel!!.getItemsDescription(items, object :
                     ShopCallback {
@@ -131,6 +134,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
                     override fun sellItem() {}
+                    override fun erreur() {}
                 }
                 )
             }
@@ -139,9 +143,11 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
     }
     private fun setItemsBuy(listItemDescription: List<Triple<Int, ItemDescription?, Int>>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
+        val layoutManagerState = recyclerView.layoutManager?.onSaveInstanceState()
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = ShopAchatAdapter(listItemDescription, this)
         recyclerView.adapter = adapter
+        recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
     }
     private fun setItemsSell(listItemDescription: List<ItemDescription>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
@@ -161,6 +167,11 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun getItemsDescription(items: MutableList<ItemDescription>) {}
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun sellItem() {}
+                    override fun erreur() {
+                        PopUpDisplay.simplePopUp(requireActivity(),
+                            "Manque d'argent",
+                            "Vous n'avez pas suffisament d'argent pour acheter cet objet")
+                    }
                     override fun buyItem() {
                         buyDiplay()
                         PopUpDisplay.simplePopUp(requireActivity(),
@@ -186,6 +197,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun getItemsDescription(items: MutableList<ItemDescription>) {}
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
+                    override fun erreur() {}
                     override fun sellItem() {
                         sellDiplay()
                         PopUpDisplay.simplePopUp(requireActivity(),

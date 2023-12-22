@@ -36,6 +36,10 @@ class ShopAchatAdapter(private val itemList: List<Triple<Int, ItemDescription?,I
         return itemList.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return itemList[position].first.toLong()
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.imageItem)
         private val nameTextView: TextView = itemView.findViewById(R.id.name)

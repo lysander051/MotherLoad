@@ -8,4 +8,5 @@ interface InventoryCallback {
     fun getItems(itemDescription: MutableList<ItemDescription>)
     fun upgradePickaxe()
     fun recipePickaxe(recipe: MutableMap<String, List<Item>>)
+    fun erreur(erreurId: Int)
 }

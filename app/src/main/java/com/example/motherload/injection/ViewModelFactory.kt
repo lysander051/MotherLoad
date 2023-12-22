@@ -3,6 +3,7 @@ package com.example.motherLoad.Injection
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.motherLoad.UI.Connexion.ConnexionViewModel
+import com.example.motherland.MotherLoad
 import com.example.motherload.data.Repository
 import com.example.motherload.ui.game.home.HomeViewModel
 import com.example.motherload.ui.game.inventory.InventoryViewModel
@@ -16,7 +17,7 @@ class ViewModelFactory private constructor() : ViewModelProvider.Factory{
 
 
     init {
-        repository = Repository
+        repository = Repository.getInstance(MotherLoad.instance)
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

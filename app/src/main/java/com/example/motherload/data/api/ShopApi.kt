@@ -175,6 +175,9 @@ object ShopApi {
                             Log.d(InventoryApi.TAG, "Acces buy item")
                             callback.buyItem()
                         }
+                        else if (status == "KO - NO MONEY"){
+                            callback.erreur()
+                        }
                         else {
                             Log.d(InventoryApi.TAG, "Erreur - $status")
                         }
