@@ -1,11 +1,11 @@
 package com.example.motherload.data
 
-import AppDatabase
 import android.content.Context
 import android.util.Log
 import androidx.annotation.experimental.R
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherland.MotherLoad
+import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.api.ConnexionApi
 import com.example.motherload.data.api.HomeApi
 import com.example.motherload.data.api.InventoryApi
@@ -58,7 +58,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
 
     fun getItems(item: List<Item>, context: Context, callback: HomeCallback) {
         getSessionSignature()
-        //val dao = AppDatabase.getInstance(motherLoad).itemDescriptionDao()
+        val dao = AppDatabase.getDatabase(context).itemDescriptionDao()
         HomeApi.getItems(session, signature, item, context, callback)
     }
 
