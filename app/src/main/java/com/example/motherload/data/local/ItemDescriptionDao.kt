@@ -10,5 +10,5 @@ interface ItemDescriptionDao {
     fun insertItem(item: ItemDescription)
 
     @Query("SELECT * FROM itemsdescription WHERE id IN (:itemIds)")
-    suspend fun getItemsByIds(itemIds: List<String>): MutableList<ItemDescription>
+    fun getItemsByIds(itemIds: List<String>): MutableList<ItemDescription>
 }

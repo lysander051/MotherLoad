@@ -30,6 +30,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     private val TAG: String = "Repo"
     private var session: Long = -1
     private var signature: Long = -1
+    val dao = AppDatabase.getDatabase(MotherLoad.instance).itemDescriptionDao()
 
     companion object {
         private var repository: Repository? = null
@@ -58,7 +59,6 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
 
     fun getItems(item: List<Item>, context: Context, callback: HomeCallback) {
         getSessionSignature()
-        val dao = AppDatabase.getDatabase(context).itemDescriptionDao()
         HomeApi.getItems(session, signature, item, context, callback)
     }
 
@@ -73,7 +73,19 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
 
     fun getItems(items: List<Item>, callback: InventoryCallback) {
         getSessionSignature()
-        InventoryApi.getItems(session, signature, items, callback)
+        val itemsIds : MutableList<String> = ArrayList()
+        for (element in items){
+            itemsIds.add(element.id)
+        }
+        val itemsStockees : MutableList<ItemDescription> = dao.getItemsByIds(itemsIds)
+        if (items.size == itemsIds.size){
+            Log.d("BASE","J'ai get ça frérot")
+            callback.getItems(itemsStockees)
+        }
+        else{
+            Log.d("BASE", "Guigui bosse plus que la database")
+            InventoryApi.getItems(session, signature, items, callback)
+        }
     }
 
     fun upgradePickaxe(pickaxeLevel: Int, callback: InventoryCallback) {
