@@ -2,6 +2,7 @@ package com.example.motherland
 
 import AppDatabase
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.example.motherload.data.Repository
@@ -19,6 +20,8 @@ class MotherLoad : Application() {
         super.onCreate()
         instance = this
         requestQueue = Volley.newRequestQueue(this)
+        val theme = getSharedPreferences("Settings",0).getInt("theme", AppCompatDelegate.getDefaultNightMode())
+        AppCompatDelegate.setDefaultNightMode(theme)
     }
 
 }

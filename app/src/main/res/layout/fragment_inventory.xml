@@ -122,12 +122,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Nom: " />
+                        android:text="@string/nom" />
                     <TextView
                         android:id="@+id/nameOneItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nom" />
+                        android:text="@string/nom" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -138,12 +138,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Descritpion: " />
+                        android:text="@string/descritpion" />
                     <TextView
                         android:id="@+id/descriptionOneItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description" />
+                        android:text="@string/descritpion" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -154,12 +154,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Type: " />
+                        android:text="@string/type" />
                     <TextView
                         android:id="@+id/typeOneItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Type" />
+                        android:text="@string/type" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -170,12 +170,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Rareté: " />
+                        android:text="@string/raret" />
                     <TextView
                         android:id="@+id/rarityOneItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rareté" />
+                        android:text="@string/raret" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -186,12 +186,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Quantité: " />
+                        android:text="@string/quantit" />
                     <TextView
                         android:id="@+id/quantityOneItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quantité" />
+                        android:text="@string/quantit" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -207,7 +207,7 @@
                 android:id="@+id/boutonAmelioration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ameliorer la pioche"
+                android:text="@string/ameliorer_la_pioche"
                 android:layout_gravity="center"
                 android:layout_marginRight="10dp"
                 />
@@ -215,7 +215,7 @@
                 android:id="@+id/boutonRecette"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recette des pioches"
+                android:text="@string/recette_des_pioches"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 />

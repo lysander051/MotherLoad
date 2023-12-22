@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">マザーロード</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">パスワードまたはニックネームが間違っています</string>
+    <string name="username">ユーザー名 :</string>
+    <string name="password">パスワード:</string>
+    <string name="enregistrer_pseudo_mot_de_passe">ユーザー名/パスワードを保存する</string>
+    <string name="voulez_vous_rester_connect">接続を維持したいですか?</string>
+    <string name="se_connecter">ログインします</string>
+    <string name="trop_rapide">早すぎる</string>
+    <string name="vous_cliquez_comme_un_fou_il_faut_ralentir">狂ったようにクリックしているので、速度を落とす必要があります。</string>
+    <string name="trop_profond">深すぎる</string>
+    <string name="trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche">つるはしには深すぎます。つるはしを移動するか変更する必要があります。</string>
+    <string name="trop_loin">遠すぎる</string>
+    <string name="ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer">ポケモンGOじゃないんだよ、働くためには大学に残らなきゃいけないんだ…うーん、遊ぶ。</string>
+    <string name="changement_de_pseudo">ニックネームの変更</string>
+    <string name="vous_avez_chang_de_pseudo_pour">ニックネームをに変更しました %1$s</string>
+    <string name="probl_me_de_changement_de_pseudo">ニックネーム変更問題</string>
+    <string name="probl_me_de_changement_de_pseudo_il_faut_qu_il_soit_plus_long_que_3">ニックネームの変更で問題が発生しました。少なくとも 3 文字で構成する必要があります</string>
+    <string name="r_initialisation">リセット</string>
+    <string name="tes_vous_s_r_de_vouloir_r_initialiser_votre_compte">アカウントをリセットしてもよろしいですか?</string>
+    <string name="votre_compte_a_t_r_initialis">アカウントがリセットされました</string>
+    <string name="acheter">買う</string>
+    <string name="tes_vous_s_r_de_vouloir_acheter_cet_objet">この商品を購入してもよろしいですか?</string>
+    <string name="objet_achet">購入した商品</string>
+    <string name="vous_avez_bien_achet">正しく購入されました %1$s </string>
+    <string name="pour_le_prix_de">の価格で %1$s</string>
+    <string name="tes_vous_s_r_de_vouloir_vendre_cet_objet">この商品を販売してもよろしいですか?</string>
+    <string name="vendre">売る</string>
+    <string name="objet_vendu">販売されたアイテム</string>
+    <string name="vous_avez_bien_vendu">よく売れましたね %1$s </string>
+    <string name="nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer">プレイするには正確な位置情報にアクセスするためにあなたの許可が必要です。</string>
+    <string name="permission_requise">許可が必要です</string>
+    <string name="merci_d_activer_la_g_olocalisation_pr_cise_dans_vos_param_tres_pour_profiter_de_notre_jeu">ゲームをお楽しみいただくために、設定で正確な地理位置情報を有効にしてください</string>
+    <string name="permission_gps">GPS許可</string>
+    <string name="ok">わかりました</string>
+    <string name="annuler">キャンセル</string>
+    <string name="nom">名前 ：</string>
+    <string name="descritpion">説明 ：</string>
+    <string name="type">親切 ：</string>
+    <string name="raret">レアリティ : </string>
+    <string name="quantit">量 ：</string>
+    <string name="ameliorer_la_pioche">つるはしを改良する</string>
+    <string name="recette_des_pioches">つるはしのレシピ</string>
+    <string name="nom2">名前</string>
+    <string name="raret2">レアリティ</string>
+    <string name="quantit2">量</string>
+    <string name="prix">価格</string>
+    <string name="changer_de_pseudo">ニックネームの変更:</string>
+    <string name="nouveau_pseudo">新しいニックネーム</string>
+    <string name="confirmer">確認する</string>
+    <string name="r_initialiser_profile">プロファイルをリセット</string>
+    <string name="mode_nuit">ナイトモード</string>
+    <string name="achat">購入</string>
+    <string name="vente">セール</string>
+    <string-array name="langues">
+        <item>Français</item>
+        <item>English</item>
+        <item>한국인</item>
+        <item>日本語</item>
+    </string-array>
+</resources>

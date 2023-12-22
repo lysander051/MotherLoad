@@ -9,10 +9,12 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -23,7 +25,6 @@ import androidx.preference.PreferenceManager
 import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
-import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
@@ -136,6 +137,8 @@ class HomeFragment : Fragment() {
             }
         }
 
+        //bouton pour creuser avec un delai de 10sec
+        //todo ajouter la profondeur à un sharedpreference
         val handler = Handler()
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
@@ -152,16 +155,16 @@ class HomeFragment : Fragment() {
                     override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
                     override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                     override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
-                        if (itemId != -1) {
-                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), ret.context,  object : HomeCallback {
+                        viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object : HomeCallback {
                             override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
                             override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                                if (itemId != -1) {
                                     PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
+                                }
                             }
-                        override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
-                        override fun erreur(erreurId: Int) {}
+                            override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
+                            override fun erreur(erreurId: Int) {}
                         })
-                        }
                         depthHole = true
                         didDig = true
                         affichageVoisin(voisin)
@@ -261,16 +264,16 @@ class HomeFragment : Fragment() {
         //TODO gestion de toutes les erreurs
         if (erreurId == 0)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop Rapide",
-                "Vous cliquez comme un fou, il faut ralentir.")
+                getString(R.string.trop_rapide),
+                getString(R.string.vous_cliquez_comme_un_fou_il_faut_ralentir))
         if (erreurId == 1)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop profond",
-                "Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche.")
+                getString(R.string.trop_profond),
+                getString(R.string.trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche))
         if (erreurId == 2)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop loin",
-                "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer.")
+                getString(R.string.trop_loin),
+                getString(R.string.ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer))
     }
 
     private fun getLocation(location: Location) {

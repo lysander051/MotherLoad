@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import com.example.motherland.MotherLoad
 import java.security.KeyStore
 import java.security.MessageDigest
-import java.util.Base64
+import android.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -48,11 +48,11 @@ class LoginManager {
             ciph.init(Cipher.ENCRYPT_MODE, secretKey)
 
             val byteIV : ByteArray = ciph.iv
-            val iv : String = Base64.getEncoder().encodeToString(byteIV)
+            val iv : String = Base64.encodeToString(byteIV, Base64.DEFAULT)
             Log.d(TAG, "L'iv du chiffrement = $iv")
             val bytePassword : ByteArray = password.toByteArray()
             val byteChiffrePassword : ByteArray = ciph.doFinal(bytePassword)
-            val chiffrePassword : String = Base64.getEncoder().encodeToString(byteChiffrePassword)
+            val chiffrePassword : String = Base64.encodeToString(byteChiffrePassword, Base64.DEFAULT)
 
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
             with(sharedPreferences.edit()){
@@ -70,8 +70,8 @@ class LoginManager {
             if (chiffrePassword != "" && iv != ""){
                 Log.d(TAG, "password chiffre = $chiffrePassword")
                 Log.d(TAG, "L'iv du déchiffrement = $iv")
-                val byteChiffrePassword : ByteArray = Base64.getDecoder().decode(chiffrePassword)
-                val byteIV : ByteArray = Base64.getDecoder().decode(iv)
+                val byteChiffrePassword : ByteArray = Base64.decode(chiffrePassword, Base64.DEFAULT)
+                val byteIV : ByteArray = Base64.decode(iv, Base64.DEFAULT)
                 val keyStore : KeyStore = KeyStore.getInstance("AndroidKeyStore")
                 keyStore.load(null)
                 val secretKey : SecretKey = keyStore.getKey("Key",null) as SecretKey

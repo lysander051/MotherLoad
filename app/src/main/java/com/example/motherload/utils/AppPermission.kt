@@ -6,15 +6,17 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import com.example.motherload.R
 
 
 class AppPermission {
     companion object {
         fun requestLocation(context: Context){
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                val explanationMessage = "Nous avons besoin de votre permission pour accéder à votre localisation précise afin que vous puissiez jouer."
+                val explanationMessage =
+                    context.getString(R.string.nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer)
                 AlertDialog.Builder(context)
-                    .setTitle("Permission Requise")
+                    .setTitle(context.getString(R.string.permission_requise))
                     .setMessage(explanationMessage)
                     .setPositiveButton("OK") { _, _ ->
                         ActivityCompat.requestPermissions(
@@ -27,9 +29,10 @@ class AppPermission {
             }
             else if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                val explanationMessage = "Merci d'activer la géolocalisation précise dans vos paramètres pour profiter de notre jeu"
+                val explanationMessage =
+                    context.getString(R.string.merci_d_activer_la_g_olocalisation_pr_cise_dans_vos_param_tres_pour_profiter_de_notre_jeu)
                 AlertDialog.Builder(context)
-                    .setTitle("Permission gps")
+                    .setTitle(context.getString(R.string.permission_gps))
                     .setMessage(explanationMessage)
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)

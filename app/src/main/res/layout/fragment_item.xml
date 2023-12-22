@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="Nom"
+            android:text="@string/nom2"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"/>
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:text="Rareté"
+            android:text="@string/raret2"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:text="quantité"
+            android:text="@string/quantit2"
             android:layout_marginEnd="10dp"/>
 
     </LinearLayout>

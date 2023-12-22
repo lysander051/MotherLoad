@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">MotherLoad</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">wrong password or login</string>
+    <string name="username">Login :</string>
+    <string name="password">Password :</string>
+    <string name="enregistrer_pseudo_mot_de_passe">Remember credentials</string>
+    <string name="voulez_vous_rester_connect">Stay connected ?</string>
+    <string name="se_connecter">Login</string>
+    <string name="trop_rapide">Too fast</string>
+    <string name="vous_cliquez_comme_un_fou_il_faut_ralentir">Are you insane, You\'re clicking too fast ! You need to slow down.</string>
+    <string name="trop_profond">Too deep</string>
+    <string name="trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche">Too deep for this pickaxe. You need to move or upgrade your pickaxe.</string>
+    <string name="trop_loin">Too far away</string>
+    <string name="ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer">This isn\'t PokemonGO, you may stay at the university to work… Ehhhh play.</string>
+    <string name="changement_de_pseudo">Username Modification</string>
+    <string name="vous_avez_chang_de_pseudo_pour">You have changed your username for %1$s</string>
+    <string name="probl_me_de_changement_de_pseudo">Error while changing your username</string>
+    <string name="probl_me_de_changement_de_pseudo_il_faut_qu_il_soit_plus_long_que_3">An error occurred while changing your username. It must be at least 3 characters long.</string>
+    <string name="r_initialisation">Resetting</string>
+    <string name="tes_vous_s_r_de_vouloir_r_initialiser_votre_compte">Are you sure to reset your account ?</string>
+    <string name="votre_compte_a_t_r_initialis">Your account has been reset</string>
+    <string name="acheter">Buy</string>
+    <string name="tes_vous_s_r_de_vouloir_acheter_cet_objet">Are you sure to buy this item ?</string>
+    <string name="objet_achet">Item bought</string>
+    <string name="vous_avez_bien_achet">You have bought %1$s </string>
+    <string name="pour_le_prix_de">for %1$s</string>
+    <string name="tes_vous_s_r_de_vouloir_vendre_cet_objet">Are you sure to sell this item ?</string>
+    <string name="vendre">Sell</string>
+    <string name="objet_vendu">Item sold</string>
+    <string name="vous_avez_bien_vendu">You sold %1$s </string>
+    <string name="nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer">We need your permission to access your realtime location for you to be able to play.</string>
+    <string name="permission_requise">Permission required</string>
+    <string name="merci_d_activer_la_g_olocalisation_pr_cise_dans_vos_param_tres_pour_profiter_de_notre_jeu">Please enable the precise location in your settings to play.</string>
+    <string name="permission_gps">Location permission</string>
+    <string name="ok">OK</string>
+    <string name="annuler">Cancel</string>
+    <string name="nom">Name : </string>
+    <string name="descritpion">Descritpion : </string>
+    <string name="type">Type : </string>
+    <string name="raret">Rarity : </string>
+    <string name="quantit">Quantity : </string>
+    <string name="ameliorer_la_pioche">Upgrade the pickaxe</string>
+    <string name="recette_des_pioches">Pickaxes recipes</string>
+    <string name="nom2">Name</string>
+    <string name="raret2">Rarity</string>
+    <string name="quantit2">quantity</string>
+    <string name="prix">Price</string>
+    <string name="changer_de_pseudo">Change username :</string>
+    <string name="nouveau_pseudo">New username</string>
+    <string name="confirmer">Confirm</string>
+    <string name="r_initialiser_profile">Reset profile</string>
+    <string name="mode_nuit">Night mode</string>
+    <string name="achat">Buy</string>
+    <string name="vente">Sell</string>
+    <string-array name="langues">
+        <item>Français</item>
+        <item>English</item>
+        <item>한국인</item>
+        <item>日本語</item>
+    </string-array>
+</resources>

@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Changer de pseudo :"/>
+            android:text="@string/changer_de_pseudo"/>
 
         <EditText
             android:id="@+id/nouveauPseudo"
@@ -38,13 +38,13 @@
             android:ems="10"
             android:inputType="text"
             android:minHeight="48dp"
-            android:text="Nouveau pseudo" />
+            android:text="@string/nouveau_pseudo" />
 
         <Button
             android:id="@+id/boutonConfirmer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Confirmer"
+            android:text="@string/confirmer"
             android:layout_marginTop="25dp"
             />
 
@@ -52,9 +52,20 @@
             android:id="@+id/boutonReset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Réinitialiser profile"
+            android:text="@string/r_initialiser_profile"
             android:layout_marginTop="25dp"
             />
+
+        <Switch
+            android:id="@+id/theme"
+            android:text="@string/mode_nuit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/selecteurLangue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">마더로드</string>
+    <string name="mot_de_passe_ou_pseudo_incorrect">잘못된 비밀번호 또는 로그인</string>
+    <string name="username">로그인 :</string>
+    <string name="password">비밀번호 :</string>
+    <string name="enregistrer_pseudo_mot_de_passe">자격 증명 기억</string>
+    <string name="voulez_vous_rester_connect">대기 중 ?</string>
+    <string name="se_connecter">로그인</string>
+    <string name="trop_rapide">너무 빨라</string>
+    <string name="vous_cliquez_comme_un_fou_il_faut_ralentir">미친 듯이 클릭하고 있으니 속도를 줄여야 합니다.</string>
+    <string name="trop_profond">너무 심오함</string>
+    <string name="trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche">곡괭이를 쓰기에는 너무 깊습니다. 곡괭이를 옮기거나 바꿔야 합니다.</string>
+    <string name="trop_loin">너무 멀다</string>
+    <string name="ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer">포켓몬GO도 아니고, 일하려면 대학에 남아야 하는데… 에휴. 놀아요.</string>
+    <string name="changement_de_pseudo">닉네임 변경</string>
+    <string name="vous_avez_chang_de_pseudo_pour">닉네임을 다음으로 변경하셨습니다. %1$s</string>
+    <string name="probl_me_de_changement_de_pseudo">닉네임 변경 문제</string>
+    <string name="probl_me_de_changement_de_pseudo_il_faut_qu_il_soit_plus_long_que_3">닉네임을 변경하는 중에 문제가 발생했습니다. 최소 3글자로 구성되어야 합니다.</string>
+    <string name="r_initialisation">초기화</string>
+    <string name="tes_vous_s_r_de_vouloir_r_initialiser_votre_compte">정말로 계정을 재설정하시겠습니까 ?</string>
+    <string name="votre_compte_a_t_r_initialis">귀하의 계정이 재설정되었습니다</string>
+    <string name="acheter">구입하다</string>
+    <string name="tes_vous_s_r_de_vouloir_acheter_cet_objet">정말로 이 품목을 구매하시겠습니까 ?</string>
+    <string name="objet_achet">구매한 상품</string>
+    <string name="vous_avez_bien_achet">올바르게 구매하셨습니다 %1$s </string>
+    <string name="pour_le_prix_de">가격에 대한 %1$s</string>
+    <string name="tes_vous_s_r_de_vouloir_vendre_cet_objet">정말로 이 품목을 판매하시겠습니까 ?</string>
+    <string name="vendre">팔다</string>
+    <string name="objet_vendu">판매된 품목</string>
+    <string name="vous_avez_bien_vendu">잘 팔리셨어요 %1$s </string>
+    <string name="nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer">플레이하려면 정확한 위치에 액세스하려면 권한이 필요합니다.</string>
+    <string name="permission_requise">권한 필요</string>
+    <string name="merci_d_activer_la_g_olocalisation_pr_cise_dans_vos_param_tres_pour_profiter_de_notre_jeu">게임을 즐기려면 설정에서 정확한 위치 정보를 활성화하세요.</string>
+    <string name="permission_gps">GPS 허가</string>
+    <string name="ok">좋아요</string>
+    <string name="annuler">취소</string>
+    <string name="nom">이름 : </string>
+    <string name="descritpion">설명 : </string>
+    <string name="type">친절한 : </string>
+    <string name="raret">희귀도 : </string>
+    <string name="quantit">수량 : </string>
+    <string name="ameliorer_la_pioche">곡괭이를 개선하세요</string>
+    <string name="recette_des_pioches">곡괭이 제조법</string>
+    <string name="nom2">이름</string>
+    <string name="raret2">희박</string>
+    <string name="quantit2">수량</string>
+    <string name="prix">가격</string>
+    <string name="changer_de_pseudo">닉네임 변경 :</string>
+    <string name="nouveau_pseudo">새로운 닉네임</string>
+    <string name="confirmer">확인하다</string>
+    <string name="r_initialiser_profile">프로필 재설정</string>
+    <string name="mode_nuit">야간 모드</string>
+    <string name="achat">구입</string>
+    <string name="vente">판매</string>
+    <string-array name="langues">
+        <item>Français</item>
+        <item>English</item>
+        <item>한국인</item>
+        <item>日本語</item>
+    </string-array>
+</resources>
