@@ -252,16 +252,16 @@ class HomeFragment : Fragment() {
         //TODO gestion de toutes les erreurs
         if (erreurId == 0)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop Rapide",
-                "Vous cliquez comme un fou, il faut ralentir.")
+                getString(R.string.trop_rapide),
+                getString(R.string.vous_cliquez_comme_un_fou_il_faut_ralentir))
         if (erreurId == 1)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop profond",
-                "Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche.")
+                getString(R.string.trop_profond),
+                getString(R.string.trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche))
         if (erreurId == 2)
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Trop loin",
-                "Ce n'est pas pokemonGO, il faut rester à l'université pour travailler... Ehhhh jouer.")
+                getString(R.string.trop_loin),
+                getString(R.string.ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer))
     }
 
     private fun getLocation(location: Location) {

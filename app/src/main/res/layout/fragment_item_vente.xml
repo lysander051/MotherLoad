@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="Nom"
+            android:text="@string/nom2"
             android:layout_weight="1"/>
 
         <Spinner
@@ -38,7 +38,7 @@
             android:textStyle="bold"
             android:textAlignment="center"
             android:spinnerMode="dropdown"
-            android:text="Quantité"/>
+            android:text="@string/quantit2"/>
 
         <EditText
             android:id="@+id/prix"

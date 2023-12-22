@@ -151,8 +151,8 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
     }
     override fun onBuyButtonClick(order_id: Int, item: ItemDescription?, prix: Int) {
         PopUpDisplay.cancellablePopUp(this.requireActivity(),
-            "Acheter",
-            "êtes-vous sûr de vouloir acheter cet objet"
+            getString(R.string.acheter),
+            getString(R.string.tes_vous_s_r_de_vouloir_acheter_cet_objet)
             ){ confirmed ->
             if (confirmed) {
                 viewModel!!.buyItem(order_id, object :
@@ -164,10 +164,10 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun buyItem() {
                         buyDiplay()
                         PopUpDisplay.simplePopUp(requireActivity(),
-                            "Objet acheté",
-                            "Vous avez bien acheté ${item?.quantity} " +
+                            getString(R.string.objet_achet),
+                            getString(R.string.vous_avez_bien_achet, item?.quantity) +
                                     "${item?.nom} " +
-                                    "pour le prix de $prix")
+                                    getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }
                 )
@@ -176,8 +176,8 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
     }
     override fun onSellButtonClick(quantity: Int, item: ItemDescription?, prix: Int) {
         PopUpDisplay.cancellablePopUp(this.requireActivity(),
-            "Vendre",
-            "êtes-vous sûr de vouloir vendre cet objet"
+            getString(R.string.vendre),
+            getString(R.string.tes_vous_s_r_de_vouloir_vendre_cet_objet)
         ){ confirmed ->
             if (confirmed) {
                 viewModel!!.sellItem(quantity, item?.id, prix, object :
@@ -189,10 +189,10 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun sellItem() {
                         sellDiplay()
                         PopUpDisplay.simplePopUp(requireActivity(),
-                            "Objet vendu",
-                            "Vous avez bien vendu ${quantity} " +
+                            getString(R.string.objet_vendu),
+                            getString(R.string.vous_avez_bien_vendu, quantity.toString()) +
                                     "${item?.nom} " +
-                                    "pour le prix de $prix")
+                                    getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }
                 )

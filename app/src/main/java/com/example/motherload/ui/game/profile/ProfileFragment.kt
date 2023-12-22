@@ -62,13 +62,13 @@ class ProfileFragment: Fragment(){
                     ret.findViewById<EditText>(R.id.nouveauPseudo).setText(pseudo)
                     if (pseudo != ""){
                         PopUpDisplay.simplePopUp(requireActivity(),
-                            "Changement de pseudo",
-                            "Vous avez changé de pseudo pour $pseudo")
+                            getString(R.string.changement_de_pseudo),
+                            getString(R.string.vous_avez_chang_de_pseudo_pour, pseudo))
                     }
                     else{
                         PopUpDisplay.simplePopUp(requireActivity(),
-                            "problème de changement de pseudo",
-                            "Problème de changement de pseudo. Il faut qu'il soit plus long que 3")
+                            getString(R.string.probl_me_de_changement_de_pseudo),
+                            getString(R.string.probl_me_de_changement_de_pseudo_il_faut_qu_il_soit_plus_long_que_3))
                     }
                 }
                 override fun resetUser() {}
@@ -76,8 +76,8 @@ class ProfileFragment: Fragment(){
         }
         reset.setSafeOnClickListener {
             PopUpDisplay.cancellablePopUp(requireActivity(),
-                "Réinitialisation",
-                "êtes vous sûr de vouloir réinitialiser votre compte?"
+                getString(R.string.r_initialisation),
+                getString(R.string.tes_vous_s_r_de_vouloir_r_initialiser_votre_compte)
                 ) { confirmed ->
                 if (confirmed) {viewModel!!.resetUser(object :
                     ProfilCallback {
@@ -85,8 +85,8 @@ class ProfileFragment: Fragment(){
                         override fun resetUser() {
                             PopUpDisplay.simplePopUp(
                                 requireActivity(),
-                                "Réinitialisation",
-                                "Votre compte a été réinitialisé"
+                                getString(R.string.r_initialisation),
+                                getString(R.string.votre_compte_a_t_r_initialis)
                             )
                         }
                     })
@@ -138,6 +138,8 @@ class ProfileFragment: Fragment(){
                         pos = 1}
                     2 -> {lang = "ko-KR"
                         pos = 2}
+                    3 -> {lang = "ja-JP"
+                        pos = 3}
                     else -> {}
                 }
                 val appLocales : LocaleListCompat = LocaleListCompat.forLanguageTags(lang)

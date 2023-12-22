@@ -3,6 +3,7 @@ package com.example.motherload.utils
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
+import com.example.motherload.R
 
 class PopUpDisplay {
     companion object{
@@ -10,7 +11,7 @@ class PopUpDisplay {
             AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("OK") { _, _ ->
+                .setPositiveButton(context.getString(R.string.ok)) { _, _ ->
                 }.show()
         }
 
@@ -19,11 +20,11 @@ class PopUpDisplay {
             alertDialogBuilder.setTitle(title)
             alertDialogBuilder.setMessage(text)
 
-            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+            alertDialogBuilder.setPositiveButton(context.getString(R.string.ok)) { _, _ ->
                 onConfirmed(true)
             }
 
-            alertDialogBuilder.setNegativeButton("Annuler") { _, _ ->
+            alertDialogBuilder.setNegativeButton(context.getString(R.string.annuler)) { _, _ ->
                 onConfirmed(false)
             }
 

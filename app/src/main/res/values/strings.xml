@@ -4,11 +4,58 @@
     <string name="username">Nom d\'utilisateur :</string>
     <string name="password">Mot de passe :</string>
     <string name="enregistrer_pseudo_mot_de_passe">Enregistrer pseudo/mot de passe</string>
-    <string name="voulez_vous_rester_connect">Voulez-vous rester connecté?</string>
+    <string name="voulez_vous_rester_connect">Voulez-vous rester connecté ?</string>
     <string name="se_connecter">Se connecter</string>
+    <string name="trop_rapide">Trop Rapide</string>
+    <string name="vous_cliquez_comme_un_fou_il_faut_ralentir">Vous cliquez comme un fou, il faut ralentir.</string>
+    <string name="trop_profond">Trop profond</string>
+    <string name="trop_profond_pour_votre_pioche_il_faut_vous_d_placer_ou_changer_de_pioche">Trop profond pour votre pioche. Il faut vous déplacer ou changer de pioche.</string>
+    <string name="trop_loin">Trop loin</string>
+    <string name="ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer">Ce n\'est pas pokemonGO, il faut rester à l\'université pour travailler... Euuuh jouer.</string>
+    <string name="changement_de_pseudo">Changement de pseudo</string>
+    <string name="vous_avez_chang_de_pseudo_pour">Vous avez changé de pseudo pour %1$s</string>
+    <string name="probl_me_de_changement_de_pseudo">problème de changement de pseudo</string>
+    <string name="probl_me_de_changement_de_pseudo_il_faut_qu_il_soit_plus_long_que_3">Problème de changement de pseudo. Il doit être composé d\'au moins 3 lettres</string>
+    <string name="r_initialisation">Réinitialisation</string>
+    <string name="tes_vous_s_r_de_vouloir_r_initialiser_votre_compte">Êtes vous sûr de vouloir réinitialiser votre compte ?</string>
+    <string name="votre_compte_a_t_r_initialis">Votre compte a été réinitialisé</string>
+    <string name="acheter">Acheter</string>
+    <string name="tes_vous_s_r_de_vouloir_acheter_cet_objet">Êtes-vous sûr de vouloir acheter cet objet ?</string>
+    <string name="objet_achet">Objet acheté</string>
+    <string name="vous_avez_bien_achet">"Vous avez bien acheté %1$s "</string>
+    <string name="pour_le_prix_de">pour le prix de %1$s</string>
+    <string name="tes_vous_s_r_de_vouloir_vendre_cet_objet">Êtes-vous sûr de vouloir vendre cet objet ?</string>
+    <string name="vendre">Vendre</string>
+    <string name="objet_vendu">Objet vendu</string>
+    <string name="vous_avez_bien_vendu">"Vous avez bien vendu %1$s "</string>
+    <string name="nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer">Nous avons besoin de votre permission pour accéder à votre localisation précise afin que vous puissiez jouer.</string>
+    <string name="permission_requise">Permission Requise</string>
+    <string name="merci_d_activer_la_g_olocalisation_pr_cise_dans_vos_param_tres_pour_profiter_de_notre_jeu">Merci d\'activer la géolocalisation précise dans vos paramètres pour profiter de notre jeu</string>
+    <string name="permission_gps">Permission GPS</string>
+    <string name="ok">OK</string>
+    <string name="annuler">Annuler</string>
+    <string name="nom">Nom : </string>
+    <string name="descritpion">Descritpion : </string>
+    <string name="type">Type : </string>
+    <string name="raret">Rareté : </string>
+    <string name="quantit">Quantité : </string>
+    <string name="ameliorer_la_pioche">Ameliorer la pioche</string>
+    <string name="recette_des_pioches">Recette des pioches</string>
+    <string name="nom2">Nom</string>
+    <string name="raret2">Rareté</string>
+    <string name="quantit2">quantité</string>
+    <string name="prix">Prix</string>
+    <string name="changer_de_pseudo">Changer de pseudo :</string>
+    <string name="nouveau_pseudo">Nouveau pseudo</string>
+    <string name="confirmer">Confirmer</string>
+    <string name="r_initialiser_profile">Réinitialiser profile</string>
+    <string name="mode_nuit">Mode nuit</string>
+    <string name="achat">Achat</string>
+    <string name="vente">Vente</string>
     <string-array name="langues">
         <item>Français</item>
-        <item>Anglais</item>
-        <item>Coréen</item>
+        <item>English</item>
+        <item>한국인</item>
+        <item>日本語</item>
     </string-array>
 </resources>
