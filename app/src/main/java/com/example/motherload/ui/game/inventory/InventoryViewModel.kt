@@ -3,13 +3,14 @@ import androidx.lifecycle.ViewModel
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.Repository
+import com.example.motherload.data.callback.ItemCallback
 
 class InventoryViewModel(var invRepo: Repository): ViewModel() {
     fun getStatus(callback: InventoryCallback){
         invRepo.getStatus(callback)
     }
 
-    fun getItems(item: List<Item>,callback: InventoryCallback){
+    fun getItems(item: List<Item>,callback: ItemCallback){
         invRepo.getItems(item, callback)
     }
 

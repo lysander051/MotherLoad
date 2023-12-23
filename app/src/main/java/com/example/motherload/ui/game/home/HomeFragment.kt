@@ -30,6 +30,7 @@ import com.example.motherload.R
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.ui.game.inventory.InventoryFragment
 import com.example.motherload.ui.game.profile.ProfileFragment
 import com.example.motherload.ui.game.shop.ShopFragment
@@ -80,6 +81,7 @@ class HomeFragment : Fragment() {
 
         //initialisation du comportement de chaque mise à jour de la position
         locationCallback = object : LocationCallback() {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onLocationResult(p0: LocationResult) {
                 for (location in p0.locations) {
                     getLocation(location)
@@ -89,7 +91,6 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
-                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )
@@ -157,16 +158,13 @@ class HomeFragment : Fragment() {
                 creuserBW.startAnimation(animation)
                 viewModel!!.creuser(playerPosition, object : HomeCallback {
                     override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
-                    override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                     override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {
                         if (itemId != -1) {
-                            viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), requireContext(),  object : HomeCallback {
-                                override fun deplacement(voisin: MutableMap<String, GeoPoint>) {}
-                                override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                            viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object :
+                                ItemCallback {
+                                override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                                     PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
                                 }
-                                override fun creuse(itemId: Int, depth: String, voisin: MutableMap<String, GeoPoint>) {}
-                                override fun erreur(erreurId: Int) {}
                             })
                         }
                         depthHole = true
@@ -232,7 +230,6 @@ class HomeFragment : Fragment() {
                             affichageVoisin(voisin)
                         }
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
-                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun erreur(erreurId: Int) {}
                     }
                     )

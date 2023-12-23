@@ -3,13 +3,14 @@ package com.example.motherload.ui.game.shop
 import androidx.lifecycle.ViewModel
 import com.example.motherload.data.Item
 import com.example.motherload.data.Repository
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ShopCallback
 
 class ShopViewModel(var shopRepo: Repository): ViewModel() {
     fun getMarketItems(callback: ShopCallback){
         shopRepo.getMarketItems(callback)
     }
-    fun getItemsDescription(items: List<Item>, callback: ShopCallback){
+    fun getItemsDescription(items: List<Item>, callback: ItemCallback){
         shopRepo.getItems(items,callback)
     }
     fun getInventory(callback: ShopCallback){

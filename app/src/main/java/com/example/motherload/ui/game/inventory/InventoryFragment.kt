@@ -21,6 +21,7 @@ import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.R
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 import com.squareup.picasso.Picasso
@@ -70,7 +71,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
                 InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                 override fun upgradePickaxe() {
                     pickaxeLevel++
                     pickaxe.startAnimation(animation)
@@ -90,7 +90,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         recette.setSafeOnClickListener {
             viewModel!!.recipePickaxe(object : InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                 override fun upgradePickaxe() {}
                 override fun erreur(erreurId: Int) {}
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
@@ -122,7 +121,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 pickaxeLevel = pickaxe
                 setIterface(money, inventory)
             }
-            override fun getItems(itemDescription: MutableList<ItemDescription>) {}
             override fun upgradePickaxe() {}
             override fun erreur(erreurId: Int) {}
             override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
@@ -134,9 +132,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         if (index < recipeList.size) {
             recipeString += "Pickaxe ${keys[index]} :\n"
             recipeList[keys[index]]?.let {
-                viewModel!!.getItems(it, object : InventoryCallback {
-                    override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                    override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                viewModel!!.getItems(it, object : ItemCallback {
+                    override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                         for (e in itemDescription) {
                             recipeString += "${e.quantity} * ${e.nom}\n"
                             if (index < recipeList.size-1) {
@@ -145,9 +142,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                         }
                         recipePickaxeDisplay(keys, index + 1, recipeList)
                     }
-                    override fun upgradePickaxe() {}
-                    override fun erreur(erreurId: Int) {}
-                    override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
                 })
             }
 
@@ -163,14 +157,10 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
         setPickaxe()
         viewModel!!.getItems(inventory, object :
-            InventoryCallback {
-            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-            override fun getItems(itemDescription: MutableList<ItemDescription>) {
+            ItemCallback {
+            override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                 setItems(itemDescription)
             }
-            override fun upgradePickaxe() {}
-            override fun erreur(erreurId: Int) {}
-            override fun recipePickaxe(recipe: MutableMap<String, List<Item>>) {}
         }
         )
     }
@@ -233,20 +223,17 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         if (erreurId == 0){
             viewModel!!.recipePickaxe(object : InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                 override fun upgradePickaxe() {}
                 override fun erreur(erreurId: Int) {}
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
                     val recette = recipeList[(pickaxeLevel+1).toString()]
                     if (recette != null) {
-                        viewModel!!.getItems(recette, object : InventoryCallback {
-                            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                            override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                        viewModel!!.getItems(recette, object : ItemCallback {
+                            override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                                 viewModel!!.getStatus(object : InventoryCallback {
                                     override fun getStatus(pickaxe: Int, money: Int, inventoryPlayer: List<Item>) {
-                                        viewModel!!.getItems(inventoryPlayer, object : InventoryCallback {
-                                            override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) { }
-                                            override fun getItems(itemDescriptionPlayer: MutableList<ItemDescription>) {
+                                        viewModel!!.getItems(inventoryPlayer, object : ItemCallback {
+                                            override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {
                                                 var missing = "Il vous manque: \n"
                                                 for (i in 0 until itemDescription.size) {
                                                     val requiredQuantity = itemDescription[i]
@@ -263,20 +250,13 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                                 }
                                                 PopUpDisplay.simplePopUp(requireActivity(), "Objet manquant", missing)
                                             }
-                                            override fun upgradePickaxe() {}
-                                            override fun erreur(erreurId: Int) {}
-                                            override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
                                         })
                                     }
-                                    override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                                     override fun upgradePickaxe() {}
                                     override fun erreur(erreurId: Int) {}
                                     override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
                                 })
                             }
-                            override fun upgradePickaxe() {}
-                            override fun erreur(erreurId: Int) {}
-                            override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {}
                         })
                     }
                 }

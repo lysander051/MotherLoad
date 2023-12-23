@@ -1,12 +1,17 @@
 package com.example.motherload.data.api
 
+import android.content.Context
 import android.util.Log
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.motherland.MotherLoad
+import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.InventoryCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -65,54 +70,6 @@ object InventoryApi {
         )
 
         MotherLoad.instance.requestQueue?.add(stringRequest)
-    }
-
-    fun getItems(session: Long, signature: Long, items: List<Item>, callback: InventoryCallback){
-        var itemDescription = mutableListOf<ItemDescription>()
-        var requestCount = 0
-        for (e in items) {
-            val url = BASE_URL_CREUSER + "item_detail.php?session=$session&signature=$signature&item_id=${e.id}"
-
-            val stringRequest = StringRequest(
-                Request.Method.GET, url,
-                { response ->
-                    try {
-                        val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
-                        val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
-                        val doc: Document = docBuilder.parse(response.byteInputStream())
-                        val statusNode = doc.getElementsByTagName("STATUS").item(0)
-                        if (statusNode != null) {
-                            val status = statusNode.textContent.trim()
-                            if (status == "OK") {
-                                val nom =doc.getElementsByTagName("NOM").item(0).textContent.toString()
-                                val type =doc.getElementsByTagName("TYPE").item(0).textContent.toString()
-                                val rarity = doc.getElementsByTagName("RARETE").item(0).textContent.toString()
-                                val image = "https://test.vautard.fr/creuse_imgs/" + doc.getElementsByTagName("IMAGE").item(0).textContent.toString()
-                                val desc_fr = doc.getElementsByTagName("DESC_FR").item(0).textContent.toString()
-                                val desc_en = doc.getElementsByTagName("DESC_EN").item(0).textContent.toString()
-                                itemDescription.add(ItemDescription(e.id, nom, type, rarity,image,desc_fr,desc_en,e.quantity))
-                                requestCount++
-                                if (requestCount == items.size) {
-                                    callback.getItems(itemDescription)
-                                }
-                            } else {
-                                Log.d(TAG, "Erreur - $status")
-                                if (requestCount == items.size) {
-                                    callback.getItems(itemDescription)
-                                }
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
-                    }
-                },
-                { error ->
-                    Log.d(TAG, "connexion error")
-                    error.printStackTrace()
-                }
-            )
-            MotherLoad.instance.requestQueue?.add(stringRequest)
-        }
     }
 
     fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback){

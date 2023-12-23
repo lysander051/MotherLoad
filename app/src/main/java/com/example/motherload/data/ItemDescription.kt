@@ -12,5 +12,5 @@ data class ItemDescription(
     val image: String,
     val desc_fr: String,
     val desc_en: String,
-    val quantity: String
+    var quantity: String
 )
