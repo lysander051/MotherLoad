@@ -130,7 +130,7 @@ class ProfileFragment: Fragment(){
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             langue.adapter = adapter
             val sharedPref = MotherLoad.instance.getSharedPreferences("Settings",Context.MODE_PRIVATE)
-            val defaultLanguage = getPosSelecteurLangue()
+            val defaultLanguage = LanguageSelector.getPosSelecteurLangue()
             langue.setSelection(sharedPref.getInt("posLangue",defaultLanguage))
         }
 
@@ -139,19 +139,6 @@ class ProfileFragment: Fragment(){
         return ret
     }
 
-    private fun getPosSelecteurLangue() : Int{
-        val userLanguage = MotherLoad.instance.resources.configuration.locales[0].language
-        var pos : Int = -1
-        when(userLanguage){
-            "fr" -> pos = 0
-            "en" -> pos = 1
-            "ko" -> pos = 2
-            "ja" -> pos = 3
-            else -> {pos = 0}
-        }
-        Log.d("LANGUE", "lange = $userLanguage et pos = $pos")
-        return pos
-    }
 
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
