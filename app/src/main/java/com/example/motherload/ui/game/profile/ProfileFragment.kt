@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ProfilCallback
+import com.example.motherload.utils.LanguageSelector
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 import java.lang.Double.max
@@ -128,49 +130,15 @@ class ProfileFragment: Fragment(){
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             langue.adapter = adapter
             val sharedPref = MotherLoad.instance.getSharedPreferences("Settings",Context.MODE_PRIVATE)
-            langue.setSelection(sharedPref.getInt("posLangue",0))
+            val defaultLanguage = LanguageSelector.getPosSelecteurLangue()
+            langue.setSelection(sharedPref.getInt("posLangue",defaultLanguage))
         }
 
-        class LanguageSelector(activity: FragmentActivity) : Activity(), AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                var lang = "fr-FR"
-                var pos = 0
-                when(position){
-                    1 -> {lang = "en-US"
-                        pos = 1}
-                    2 -> {lang = "ko-KR"
-                        pos = 2}
-                    3 -> {lang = "ja-JP"
-                        pos = 3}
-                    else -> {}
-                }
-                val appLocales : LocaleListCompat = LocaleListCompat.forLanguageTags(lang)
-                val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                if (sharedPref.getInt("posLangue",0) != pos){
-                    val editor = sharedPref.edit()
-                    editor.putString("langue",lang)
-                    editor.putInt("posLangue",pos)
-                    editor.apply()
-                    AppCompatDelegate.setApplicationLocales(appLocales)
-                    if (activity != null){
-                        activity?.finish()
-                        activity?.startActivity(activity?.intent)
-                    }
-
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
         langue.onItemSelectedListener = LanguageSelector(requireActivity())
         setArtifact()
         return ret
     }
+
 
     private fun setArtifact() {
         viewModel!!.getArtifact(object :

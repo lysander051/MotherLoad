@@ -177,7 +177,7 @@ object HomeApi {
         Log.d("coucou", "try to connect")
         val sharedPref = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
         val login = sharedPref.getString("login", "") ?: ""
-        val psw = LoginManager.getDecryptedPassword()
+        val psw = LoginManager.hash(LoginManager.getDecryptedPassword())
         val keepConnected = sharedPref.getBoolean("stayC", false)
         if (keepConnected) {
             for (i in 0..5) {
