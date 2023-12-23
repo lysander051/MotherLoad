@@ -1,13 +1,18 @@
 package com.example.motherload.data.api
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.InventoryCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,7 +26,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 object InventoryApi {
     val TAG = "InventoryApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    fun getStatus(session: Long, signature: Long, callback: InventoryCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getStatus(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
 
@@ -54,6 +60,13 @@ object InventoryApi {
                             Log.d(TAG, "pickaxe:$pickaxe / money:$money / inventory:${items.size}")
                             callback.getStatus(pickaxe,money,items)
                         }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
                         else {
                             Log.d(TAG, "Erreur - $status")
                         }
@@ -71,7 +84,8 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"maj_pioche.php?session=$session&signature=$signature&pickaxe_id=${pickaxeLevel}"
         Log.d(TAG, url)
 
@@ -95,6 +109,13 @@ object InventoryApi {
                         else if(status == "KO - UNKNOWN ID"){
                             callback.erreur(1)
                         }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
                         else {
                             Log.d(TAG, "Erreur - $status")
                         }
@@ -111,7 +132,8 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun recipePickaxe(session: Long, signature: Long, callback: InventoryCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun recipePickaxe(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"recettes_pioches.php?session=$session&signature=$signature"
         Log.d(TAG, url)
 
@@ -149,6 +171,13 @@ object InventoryApi {
                                 recipeList.put(pickaxeId,listItem)
                             }
                             callback.recipePickaxe(recipeList)
+                        }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
                         }
                         else {
                             Log.d(TAG, "Erreur - $status")

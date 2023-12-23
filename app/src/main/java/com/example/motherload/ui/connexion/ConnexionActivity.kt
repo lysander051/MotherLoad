@@ -71,6 +71,15 @@ class ConnexionActivity : AppCompatActivity(){
         saveLoginPsw.setOnCheckedChangeListener { _, isChecked ->
             saveLP = isChecked
         }
+        if (stayC){
+            viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
+                ConnexionCallback {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun onConnexion(isConnected: Boolean) {
+                    checkConnexion(isConnected)
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -85,6 +94,7 @@ class ConnexionActivity : AppCompatActivity(){
                 saveLoginToSharedPreferences("", "", false)
             }
             saveStayConnected(stayC)
+            finish()
             startActivity(intent)
         } else {
             PopUpDisplay.longToast(this, getString(R.string.mot_de_passe_ou_pseudo_incorrect))

@@ -1,5 +1,6 @@
 package com.example.motherload.ui.game.shop
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +37,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ShopViewModel::class.java]
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,9 +77,11 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         isRefreshing = true // Indique que le rafraîchissement est en cours
         // Exécutez le rafraîchissement périodique toutes les 5 secondes
         handler.postDelayed(object : Runnable {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun run() {
                 viewModel!!.getMarketItems(object :
                     ShopCallback {
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {
                         val listItems = mutableListOf<Item>()
                         for (i in items){
@@ -94,7 +99,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                                 setItemsBuy(updatedItems)
                             }
                         }
-                        )
+                        , requireActivity())
                     }
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
@@ -102,13 +107,14 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun erreur() {}
 
                 }
-                )
+                , requireActivity())
                 if (isRefreshing) {
                     handler.postDelayed(this, 10000) // Rafraîchir toutes les 5 secondes
                 }
             }
         }, 0)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     fun sellDiplay(){
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -121,6 +127,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
             override fun buyItem() {}
             override fun sellItem() {}
             override fun erreur() {}
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun getInventory(items: MutableList<Item>) {
                 viewModel!!.getItemsDescription(items, object :
                     ItemCallback {
@@ -133,10 +140,10 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                         setItemsSell(updatedItems)
                     }
                 }
-                )
+                , requireActivity())
             }
         }
-        )
+        , requireActivity())
     }
     private fun setItemsBuy(items: List<Triple<Int, ItemDescription?, Int>>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
@@ -152,6 +159,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         val adapter = ShopVenteAdapter(listItemDescription, this)
         recyclerView.adapter = adapter
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBuyButtonClick(order_id: Int, item: ItemDescription?, prix: Int) {
         PopUpDisplay.cancellablePopUp(this.requireActivity(),
             getString(R.string.acheter),
@@ -177,10 +185,11 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                                     getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }
-                )
+                , requireActivity())
             }
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onSellButtonClick(quantity: Int, item: ItemDescription?, prix: Int) {
         PopUpDisplay.cancellablePopUp(this.requireActivity(),
             getString(R.string.vendre),
@@ -193,6 +202,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
                     override fun erreur() {}
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun sellItem() {
                         sellDiplay()
                         PopUpDisplay.simplePopUp(requireActivity(),
@@ -202,7 +212,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                                     getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }
-                )
+                , requireActivity())
             }
         }
     }

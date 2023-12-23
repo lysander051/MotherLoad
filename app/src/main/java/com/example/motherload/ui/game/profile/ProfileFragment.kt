@@ -2,6 +2,7 @@ package com.example.motherload.ui.game.profile
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -34,6 +35,7 @@ import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ProfilCallback
+import com.example.motherload.ui.connexion.ConnexionActivity
 import com.example.motherload.utils.LanguageSelector
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
@@ -81,7 +83,7 @@ class ProfileFragment: Fragment(){
                 }
                 override fun resetUser() {}
                 override fun getArtifact(inventory: List<Item>) {}
-            })
+            }, requireActivity())
         }
         reset.setSafeOnClickListener {
             PopUpDisplay.cancellablePopUp(requireActivity(),
@@ -99,7 +101,7 @@ class ProfileFragment: Fragment(){
                                 getString(R.string.votre_compte_a_t_r_initialis)
                             )
                         }
-                    })
+                    }, requireActivity())
                 }
             }
 
@@ -144,7 +146,15 @@ class ProfileFragment: Fragment(){
                 getString(R.string.voulez_vous_vraiment_vous_d_connecter)
             ) { confirmed ->
                 if (confirmed) {
+                    val sharedPref = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
+                    val editor = sharedPref.edit()
+                    editor.putBoolean("stayC", false)
+                    editor.putBoolean("saveLP", false)
+                    editor.putString("psw", "")
+                    editor.putString("iv", "")
+                    editor.apply()
                     requireActivity().finish()
+                    requireActivity().startActivity(Intent(requireActivity(), ConnexionActivity::class.java))
                 }
             }
         }
@@ -153,11 +163,13 @@ class ProfileFragment: Fragment(){
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
             ProfilCallback {
             override fun changerPseudo(pseudo: String) {}
             override fun resetUser() {}
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun getArtifact(inventory: List<Item>) {
                 viewModel!!.getItems(inventory, object :
                     ItemCallback {
@@ -169,10 +181,10 @@ class ProfileFragment: Fragment(){
                         recyclerView.adapter = adapter
                     }
                 }
-                )
+                , requireActivity())
             }
             }
-        )
+        , requireActivity())
     }
 
     private fun calculateSpanCount(): Int {

@@ -94,7 +94,7 @@ class HomeFragment : Fragment() {
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
                         override fun erreur(erreurId: Int) {}
                     }
-                    )
+                    , requireActivity())
                 }
             }
         }
@@ -167,7 +167,7 @@ class HomeFragment : Fragment() {
                                 override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                                     PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
                                 }
-                            })
+                            }, requireActivity())
                         }
                         depthHole = true
                         didDig = true
@@ -178,7 +178,7 @@ class HomeFragment : Fragment() {
                     override fun erreur(erreurId: Int) {
                         gestionErreur(erreurId)
                     }
-                })
+                }, requireActivity())
 
                 // Bloque le bouton 10secondes si on a cliqué
                 handler.postDelayed({
@@ -235,7 +235,7 @@ class HomeFragment : Fragment() {
                         override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
                         override fun erreur(erreurId: Int) {}
                     }
-                    )
+                    , requireActivity())
                 }
             }
             //on lance la géolocalisation et la mise a jour des voisins

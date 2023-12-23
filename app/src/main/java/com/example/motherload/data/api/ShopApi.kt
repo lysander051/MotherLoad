@@ -1,11 +1,16 @@
 package com.example.motherload.data.api
 
+import android.app.Activity
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ShopCallback
 import org.w3c.dom.Document
@@ -18,7 +23,8 @@ object ShopApi {
     val TAG = "ShopApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
-    fun getMarketItems(session: Long, signature: Long, callback: ShopCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getMarketItems(session: Long, signature: Long, callback: ShopCallback, activity: Activity) {
         val url = BASE_URL_CREUSER + "market_list.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
 
@@ -49,7 +55,15 @@ object ShopApi {
                                 }
                             }
                             callback.getMarketItems(items)
-                        } else {
+                        }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
+                        else {
                             Log.d(TAG, "Erreur - $status")
                         }
                     }
@@ -65,7 +79,8 @@ object ShopApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun getInventory(session: Long, signature: Long, callback: ShopCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getInventory(session: Long, signature: Long, callback: ShopCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
 
@@ -95,6 +110,13 @@ object ShopApi {
                             }
                             callback.getInventory(items)
                         }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
                         else {
                             Log.d(InventoryApi.TAG, "Erreur - $status")
                         }
@@ -110,7 +132,8 @@ object ShopApi {
         )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
-    fun buyItem(session: Long, signature: Long, order_id: Int, callback: ShopCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun buyItem(session: Long, signature: Long, order_id: Int, callback: ShopCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"market_acheter.php?session=$session&signature=$signature&offer_id=$order_id"
         Log.d(TAG, "session: $session|signature: $signature")
 
@@ -131,6 +154,13 @@ object ShopApi {
                         else if (status == "KO - NO MONEY"){
                             callback.erreur()
                         }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
                         else {
                             Log.d(InventoryApi.TAG, "Erreur - $status")
                         }
@@ -147,7 +177,8 @@ object ShopApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    fun sellItem(session: Long, signature: Long, quantity: Int, id: String?, prix: Int, callback: ShopCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun sellItem(session: Long, signature: Long, quantity: Int, id: String?, prix: Int, callback: ShopCallback, activity: Activity) {
         val url = BASE_URL_CREUSER +"market_vendre.php?session=$session&signature=$signature&item_id=$id&quantite=$quantity&prix=$prix"
         Log.d(TAG, "session: $session|signature: $signature")
 
@@ -164,6 +195,13 @@ object ShopApi {
                         if (status == "OK") {
                             Log.d(InventoryApi.TAG, "Acces sell item")
                             callback.sellItem()
+                        }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
                         }
                         else {
                             Log.d(InventoryApi.TAG, "Erreur - $status")

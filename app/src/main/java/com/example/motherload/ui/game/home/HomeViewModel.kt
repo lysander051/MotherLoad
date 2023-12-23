@@ -1,5 +1,6 @@
 package com.example.motherload.ui.game.home
 
+import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.os.Build
@@ -31,22 +32,24 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
         _isButtonClickEnabled.value = true
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun deplacement(location: Location, callback: HomeCallback){
+    fun deplacement(location: Location, callback: HomeCallback, activity: Activity){
         val latitude = location.latitude
         val longitude = location.longitude
-        homeRepo.deplacement(latitude, longitude, callback)
+        homeRepo.deplacement(latitude, longitude, callback, activity)
     }
 
-    fun creuser(location: GeoPoint, callback: HomeCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun creuser(location: GeoPoint, callback: HomeCallback, activity: Activity) {
         val latitude = location.latitude
         val longitude = location.longitude
-        homeRepo.creuser(latitude, longitude, callback)
+        homeRepo.creuser(latitude, longitude, callback, activity)
     }
 
     fun getDepthHole(): Triple<Float, Float, Int> {
         return homeRepo.getDepthHole()
     }
-    fun getItems(item: List<Item>, callback: ItemCallback){
-        homeRepo.getItems(item, callback)
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getItems(item: List<Item>, callback: ItemCallback, activity: Activity){
+        homeRepo.getItems(item, callback, activity)
     }
 }

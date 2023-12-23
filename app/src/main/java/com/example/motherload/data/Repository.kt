@@ -1,5 +1,6 @@
 package com.example.motherload.data
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -45,26 +46,29 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun deplacement(latitude: Double, longitude: Double, callback: HomeCallback) {
+    fun deplacement(latitude: Double, longitude: Double, callback: HomeCallback, activity: Activity) {
         getSessionSignature()
-        HomeApi.deplacement(session, signature, latitude, longitude, callback)
+        HomeApi.deplacement(session, signature, latitude, longitude, callback, activity)
     }
 
-    fun creuser(latitude: Double, longitude: Double, callback: HomeCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun creuser(latitude: Double, longitude: Double, callback: HomeCallback, activity: Activity) {
         getSessionSignature()
-        HomeApi.creuser(session, signature, latitude, longitude, callback)
+        HomeApi.creuser(session, signature, latitude, longitude, callback, activity)
     }
 
     fun getDepthHole(): Triple<Float, Float, Int> {
         return HomeApi.getDepthHole()
     }
 
-    fun getStatus(callback: InventoryCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getStatus(callback: InventoryCallback, activity: Activity) {
         getSessionSignature()
-        InventoryApi.getStatus(session, signature, callback)
+        InventoryApi.getStatus(session, signature, callback, activity)
     }
 
-    fun getItems(items: List<Item>, callback: ItemCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getItems(items: List<Item>, callback: ItemCallback, activity: Activity) {
         GlobalScope.launch(Dispatchers.IO) {
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
             val lastReset = sharedPreferences.getLong("lastReset", 0)
@@ -96,54 +100,63 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
             }else{
                 Log.d(TAG, "update Database")
                 launch(Dispatchers.Main) {
-                    ItemApi.getItems(session, signature, items, motherLoad, callback)
+                    ItemApi.getItems(session, signature, items, motherLoad, callback, activity)
                 }
             }
         }
     }
 
-    fun upgradePickaxe(pickaxeLevel: Int, callback: InventoryCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun upgradePickaxe(pickaxeLevel: Int, callback: InventoryCallback, activity: Activity) {
         getSessionSignature()
-        InventoryApi.upgradePickaxe(session, signature, pickaxeLevel, callback)
+        InventoryApi.upgradePickaxe(session, signature, pickaxeLevel, callback, activity)
     }
 
-    fun recipePickaxe(callback: InventoryCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun recipePickaxe(callback: InventoryCallback, activity: Activity) {
         getSessionSignature()
-        InventoryApi.recipePickaxe(session, signature, callback)
+        InventoryApi.recipePickaxe(session, signature, callback, activity)
     }
 
-    fun changerPseudo(pseudo: String, callback: ProfilCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun changerPseudo(pseudo: String, callback: ProfilCallback, activity: Activity) {
         getSessionSignature()
-        ProfileApi.changerPseudo(session, signature, pseudo, callback)
+        ProfileApi.changerPseudo(session, signature, pseudo, callback, activity)
     }
 
-    fun resetUser(callback: ProfilCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun resetUser(callback: ProfilCallback, activity: Activity) {
         getSessionSignature()
-        ProfileApi.resetUser(session, signature, callback)
+        ProfileApi.resetUser(session, signature, callback, activity)
     }
-    fun getArtifact(callback: ProfilCallback){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getArtifact(callback: ProfilCallback, activity: Activity){
         getSessionSignature()
-        ProfileApi.getArtifact(session, signature, callback)
-    }
-
-    fun getMarketItems(callback: ShopCallback) {
-        getSessionSignature()
-        ShopApi.getMarketItems(session, signature, callback)
+        ProfileApi.getArtifact(session, signature, callback, activity)
     }
 
-    fun getInventory(callback: ShopCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getMarketItems(callback: ShopCallback, activity: Activity) {
         getSessionSignature()
-        ShopApi.getInventory(session, signature, callback)
+        ShopApi.getMarketItems(session, signature, callback, activity)
     }
 
-    fun buyItem(order_id: Int, callback: ShopCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getInventory(callback: ShopCallback, activity: Activity) {
         getSessionSignature()
-        ShopApi.buyItem(session, signature, order_id, callback)
+        ShopApi.getInventory(session, signature, callback, activity)
     }
 
-    fun sellItem(quantity: Int, id: String?, prix: Int, callback: ShopCallback) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun buyItem(order_id: Int, callback: ShopCallback, activity: Activity) {
         getSessionSignature()
-        ShopApi.sellItem(session, signature, quantity, id, prix, callback)
+        ShopApi.buyItem(session, signature, order_id, callback, activity)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun sellItem(quantity: Int, id: String?, prix: Int, callback: ShopCallback, activity: Activity) {
+        getSessionSignature()
+        ShopApi.sellItem(session, signature, quantity, id, prix, callback, activity)
     }
 
 

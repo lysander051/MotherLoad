@@ -1,6 +1,8 @@
 package com.example.motherLoad.Utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
@@ -11,6 +13,7 @@ import com.example.motherland.MotherLoad
 import java.security.KeyStore
 import java.security.MessageDigest
 import android.util.Base64
+import com.example.motherload.ui.connexion.ConnexionActivity
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -37,7 +40,7 @@ class LoginManager {
             return keyGenerator.generateKey()
         }
         @RequiresApi(Build.VERSION_CODES.O)
-        public fun savePassword(password: String) : String {
+        fun savePassword(password: String) : String {
             val secretKey : SecretKey = generateKey()
             val ciph : Cipher = Cipher.getInstance(
                 KeyProperties.KEY_ALGORITHM_AES
@@ -63,7 +66,7 @@ class LoginManager {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        public fun getDecryptedPassword() : String {
+        fun getDecryptedPassword() : String {
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
             val chiffrePassword : String? = sharedPreferences.getString("psw","")
             val iv : String? = sharedPreferences.getString("iv", "")
@@ -87,6 +90,13 @@ class LoginManager {
                 return password
             }
             return ""
+        }
+
+        fun checkReconnexion(activity : Activity, boolean: Boolean) {
+            if (!boolean){
+                activity.finish()
+                activity.startActivity(Intent(activity, ConnexionActivity::class.java))
+            }
         }
 
     }

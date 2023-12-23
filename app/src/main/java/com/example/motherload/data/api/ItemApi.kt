@@ -1,13 +1,18 @@
 package com.example.motherload.data.api
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +25,14 @@ import javax.xml.parsers.DocumentBuilderFactory
 object ItemApi {
     val TAG = "ItemApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getItems(
         session: Long,
         signature: Long,
         items: List<Item>,
         context: Context,
-        callback: ItemCallback
+        callback: ItemCallback,
+        activity: Activity
     ) {
         var itemDescription = mutableListOf<ItemDescription>()
         var requestCount = 0
@@ -83,7 +90,15 @@ object ItemApi {
                                             callback.getItemsDescription(itemDescription)
                                         }
                                     }
-                                } else {
+                                }
+                                else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                                    ConnexionApi.connectAgain(object : ConnexionCallback {
+                                        override fun onConnexion(isConnected: Boolean) {
+                                            LoginManager.checkReconnexion(activity, isConnected)
+                                        }
+                                    })
+                                }
+                                else {
                                     Log.d(TAG, "Erreur - $status")
                                 }
                             }
