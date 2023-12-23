@@ -104,7 +104,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                 }
                 )
                 if (isRefreshing) {
-                    handler.postDelayed(this, 5000) // Rafraîchir toutes les 5 secondes
+                    handler.postDelayed(this, 10000) // Rafraîchir toutes les 5 secondes
                 }
             }
         }, 0)

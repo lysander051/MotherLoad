@@ -181,6 +181,7 @@ class HomeFragment : Fragment() {
                 // Bloque le bouton 10secondes si on a cliqué
                 handler.postDelayed({
                     creuser.setImageResource(R.drawable.pickaxe_icon)
+                    creuser.startAnimation(animation)
                     viewModel!!.enableButtonClick()
                 }, 10000)
             }

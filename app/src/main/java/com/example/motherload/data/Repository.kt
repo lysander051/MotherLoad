@@ -2,12 +2,9 @@ package com.example.motherload.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.annotation.experimental.R
-import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherland.MotherLoad
 import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.api.ConnexionApi
@@ -22,15 +19,9 @@ import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.callback.ShopCallback
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.w3c.dom.Node
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.concurrent.thread
 
 class Repository private constructor(private val motherLoad: MotherLoad) {
     private val TAG: String = "Repo"
@@ -77,7 +68,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
         GlobalScope.launch(Dispatchers.IO) {
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
             val lastReset = sharedPreferences.getLong("lastReset", 0)
-            val currentTimeminutes: Long = System.currentTimeMillis() / (60000)
+            val currentTimeHours: Long = System.currentTimeMillis() / (60000 * 60)
             val itemsIds: MutableList<String> = ArrayList()
 
             val uniqueItemIds = items.distinctBy { it.id }
@@ -87,14 +78,14 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
                 itemsIds.add(element.id)
             }
             Log.d(TAG, "lastreset $lastReset")
-            Log.d(TAG, "currenttime $currentTimeminutes")
-            Log.d(TAG, "reset ${currentTimeminutes - lastReset >= 1}")
+            Log.d(TAG, "currenttime $currentTimeHours")
+            Log.d(TAG, "reset ${currentTimeHours - lastReset >= 24}")
             val itemsStockees: MutableList<ItemDescription> = dao.getItemsByIds(itemsIds)
-            if(currentTimeminutes - lastReset >= 1){
+            if(currentTimeHours - lastReset >= 1){
                 dao.deleteAll()
                 val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
-                editor.putLong("lastReset", currentTimeminutes)
+                editor.putLong("lastReset", currentTimeHours)
                 editor.apply()
             }
             if ( numberOfUniqueItems == itemsStockees.size) {
