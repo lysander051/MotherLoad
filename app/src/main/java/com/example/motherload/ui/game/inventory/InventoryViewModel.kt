@@ -8,7 +8,7 @@ import com.example.motherload.data.Item
 import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.ItemCallback
 
-class InventoryViewModel(var invRepo: Repository): ViewModel() {
+class InventoryViewModel(private var invRepo: Repository): ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getStatus(callback: InventoryCallback, activity: Activity){
         invRepo.getStatus(callback, activity)

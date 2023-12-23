@@ -2,26 +2,16 @@ package com.example.motherload.data.api
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
-import com.example.motherload.data.Item
-import com.example.motherload.data.ItemDescription
-import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.HomeCallback
-import com.example.motherload.data.callback.InventoryCallback
-import com.example.motherload.ui.game.MainActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -30,8 +20,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object HomeApi {
-    val TAG = "HomeApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "HomeApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(session: Long, signature: Long, latitude:Double, longitude:Double, callback: HomeCallback, activity: Activity){
@@ -58,8 +48,8 @@ object HomeApi {
                                     val nom = elem.getElementsByTagName("NOM").item(0).textContent
                                     val lat = elem.getElementsByTagName("LATITUDE").item(0).textContent
                                     val lon = elem.getElementsByTagName("LONGITUDE").item(0).textContent
-                                    var geoPoint = GeoPoint(lat.toDouble(), lon.toDouble())
-                                    Log.d(TAG, "Nom" + nom + "|latitude: "+ lat + "|longitude: "+ lon + "|")
+                                    val geoPoint = GeoPoint(lat.toDouble(), lon.toDouble())
+                                    Log.d(TAG, "Nom: $nom|latitude: $lat |longitude: $lon|")
                                     voisin[nom] = geoPoint
                                     callback.deplacement(voisin)
                                 }
@@ -126,10 +116,10 @@ object HomeApi {
                                         elem.getElementsByTagName("LATITUDE").item(0).textContent
                                     val lon =
                                         elem.getElementsByTagName("LONGITUDE").item(0).textContent
-                                    var geoPoint = GeoPoint(lat.toDouble(), lon.toDouble())
+                                    val geoPoint = GeoPoint(lat.toDouble(), lon.toDouble())
                                     Log.d(
                                         TAG,
-                                        "Nom" + nom + "|latitude: " + lat + "|longitude: " + lon + "|"
+                                        "Nom: $nom|latitude: $lat|longitude: $lon|"
                                     )
                                     voisin[nom] = geoPoint
                                 }

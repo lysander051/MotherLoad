@@ -9,11 +9,8 @@ import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
-import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ConnexionCallback
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ProfilCallback
-import com.example.motherload.data.callback.ShopCallback
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -21,8 +18,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ProfileApi {
-    val TAG = "ProfileApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "ProfileApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
     @RequiresApi(Build.VERSION_CODES.O)
     fun changerPseudo(session: Long, signature: Long, pseudo: String, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"changenom.php?session=$session&signature=$signature&nom=$pseudo"
@@ -127,8 +124,8 @@ object ProfileApi {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
                             Log.d(TAG, "Acces inventaire")
-                            var items = mutableListOf<Item>()
-                            var listItems = doc.getElementsByTagName("ARTEFACTS").item(0).childNodes
+                            val items = mutableListOf<Item>()
+                            val listItems = doc.getElementsByTagName("ARTEFACTS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
@@ -180,10 +177,10 @@ object ProfileApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(InventoryApi.TAG, "Acces inventaire")
-                            var items = mutableListOf<Item>()
+                            Log.d(TAG, "Acces inventaire")
+                            val items = mutableListOf<Item>()
 
-                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            val listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
@@ -203,15 +200,15 @@ object ProfileApi {
                             })
                         }
                         else {
-                            Log.d(InventoryApi.TAG, "Erreur - $status")
+                            Log.d(TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(InventoryApi.TAG, "connexion error")
+                Log.d(TAG, "connexion error")
                 error.printStackTrace()
             }
         )

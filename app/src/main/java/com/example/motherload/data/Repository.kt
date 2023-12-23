@@ -7,7 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.motherland.MotherLoad
-import com.example.motherload.Model.AppDatabase
+import com.example.motherload.data.local.AppDatabase
 import com.example.motherload.data.api.ConnexionApi
 import com.example.motherload.data.api.HomeApi
 import com.example.motherload.data.api.InventoryApi
@@ -28,7 +28,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     private val TAG: String = "Repo"
     private var session: Long = -1
     private var signature: Long = -1
-    val itemDao = AppDatabase.getDatabase(MotherLoad.instance).itemDescriptionDao()
+    private val itemDao = AppDatabase.getDatabase(MotherLoad.instance).itemDescriptionDao()
 
     companion object {
         private var repository: Repository? = null

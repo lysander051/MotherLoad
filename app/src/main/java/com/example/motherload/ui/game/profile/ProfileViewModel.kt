@@ -7,10 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.example.motherload.data.Item
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.Repository
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 
-class ProfileViewModel(var profileRepo: Repository): ViewModel() {
+class ProfileViewModel(private var profileRepo: Repository): ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun changerPseudo(pseudo: String, callback: ProfilCallback, activity: Activity){
         profileRepo.changerPseudo(pseudo, callback, activity)

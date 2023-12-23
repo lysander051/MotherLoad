@@ -1,7 +1,6 @@
 package com.example.motherload.data.api
 
 import android.app.Activity
-import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -9,14 +8,9 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
-import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.Item
-import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.InventoryCallback
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -24,8 +18,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object InventoryApi {
-    val TAG = "InventoryApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "InventoryApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
     @RequiresApi(Build.VERSION_CODES.O)
     fun getStatus(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
@@ -43,11 +37,11 @@ object InventoryApi {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
                             Log.d(TAG, "Acces inventaire")
-                            var pickaxe = doc.getElementsByTagName("PICKAXE").item(0).textContent.toInt()
-                            var money = doc.getElementsByTagName("MONEY").item(0).textContent.toInt()
-                            var items = mutableListOf<Item>()
+                            val pickaxe = doc.getElementsByTagName("PICKAXE").item(0).textContent.toInt()
+                            val money = doc.getElementsByTagName("MONEY").item(0).textContent.toInt()
+                            val items = mutableListOf<Item>()
 
-                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            val listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
@@ -149,8 +143,8 @@ object InventoryApi {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
                             Log.d(TAG, "Liste recette de pioche")
-                            var recipeList = mutableMapOf<String,List<Item>>()
-                            var listItem = mutableListOf<Item>()
+                            val recipeList = mutableMapOf<String,List<Item>>()
+                            var listItem : MutableList<Item>
                             val listPickaxe = doc.getElementsByTagName("UPGRADES").item(0).childNodes
                             Log.d(TAG, "taille liste pickaxe: ${listPickaxe.length}")
                             for (i in 0 until listPickaxe.length) {
@@ -158,7 +152,7 @@ object InventoryApi {
                                 val pickaxeId = pickaxeNode.getElementsByTagName("PICKAXE_ID").item(0).textContent.trim()
                                 val itemsNode = pickaxeNode.getElementsByTagName("ITEMS").item(0)
                                 val itemList = itemsNode.childNodes
-                                listItem = mutableListOf<Item>()
+                                listItem = mutableListOf()
                                 for (j in 0 until itemList.length) {
                                     if (itemList.item(j) is Element) {
                                         val itemNode = itemList.item(j) as Element
@@ -168,7 +162,7 @@ object InventoryApi {
                                     }
                                 }
                                 Log.d(TAG, "$pickaxeId, size item ${listItem.size}")
-                                recipeList.put(pickaxeId,listItem)
+                                recipeList[pickaxeId] = listItem
                             }
                             callback.recipePickaxe(recipeList)
                         }

@@ -1,7 +1,6 @@
 package com.example.motherload.data.api
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
@@ -16,8 +15,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ConnexionApi {
-    val TAG = "ConnexionApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "ConnexionApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
     fun getConnected(login: String, password: String, callback: ConnexionCallback){
         val url = BASE_URL_CREUSER+"connexion.php?login=$login&passwd=$password"
 
@@ -74,7 +73,7 @@ object ConnexionApi {
         val keepConnected = sharedPref.getBoolean("stayC", false)
         if (keepConnected) {
             for (i in 0..5) {
-                val url = ConnexionApi.BASE_URL_CREUSER + "connexion.php?login=$login&passwd=$psw"
+                val url = BASE_URL_CREUSER + "connexion.php?login=$login&passwd=$psw"
 
                 val stringRequest = StringRequest(
                     Request.Method.GET, url,
@@ -99,27 +98,27 @@ object ConnexionApi {
                                             Context.MODE_PRIVATE
                                         )
                                     val editor = sharedPreferences.edit()
-                                    Log.d(HomeApi.TAG, "session: $session|signature: $signature")
+                                    Log.d(TAG, "session: $session|signature: $signature")
                                     editor.putLong("SessionId", session)
                                     editor.putLong("Signature", signature)
                                     editor.apply()
                                     callback.onConnexion(true)
                                     return@StringRequest
                                 } else if (status == "KO - WRONG CREDENTIALS") {
-                                    Log.d(HomeApi.TAG, "Mauvais Login/passwd")
-                                    Log.d(HomeApi.TAG, "login - $login & password - $psw")
+                                    Log.d(TAG, "Mauvais Login/passwd")
+                                    Log.d(TAG, "login - $login & password - $psw")
                                     callback.onConnexion(false)
                                 } else {
-                                    Log.d(HomeApi.TAG, "Erreur - $status")
+                                    Log.d(TAG, "Erreur - $status")
                                     callback.onConnexion(false)
                                 }
                             }
                         } catch (e: Exception) {
-                            Log.e(HomeApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                            Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
                         }
                     },
                     { error ->
-                        Log.d(HomeApi.TAG, "connexion error")
+                        Log.d(TAG, "connexion error")
                         error.printStackTrace()
                     }
                 )

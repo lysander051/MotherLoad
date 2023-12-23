@@ -1,6 +1,5 @@
 package com.example.motherload.ui.game.profile
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -21,14 +19,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherland.MotherLoad
 import com.example.motherload.R
 import com.example.motherload.data.Item
@@ -51,7 +46,7 @@ class ProfileFragment: Fragment(){
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         ret = inflater.inflate(R.layout.fragment_profil, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
         val confirmer = ret.findViewById<Button>(R.id.boutonConfirmer)
@@ -111,7 +106,7 @@ class ProfileFragment: Fragment(){
 
         theme.isChecked = resources.configuration.isNightModeActive
 
-        theme.setOnCheckedChangeListener{ buttonView, isChecked ->
+        theme.setOnCheckedChangeListener{ _, isChecked ->
             val themeSharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
             val editor = themeSharedPref.edit()
             if(isChecked){

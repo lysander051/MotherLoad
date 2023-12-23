@@ -1,8 +1,8 @@
-package com.example.motherLoad.Injection
+package com.example.motherload.injection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.motherLoad.UI.Connexion.ConnexionViewModel
+import com.example.motherload.ui.connexion.ConnexionViewModel
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Repository
 import com.example.motherload.ui.game.home.HomeViewModel

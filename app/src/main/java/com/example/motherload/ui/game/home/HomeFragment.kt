@@ -11,12 +11,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -25,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherload.R
 import com.example.motherload.data.Item
@@ -167,7 +165,7 @@ class HomeFragment : Fragment() {
                             viewModel!!.getItems(mutableListOf(Item(itemId.toString(),"1")), object :
                                 ItemCallback {
                                 override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                                    PopUpDisplay.shortToast(requireActivity(), "${itemDescription.get(0).nom} trouvé")
+                                    PopUpDisplay.shortToast(requireActivity(), "${itemDescription[0].nom} trouvé")
                                 }
                             }, requireActivity())
                         }
@@ -335,7 +333,7 @@ class HomeFragment : Fragment() {
 
         myGroundOverlay.setPosition(topLeft, bottomRight)
         val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
-        myGroundOverlay.setImage(d)
+        myGroundOverlay.image = d
 
         if (depthHole)
             myGroundOverlay.transparency = 0f
@@ -381,8 +379,8 @@ class HomeFragment : Fragment() {
 
     private fun loadingDepthHole(){
         val dephtHoleInfo = viewModel?.getDepthHole()
-        holePosition = GeoPoint(dephtHoleInfo?.first?.toDouble()!!, dephtHoleInfo?.second?.toDouble()!!)
-        depthField.text = dephtHoleInfo.third.toString()+"M"
+        holePosition = GeoPoint(dephtHoleInfo?.first?.toDouble()!!, dephtHoleInfo.second.toDouble())
+        depthField.text = dephtHoleInfo.third.toString() + "M"
         depthHole = true
         affichageTrou()
         firstdisp = true

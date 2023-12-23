@@ -1,6 +1,5 @@
 package com.example.motherload.ui.game.inventory
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,12 +14,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
@@ -145,7 +143,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 viewModel!!.getItems(it, object : ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                         val updatedItems : List<ItemDescription?> = recipeList[keys[index]]!!.map { item ->
-                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                            val correspondingItemDescription = itemDescription.find { it.id == item.id}
                             correspondingItemDescription?.quantity = item.quantity
                             correspondingItemDescription
                         }
@@ -177,7 +175,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             ItemCallback {
             override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                 val updatedItems = inventory.map { item ->
-                    var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                    val correspondingItemDescription = itemDescription.find { it.id == item.id}
                     correspondingItemDescription?.quantity = item.quantity
                     correspondingItemDescription
                 }
@@ -267,12 +265,12 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                             override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {
                                                 var missing = getString(R.string.il_vous_manque)
                                                 val updatedItemsRequires : List<ItemDescription?> = recette.map { item ->
-                                                    var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                                                    val correspondingItemDescription = itemDescription.find { it.id == item.id}
                                                     correspondingItemDescription?.quantity = item.quantity
                                                     correspondingItemDescription
                                                 }
                                                 val updatedItemsPlayer : List<ItemDescription?> = inventoryPlayer.map { item ->
-                                                    var correspondingItemDescription = itemDescriptionPlayer.find { it.id == item.id}
+                                                    val correspondingItemDescription = itemDescriptionPlayer.find { it.id == item.id}
                                                     correspondingItemDescription?.quantity = item.quantity
                                                     correspondingItemDescription
                                                 }

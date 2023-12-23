@@ -9,7 +9,7 @@ import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ShopCallback
 
-class ShopViewModel(var shopRepo: Repository): ViewModel() {
+class ShopViewModel(private var shopRepo: Repository): ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getMarketItems(callback: ShopCallback, activity: Activity){
         shopRepo.getMarketItems(callback, activity)

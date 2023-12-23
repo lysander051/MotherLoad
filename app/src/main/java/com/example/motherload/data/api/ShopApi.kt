@@ -9,9 +9,7 @@ import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
-import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ConnexionCallback
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ShopCallback
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -20,8 +18,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ShopApi {
-    val TAG = "ShopApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "ShopApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getMarketItems(session: Long, signature: Long, callback: ShopCallback, activity: Activity) {
@@ -41,17 +39,17 @@ object ShopApi {
                         if (status == "OK") {
                             Log.d(TAG, "Acces market")
                             Log.d(TAG, url)
-                            var items = mutableListOf<Triple<Int, Item, Int>>()
-                            var listItems = doc.getElementsByTagName("OFFERS").item(0).childNodes
+                            val items = mutableListOf<Triple<Int, Item, Int>>()
+                            val listItems = doc.getElementsByTagName("OFFERS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
                                     val elem = node as Element
-                                    val offer_id = elem.getElementsByTagName("OFFER_ID").item(0).textContent.toInt()
-                                    val item_id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
+                                    val offerId = elem.getElementsByTagName("OFFER_ID").item(0).textContent.toInt()
+                                    val itemId = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
                                     val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
                                     val price = elem.getElementsByTagName("PRIX").item(0).textContent.toInt()
-                                    items.add(Triple(offer_id.toInt(), Item(item_id.toString(),quantity.toString()), price.toInt()))
+                                    items.add(Triple(offerId, Item(itemId.toString(),quantity.toString()), price))
                                 }
                             }
                             callback.getMarketItems(items)
@@ -95,10 +93,10 @@ object ShopApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(InventoryApi.TAG, "Acces inventaire")
-                            var items = mutableListOf<Item>()
+                            Log.d(TAG, "Acces inventaire")
+                            val items = mutableListOf<Item>()
 
-                            var listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            val listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
@@ -118,23 +116,23 @@ object ShopApi {
                             })
                         }
                         else {
-                            Log.d(InventoryApi.TAG, "Erreur - $status")
+                            Log.d(TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(InventoryApi.TAG, "connexion error")
+                Log.d(TAG, "connexion error")
                 error.printStackTrace()
             }
         )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun buyItem(session: Long, signature: Long, order_id: Int, callback: ShopCallback, activity: Activity){
-        val url = BASE_URL_CREUSER +"market_acheter.php?session=$session&signature=$signature&offer_id=$order_id"
+    fun buyItem(session: Long, signature: Long, orderId: Int, callback: ShopCallback, activity: Activity){
+        val url = BASE_URL_CREUSER +"market_acheter.php?session=$session&signature=$signature&offer_id=$orderId"
         Log.d(TAG, "session: $session|signature: $signature")
 
         val stringRequest = StringRequest(
@@ -148,7 +146,7 @@ object ShopApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(InventoryApi.TAG, "Acces buy item")
+                            Log.d(TAG, "Acces buy item")
                             callback.buyItem()
                         }
                         else if (status == "KO - NO MONEY"){
@@ -162,15 +160,15 @@ object ShopApi {
                             })
                         }
                         else {
-                            Log.d(InventoryApi.TAG, "Erreur - $status")
+                            Log.d(TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(InventoryApi.TAG, "connexion error")
+                Log.d(TAG, "connexion error")
                 error.printStackTrace()
             }
         )
@@ -193,7 +191,7 @@ object ShopApi {
                     if (statusNode != null) {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
-                            Log.d(InventoryApi.TAG, "Acces sell item")
+                            Log.d(TAG, "Acces sell item")
                             callback.sellItem()
                         }
                         else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
@@ -204,15 +202,15 @@ object ShopApi {
                             })
                         }
                         else {
-                            Log.d(InventoryApi.TAG, "Erreur - $status")
+                            Log.d(TAG, "Erreur - $status")
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(InventoryApi.TAG, "Erreur lors de la lecture de la réponse XML", e)
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
                 }
             },
             { error ->
-                Log.d(InventoryApi.TAG, "connexion error")
+                Log.d(TAG, "connexion error")
                 error.printStackTrace()
             }
         )
