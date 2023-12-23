@@ -31,14 +31,12 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
     fun enableButtonClick() {
         _isButtonClickEnabled.value = true
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(location: Location, callback: HomeCallback, activity: Activity){
         val latitude = location.latitude
         val longitude = location.longitude
         homeRepo.deplacement(latitude, longitude, callback, activity)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun creuser(location: GeoPoint, callback: HomeCallback, activity: Activity) {
         val latitude = location.latitude
         val longitude = location.longitude
@@ -48,7 +46,6 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
     fun getDepthHole(): Triple<Float, Float, Int> {
         return homeRepo.getDepthHole()
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getItems(item: List<Item>, callback: ItemCallback, activity: Activity){
         homeRepo.getItems(item, callback, activity)
     }

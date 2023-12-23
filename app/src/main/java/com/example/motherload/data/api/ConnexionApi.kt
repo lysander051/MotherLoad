@@ -65,7 +65,6 @@ object ConnexionApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun connectAgain(callback: ConnexionCallback){
         Log.d("coucou", "try to connect")
         val sharedPref = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)

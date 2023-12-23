@@ -26,7 +26,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 object InventoryApi {
     val TAG = "InventoryApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getStatus(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -84,7 +83,6 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"maj_pioche.php?session=$session&signature=$signature&pickaxe_id=${pickaxeLevel}"
         Log.d(TAG, url)
@@ -132,7 +130,6 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun recipePickaxe(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"recettes_pioches.php?session=$session&signature=$signature"
         Log.d(TAG, url)

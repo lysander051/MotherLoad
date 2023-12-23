@@ -39,7 +39,6 @@ class LoginManager {
                     .build())
             return keyGenerator.generateKey()
         }
-        @RequiresApi(Build.VERSION_CODES.O)
         fun savePassword(password: String) : String {
             val secretKey : SecretKey = generateKey()
             val ciph : Cipher = Cipher.getInstance(
@@ -65,7 +64,6 @@ class LoginManager {
             return chiffrePassword
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun getDecryptedPassword() : String {
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
             val chiffrePassword : String? = sharedPreferences.getString("psw","")

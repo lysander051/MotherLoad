@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.commit
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherland.MotherLoad
 import com.example.motherload.ui.game.home.HomeFragment

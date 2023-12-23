@@ -33,7 +33,6 @@ object HomeApi {
     val TAG = "HomeApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun deplacement(session: Long, signature: Long, latitude:Double, longitude:Double, callback: HomeCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"deplace.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -89,7 +88,6 @@ object HomeApi {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun creuser(session: Long, signature: Long, latitude: Double, longitude: Double, callback: HomeCallback, activity: Activity) {
         Log.d(TAG, "session: $session|signature: $signature")
         val url = BASE_URL_CREUSER+"creuse.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"

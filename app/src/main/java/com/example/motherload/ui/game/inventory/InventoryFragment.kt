@@ -44,7 +44,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[InventoryViewModel::class.java]
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,7 +70,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             activity?.supportFragmentManager?.popBackStack()
         }
 
-        //todo on peut faire une pioche d'un id inéxistant?
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
@@ -98,7 +96,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
                 override fun upgradePickaxe() {}
                 override fun erreur(erreurId: Int) {}
-                @RequiresApi(Build.VERSION_CODES.O)
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
                     val keys = recipeList.keys.toList()
                     for ((key, value) in recipeList){
@@ -121,11 +118,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         return ret
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun refreshInterface(){
         viewModel!!.getStatus( object :
             InventoryCallback {
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
                 pickaxeLevel = pickaxe
                 setIterface(money, inventory)
@@ -137,7 +132,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         , requireActivity())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
         if (index < recipeList.size) {
             recipeString += "Pickaxe ${keys[index]} :\n"
@@ -169,7 +163,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setIterface(money: Int, inventory: List<Item>){
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
         setPickaxe()
@@ -246,22 +239,18 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         quantity.text = item.quantity
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun gestionErreur(erreurId :Int){
         if (erreurId == 0){
             viewModel!!.recipePickaxe(object : InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
                 override fun upgradePickaxe() {}
                 override fun erreur(erreurId: Int) {}
-                @RequiresApi(Build.VERSION_CODES.O)
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
                     val recette = recipeList[(pickaxeLevel+1).toString()]
                     if (recette != null) {
                         viewModel!!.getItems(recette, object : ItemCallback {
-                            @RequiresApi(Build.VERSION_CODES.O)
                             override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                                 viewModel!!.getStatus(object : InventoryCallback {
-                                    @RequiresApi(Build.VERSION_CODES.O)
                                     override fun getStatus(pickaxe: Int, money: Int, inventoryPlayer: List<Item>) {
                                         viewModel!!.getItems(inventoryPlayer, object : ItemCallback {
                                             override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {

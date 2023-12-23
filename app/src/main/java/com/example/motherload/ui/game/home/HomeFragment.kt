@@ -82,7 +82,6 @@ class HomeFragment : Fragment() {
 
         //initialisation du comportement de chaque mise à jour de la position
         locationCallback = object : LocationCallback() {
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun onLocationResult(p0: LocationResult) {
                 for (location in p0.locations) {
                     getLocation(location)
@@ -106,7 +105,6 @@ class HomeFragment : Fragment() {
             activity?.let { PreferenceManager.getDefaultSharedPreferences(it.applicationContext) })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val ret = inflater.inflate(R.layout.fragment_home, container, false)

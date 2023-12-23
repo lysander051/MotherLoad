@@ -25,7 +25,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 object ItemApi {
     val TAG = "ItemApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getItems(
         session: Long,
         signature: Long,

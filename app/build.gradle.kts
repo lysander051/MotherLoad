@@ -59,5 +59,5 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")
     kapt ("android.arch.persistence.room:compiler:1.1.1")
-    implementation("androidx.room:room-common:2.5.0")
+    implementation("androidx.room:room-common:$room_version")
 }

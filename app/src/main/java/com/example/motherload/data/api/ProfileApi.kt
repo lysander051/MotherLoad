@@ -23,7 +23,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 object ProfileApi {
     val TAG = "InventoryApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    @RequiresApi(Build.VERSION_CODES.O)
     fun changerPseudo(session: Long, signature: Long, pseudo: String, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"changenom.php?session=$session&signature=$signature&nom=$pseudo"
 
@@ -66,7 +65,6 @@ object ProfileApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun resetUser(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"reinit_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, url)
@@ -109,7 +107,6 @@ object ProfileApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getArtifact(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"artefacts_list.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")

@@ -50,7 +50,6 @@ class ProfileFragment: Fragment(){
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ProfileViewModel::class.java]
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         ret = inflater.inflate(R.layout.fragment_profil, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
@@ -107,7 +106,13 @@ class ProfileFragment: Fragment(){
 
         }
 
-        theme.isChecked = resources.configuration.isNightModeActive
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            theme.isChecked = resources.configuration.isNightModeActive
+        }
+        else{
+            val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+            theme.isChecked = sharedPref.getInt("theme",1) == 2
+        }
 
         theme.setOnCheckedChangeListener{ buttonView, isChecked ->
             val themeSharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -163,13 +168,11 @@ class ProfileFragment: Fragment(){
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
             ProfilCallback {
             override fun changerPseudo(pseudo: String) {}
             override fun resetUser() {}
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun getArtifact(inventory: List<Item>) {
                 viewModel!!.getItems(inventory, object :
                     ItemCallback {

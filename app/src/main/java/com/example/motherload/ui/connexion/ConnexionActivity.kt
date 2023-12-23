@@ -31,7 +31,6 @@ class ConnexionActivity : AppCompatActivity(){
     private var stayC = false
     private val SHAREDPREF : String = "Connexion"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connexion)
@@ -57,7 +56,6 @@ class ConnexionActivity : AppCompatActivity(){
         connexion.setSafeOnClickListener {
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
-                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }
@@ -74,7 +72,6 @@ class ConnexionActivity : AppCompatActivity(){
         if (stayC){
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
-                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onConnexion(isConnected: Boolean) {
                     checkConnexion(isConnected)
                 }
@@ -82,7 +79,6 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkConnexion(connected: Boolean) {
         if (connected) {
             val intent = Intent(this, MainActivity::class.java)
@@ -119,7 +115,6 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadLoginFromSharedPreferences(): Triple<String, String, Boolean> {
         val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         val login = sharedPref.getString("login", "") ?: ""

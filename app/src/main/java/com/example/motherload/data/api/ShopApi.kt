@@ -23,7 +23,6 @@ object ShopApi {
     val TAG = "ShopApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getMarketItems(session: Long, signature: Long, callback: ShopCallback, activity: Activity) {
         val url = BASE_URL_CREUSER + "market_list.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -79,7 +78,6 @@ object ShopApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getInventory(session: Long, signature: Long, callback: ShopCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -132,7 +130,6 @@ object ShopApi {
         )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun buyItem(session: Long, signature: Long, order_id: Int, callback: ShopCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"market_acheter.php?session=$session&signature=$signature&offer_id=$order_id"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -177,7 +174,6 @@ object ShopApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun sellItem(session: Long, signature: Long, quantity: Int, id: String?, prix: Int, callback: ShopCallback, activity: Activity) {
         val url = BASE_URL_CREUSER +"market_vendre.php?session=$session&signature=$signature&item_id=$id&quantite=$quantity&prix=$prix"
         Log.d(TAG, "session: $session|signature: $signature")

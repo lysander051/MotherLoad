@@ -11,19 +11,15 @@ import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 
 class ProfileViewModel(var profileRepo: Repository): ViewModel() {
-    @RequiresApi(Build.VERSION_CODES.O)
     fun changerPseudo(pseudo: String, callback: ProfilCallback, activity: Activity){
         profileRepo.changerPseudo(pseudo, callback, activity)
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun resetUser(callback: ProfilCallback, activity: Activity){
         profileRepo.resetUser(callback, activity)
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getArtifact(callback: ProfilCallback, activity: Activity){
         profileRepo.getArtifact(callback, activity)
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getItems(item: List<Item>, callback: ItemCallback, activity: Activity){
         profileRepo.getItems(item, callback, activity)
     }
