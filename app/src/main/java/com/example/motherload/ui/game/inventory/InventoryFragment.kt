@@ -1,5 +1,6 @@
 package com.example.motherload.ui.game.inventory
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,11 +13,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherland.MotherLoad
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
@@ -216,6 +219,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         Picasso.get().load(item.image).into(image)
         name.text = item.nom
+        val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
         description.text = item.desc_fr
         if (item.type == "M")
             type.text = getString(R.string.minerai)

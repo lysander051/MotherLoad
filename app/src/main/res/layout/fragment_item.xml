@@ -12,6 +12,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
+        android:background="@drawable/background"
         tools:ignore="MissingConstraints">
 
 

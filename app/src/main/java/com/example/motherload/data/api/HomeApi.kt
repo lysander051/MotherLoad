@@ -231,7 +231,7 @@ object HomeApi {
             }
         }
         Log.d("coucou", "pas connecté")
-        val intent = Intent(MotherLoad.instance, MainActivity::class.java)
+        val intent = Intent(MotherLoad.instance, ConnexionApi::class.java)
         MotherLoad.instance.startActivity(intent)
     }
 

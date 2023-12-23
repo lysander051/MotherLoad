@@ -53,16 +53,19 @@
     <string name="achat">구입</string>
     <string name="vente">판매</string>
     <string name="votre_collection_d_artefact">당신의 유물 컬렉션</string>
-    <string name="f_licitation">Félicitation</string>
-    <string name="bravo_votre_pioche_est_am_lior_au_maximum">Bravo, votre pioche est amélioré au maximum</string>
-    <string name="objet_manquant">Objet manquant</string>
-    <string name="il_vous_manque">Il vous manque: \n</string>
-    <string name="minerai">Minerai</string>
-    <string name="artefact">Artefact</string>
-    <string name="recette">recette</string>
-    <string name="pickaxe">Pickaxe %1$s :\n</string>
-    <string name="manque_d_argent">Manque d\'argent</string>
-    <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">Vous n\'avez pas suffisament d\'argent pour acheter cet objet</string>
+    <string name="f_licitation">축하해요</string>
+    <string name="bravo_votre_pioche_est_am_lior_au_maximum">잘하셨습니다. 곡괭이가 최대로 향상되었습니다.</string>
+    <string name="objet_manquant">누락된 항목</string>
+    <string name="il_vous_manque">너는 그리워하고있다: \n</string>
+    <string name="minerai">광석</string>
+    <string name="artefact">인공물</string>
+    <string name="recette">레시피</string>
+    <string name="pickaxe">곡괭이 %1$s :\n</string>
+    <string name="manque_d_argent">돈 부족</string>
+    <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">이 항목을 구입할 충분한 돈이 없습니다</string>
+    <string name="se_d_connecter">로그아웃</string>
+    <string name="d_connexion">연결 끊기</string>
+    <string name="voulez_vous_vraiment_vous_d_connecter">정말로 로그아웃하시겠습니까?</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

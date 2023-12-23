@@ -63,6 +63,9 @@
     <string name="pickaxe">Pioche %1$s :\n</string>
     <string name="manque_d_argent">Manque d\'argent</string>
     <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">Vous n\'avez pas suffisament d\'argent pour acheter cet objet</string>
+    <string name="se_d_connecter">Se déconnecter</string>
+    <string name="d_connexion">Déconnexion</string>
+    <string name="voulez_vous_vraiment_vous_d_connecter">Voulez-vous vraiment vous déconnecter ?</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

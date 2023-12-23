@@ -63,6 +63,9 @@
     <string name="pickaxe">Pickaxe %1$s :\n</string>
     <string name="manque_d_argent">Missing money</string>
     <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">You don\'t have enough money to buy this item</string>
+    <string name="se_d_connecter">Log out</string>
+    <string name="d_connexion">Logging out</string>
+    <string name="voulez_vous_vraiment_vous_d_connecter">Are you sure to log out ?</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

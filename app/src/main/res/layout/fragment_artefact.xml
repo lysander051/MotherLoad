@@ -13,7 +13,8 @@
         android:layout_margin="15dp"
         android:orientation="vertical"
         android:gravity="center"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/background">
 
     <ImageView
         android:id="@+id/imageItem"

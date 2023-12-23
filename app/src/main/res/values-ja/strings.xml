@@ -63,6 +63,9 @@
     <string name="pickaxe">つるはし %1$s :\n</string>
     <string name="manque_d_argent">金の不足</string>
     <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">この商品を買うのに十分なお金がありません</string>
+    <string name="se_d_connecter">サインアウト</string>
+    <string name="d_connexion">切断する</string>
+    <string name="voulez_vous_vraiment_vous_d_connecter">ログアウトしてもよろしいですか?</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>
