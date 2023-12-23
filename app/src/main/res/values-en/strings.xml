@@ -35,7 +35,7 @@
     <string name="ok">OK</string>
     <string name="annuler">Cancel</string>
     <string name="nom">Name : </string>
-    <string name="descritpion">Descritpion : </string>
+    <string name="descritpion">Description : </string>
     <string name="type">Type : </string>
     <string name="raret">Rarity : </string>
     <string name="quantit">Quantity : </string>
