@@ -5,6 +5,7 @@ import com.example.motherload.data.Item
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.InventoryCallback
+import com.example.motherload.data.callback.ItemCallback
 
 class ProfileViewModel(var profileRepo: Repository): ViewModel() {
     fun changerPseudo(pseudo: String, callback: ProfilCallback){
@@ -16,7 +17,7 @@ class ProfileViewModel(var profileRepo: Repository): ViewModel() {
     fun getArtifact(callback: ProfilCallback){
         profileRepo.getArtifact(callback)
     }
-    fun getItems(item: List<Item>, callback: ProfilCallback){
+    fun getItems(item: List<Item>, callback: ItemCallback){
         profileRepo.getItems(item, callback)
     }
 }

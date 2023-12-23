@@ -18,6 +18,7 @@ import com.example.motherLoad.Injection.ViewModelFactory
 import com.example.motherload.R
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ShopCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
@@ -82,27 +83,19 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                             listItems.add(i.second)
                         }
                         viewModel!!.getItemsDescription(listItems, object :
-                            ShopCallback {
-                            override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
+                            ItemCallback {
                             override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
 
                                 val updatedItems = items.map { item ->
-                                    val correspondingItemDescription = itemsDescription.find { it.id == item.second.id && it.quantity == item.second.quantity}
+                                    var correspondingItemDescription = itemsDescription.find { it.id == item.second.id}
+                                    correspondingItemDescription?.quantity = item.second.quantity
                                     Triple(item.first, correspondingItemDescription, item.third)
-                                }
-                                for(e in updatedItems){
-                                    e.second?.let { Log.d("coucou", it.quantity) }
                                 }
                                 setItemsBuy(updatedItems)
                             }
-                            override fun getInventory(items: MutableList<Item>) {}
-                            override fun buyItem() {}
-                            override fun sellItem() {}
-                            override fun erreur() {}
                         }
                         )
                     }
-                    override fun getItemsDescription(items: MutableList<ItemDescription>) {}
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
                     override fun sellItem() {}
@@ -125,32 +118,26 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         viewModel!!.getInventory(object :
             ShopCallback {
             override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
-            override fun getItemsDescription(items: MutableList<ItemDescription>) {}
             override fun buyItem() {}
             override fun sellItem() {}
             override fun erreur() {}
             override fun getInventory(items: MutableList<Item>) {
                 viewModel!!.getItemsDescription(items, object :
-                    ShopCallback {
-                    override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
-                    override fun getItemsDescription(items: MutableList<ItemDescription>) {
-                        setItemsSell(items)
+                    ItemCallback {
+                    override fun getItemsDescription(itemsDescri: MutableList<ItemDescription>) {
+                        setItemsSell(itemsDescri)
                     }
-                    override fun getInventory(items: MutableList<Item>) {}
-                    override fun buyItem() {}
-                    override fun sellItem() {}
-                    override fun erreur() {}
                 }
                 )
             }
         }
         )
     }
-    private fun setItemsBuy(listItemDescription: List<Triple<Int, ItemDescription?, Int>>){
+    private fun setItemsBuy(items: List<Triple<Int, ItemDescription?, Int>>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
         val layoutManagerState = recyclerView.layoutManager?.onSaveInstanceState()
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = ShopAchatAdapter(listItemDescription, this)
+        val adapter = ShopAchatAdapter(items, this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
     }
@@ -169,7 +156,6 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                 viewModel!!.buyItem(order_id, object :
                     ShopCallback {
                     override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
-                    override fun getItemsDescription(items: MutableList<ItemDescription>) {}
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun sellItem() {}
                     override fun erreur() {
@@ -199,7 +185,6 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                 viewModel!!.sellItem(quantity, item?.id, prix, object :
                     ShopCallback {
                     override fun getMarketItems(items: List<Triple<Int, Item, Int>>) {}
-                    override fun getItemsDescription(items: MutableList<ItemDescription>) {}
                     override fun getInventory(items: MutableList<Item>) {}
                     override fun buyItem() {}
                     override fun erreur() {}

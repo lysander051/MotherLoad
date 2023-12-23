@@ -7,5 +7,4 @@ interface ProfilCallback {
     fun changerPseudo(pseudo: String)
     fun resetUser()
     fun getArtifact(inventory: List<Item>)
-    fun getItems(itemDescription: MutableList<ItemDescription>)
 }

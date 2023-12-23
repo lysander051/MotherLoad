@@ -1,6 +1,8 @@
 package com.example.motherload.data
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -11,11 +13,13 @@ import com.example.motherload.Model.AppDatabase
 import com.example.motherload.data.api.ConnexionApi
 import com.example.motherload.data.api.HomeApi
 import com.example.motherload.data.api.InventoryApi
+import com.example.motherload.data.api.ItemApi
 import com.example.motherload.data.api.ProfileApi
 import com.example.motherload.data.api.ShopApi
 import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.callback.InventoryCallback
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.callback.ShopCallback
 import kotlinx.coroutines.CoroutineScope
@@ -60,11 +64,6 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
         HomeApi.creuser(session, signature, latitude, longitude, callback)
     }
 
-    fun getItems(item: List<Item>, context: Context, callback: HomeCallback) {
-        getSessionSignature()
-        HomeApi.getItems(session, signature, item, context, callback)
-    }
-
     fun getDepthHole(): Triple<Float, Float, Int> {
         return HomeApi.getDepthHole()
     }
@@ -74,20 +73,41 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
         InventoryApi.getStatus(session, signature, callback)
     }
 
-    fun getItems(items: List<Item>, callback: InventoryCallback) {
-        getSessionSignature()
-        val itemsIds : MutableList<String> = ArrayList()
-        for (element in items){
-            itemsIds.add(element.id)
-        }
-        val itemsStockees : MutableList<ItemDescription> = dao.getItemsByIds(itemsIds)
-        if (items.size == itemsIds.size){
-            Log.d("BASE","J'ai get ça frérot")
-            callback.getItems(itemsStockees)
-        }
-        else{
-            Log.d("BASE", "Guigui bosse plus que la database")
-            InventoryApi.getItems(session, signature, items, callback)
+    fun getItems(items: List<Item>, callback: ItemCallback) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val sharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
+            val lastReset = sharedPreferences.getLong("lastReset", 0)
+            val currentTimeminutes: Long = System.currentTimeMillis() / (60000)
+            val itemsIds: MutableList<String> = ArrayList()
+
+            val uniqueItemIds = items.distinctBy { it.id }
+            val numberOfUniqueItems = uniqueItemIds.size
+
+            for (element in items) {
+                itemsIds.add(element.id)
+            }
+            Log.d(TAG, "lastreset $lastReset")
+            Log.d(TAG, "currenttime $currentTimeminutes")
+            Log.d(TAG, "reset ${currentTimeminutes - lastReset >= 1}")
+            val itemsStockees: MutableList<ItemDescription> = dao.getItemsByIds(itemsIds)
+            if(currentTimeminutes - lastReset >= 1){
+                dao.deleteAll()
+                val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putLong("lastReset", currentTimeminutes)
+                editor.apply()
+            }
+            if ( numberOfUniqueItems == itemsStockees.size) {
+                launch(Dispatchers.Main) {
+                    Log.d(TAG, "get from Database")
+                    callback.getItemsDescription(itemsStockees)
+                }
+            }else{
+                Log.d(TAG, "update Database")
+                launch(Dispatchers.Main) {
+                    ItemApi.getItems(session, signature, items, motherLoad, callback)
+                }
+            }
         }
     }
 
@@ -114,20 +134,10 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
         getSessionSignature()
         ProfileApi.getArtifact(session, signature, callback)
     }
-    fun getItems(item: List<Item>, callback: ProfilCallback){
-        getSessionSignature()
-        //val dao = AppDatabase.getInstance(motherLoad).itemDescriptionDao()
-        ProfileApi.getItems(session, signature, item, callback)
-    }
 
     fun getMarketItems(callback: ShopCallback) {
         getSessionSignature()
         ShopApi.getMarketItems(session, signature, callback)
-    }
-
-    fun getItems(items: List<Item>, callback: ShopCallback) {
-        getSessionSignature()
-        ShopApi.getItems(session, signature, items, callback)
     }
 
     fun getInventory(callback: ShopCallback) {

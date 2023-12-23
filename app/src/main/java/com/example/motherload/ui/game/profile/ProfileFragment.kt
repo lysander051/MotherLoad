@@ -31,6 +31,7 @@ import com.example.motherland.MotherLoad
 import com.example.motherload.R
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
+import com.example.motherload.data.callback.ItemCallback
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
@@ -77,7 +78,6 @@ class ProfileFragment: Fragment(){
                 }
                 override fun resetUser() {}
                 override fun getArtifact(inventory: List<Item>) {}
-                override fun getItems(itemDescription: MutableList<ItemDescription>) {}
             })
         }
         reset.setSafeOnClickListener {
@@ -89,7 +89,6 @@ class ProfileFragment: Fragment(){
                     ProfilCallback {
                         override fun changerPseudo(pseudo: String) {}
                         override fun getArtifact(inventory: List<Item>) {}
-                        override fun getItems(itemDescription: MutableList<ItemDescription>) {}
                         override fun resetUser() {
                             PopUpDisplay.simplePopUp(
                                 requireActivity(),
@@ -180,11 +179,8 @@ class ProfileFragment: Fragment(){
             override fun resetUser() {}
             override fun getArtifact(inventory: List<Item>) {
                 viewModel!!.getItems(inventory, object :
-                    ProfilCallback {
-                    override fun changerPseudo(pseudo: String) {}
-                    override fun resetUser() {}
-                    override fun getArtifact(inventory: List<Item>) {}
-                    override fun getItems(itemDescription: MutableList<ItemDescription>) {
+                    ItemCallback {
+                    override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
                         val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
                         val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
                         recyclerView.layoutManager = layoutManager
@@ -194,7 +190,6 @@ class ProfileFragment: Fragment(){
                 }
                 )
             }
-            override fun getItems(itemDescription: MutableList<ItemDescription>) {}
             }
         )
     }

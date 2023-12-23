@@ -13,6 +13,7 @@ import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.HomeCallback
 import com.example.motherload.data.Repository
+import com.example.motherload.data.callback.ItemCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +46,7 @@ class HomeViewModel(var homeRepo: Repository): ViewModel() {
     fun getDepthHole(): Triple<Float, Float, Int> {
         return homeRepo.getDepthHole()
     }
-    fun getItems(item: List<Item>, context: Context, callback: HomeCallback){
-        homeRepo.getItems(item, context, callback)
+    fun getItems(item: List<Item>, callback: ItemCallback){
+        homeRepo.getItems(item, callback)
     }
 }
