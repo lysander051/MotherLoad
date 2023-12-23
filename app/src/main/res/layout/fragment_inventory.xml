@@ -94,7 +94,7 @@
             android:orientation="horizontal"
             android:padding="10dp"
             android:visibility="gone"
-            android:background="@drawable/stroke_for_list">
+            android:background="@drawable/background">
 
             <ImageView
                 android:id="@+id/imageOneItem"

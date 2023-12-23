@@ -1,5 +1,6 @@
 package com.example.motherload.ui.game.inventory
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,11 +13,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherland.MotherLoad
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
@@ -134,13 +137,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             recipeList[keys[index]]?.let {
                 viewModel!!.getItems(it, object : ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                        val updatedItems : List<ItemDescription?> = recipeList[keys[index]]!!.map { item ->
-                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
-                            correspondingItemDescription?.quantity = item.quantity
-                            correspondingItemDescription
-                        }
-                        for (e in updatedItems) {
-                            recipeString += "${e!!.quantity} * ${e.nom}\n"
+                        for (e in itemDescription) {
+                            recipeString += "${e.quantity} * ${e.nom}\n"
                             if (index < recipeList.size-1) {
                                 recipeString += "--------------------------\n"
                             }
@@ -152,8 +150,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         } else {
             if (index == recipeList.size) {
-
-                PopUpDisplay.simplePopUp(requireActivity(), "recette", recipeString)
+                PopUpDisplay.simplePopUp(requireActivity(),
+                    getString(R.string.recette), recipeString)
                 recipeString = ""
             }
         }
@@ -221,11 +219,16 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         Picasso.get().load(item.image).into(image)
         name.text = item.nom
-        description.text = item.desc_fr
+        if (MotherLoad.instance.resources.configuration.locales[0].language == "fr"){
+            description.text = item.desc_fr
+        }
+        else{
+            description.text = item.desc_en
+        }
         if (item.type == "M")
-            type.text = "Minerai"
+            type.text = getString(R.string.minerai)
         else
-            type.text = "Artefact"
+            type.text = getString(R.string.artefact)
         rarity.text = item.rarity
         quantity.text = item.quantity
     }
@@ -245,31 +248,24 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                     override fun getStatus(pickaxe: Int, money: Int, inventoryPlayer: List<Item>) {
                                         viewModel!!.getItems(inventoryPlayer, object : ItemCallback {
                                             override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {
-                                                var missing = "Il vous manque: \n"
-                                                val updatedItemsRequires : List<ItemDescription?> = recette.map { item ->
-                                                    var correspondingItemDescription = itemDescription.find { it.id == item.id}
-                                                    correspondingItemDescription?.quantity = item.quantity
-                                                    correspondingItemDescription
-                                                }
-                                                val updatedItemsPlayer : List<ItemDescription?> = inventoryPlayer.map { item ->
-                                                    var correspondingItemDescription = itemDescriptionPlayer.find { it.id == item.id}
-                                                    correspondingItemDescription?.quantity = item.quantity
-                                                    correspondingItemDescription
-                                                }
-                                                for (i in 0 until updatedItemsRequires.size) {
-                                                    val requiredQuantity = updatedItemsRequires[i]
-                                                    val playerItem = updatedItemsPlayer.find { it!!.id == requiredQuantity!!.id }
+                                                var missing = getString(R.string.il_vous_manque)
+                                                for (i in 0 until itemDescription.size) {
+                                                    val requiredQuantity = itemDescription[i]
+                                                    val playerItem = itemDescriptionPlayer.find { it.id == requiredQuantity.id }
 
                                                     if (playerItem != null) {
-                                                        val diff = requiredQuantity!!.quantity.toInt() - playerItem.quantity.toInt()
+                                                        val diff = requiredQuantity.quantity.toInt() - playerItem.quantity.toInt()
                                                         if (diff > 0) {
                                                             missing += "$diff ${requiredQuantity.nom}\n"
                                                         }
                                                     } else {
-                                                        missing += "${requiredQuantity!!.quantity.toInt()} ${requiredQuantity.nom}\n"
+                                                        missing += "${requiredQuantity.quantity.toInt()} ${requiredQuantity.nom}\n"
                                                     }
                                                 }
-                                                PopUpDisplay.simplePopUp(requireActivity(), "Objet manquant", missing)
+                                                PopUpDisplay.simplePopUp(requireActivity(),
+                                                    getString(
+                                                        R.string.objet_manquant
+                                                    ), missing)
                                             }
                                         })
                                     }
@@ -285,8 +281,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
         if (erreurId == 1){
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Félicitation",
-                "Bravo, votre pioche est amélioré au maximum")
+                getString(R.string.f_licitation),
+                getString(R.string.bravo_votre_pioche_est_am_lior_au_maximum))
         }
     }
 }

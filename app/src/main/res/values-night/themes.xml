@@ -4,4 +4,5 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+    <drawable name="background">@drawable/stroke_for_list_night</drawable>>
 </resources>

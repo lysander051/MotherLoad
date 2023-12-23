@@ -66,13 +66,10 @@ class ConnexionActivity : AppCompatActivity(){
 
         stayconnected.setOnCheckedChangeListener { _, isChecked ->
             stayC = isChecked
-            val password : String = LoginManager.getDecryptedPassword()
-            //todo rester connecté en permanence
         }
 
         saveLoginPsw.setOnCheckedChangeListener { _, isChecked ->
             saveLP = isChecked
-            LoginManager.savePassword(psw.text.toString())
         }
     }
 
@@ -80,8 +77,7 @@ class ConnexionActivity : AppCompatActivity(){
     private fun checkConnexion(connected: Boolean) {
         if (connected) {
             val intent = Intent(this, MainActivity::class.java)
-            if(saveLP) {
-                //todo save the password crypted with keystore
+            if(saveLP || stayC) {
                 val chiffrePassword = LoginManager.savePassword(psw.text.toString())
                 saveLoginToSharedPreferences(login.text.toString(), chiffrePassword, saveLP)
             }

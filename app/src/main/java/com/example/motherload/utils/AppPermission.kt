@@ -18,7 +18,7 @@ class AppPermission {
                 AlertDialog.Builder(context)
                     .setTitle(context.getString(R.string.permission_requise))
                     .setMessage(explanationMessage)
-                    .setPositiveButton("OK") { _, _ ->
+                    .setPositiveButton(context.getString(R.string.ok)) { _, _ ->
                         ActivityCompat.requestPermissions(
                             context as Activity,
                             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),

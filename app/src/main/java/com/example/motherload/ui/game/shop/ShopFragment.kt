@@ -165,8 +165,8 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     override fun sellItem() {}
                     override fun erreur() {
                         PopUpDisplay.simplePopUp(requireActivity(),
-                            "Manque d'argent",
-                            "Vous n'avez pas suffisament d'argent pour acheter cet objet")
+                            getString(R.string.manque_d_argent),
+                            getString(R.string.vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet))
                     }
                     override fun buyItem() {
                         buyDiplay()

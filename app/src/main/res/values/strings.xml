@@ -52,7 +52,20 @@
     <string name="mode_nuit">Mode nuit</string>
     <string name="achat">Achat</string>
     <string name="vente">Vente</string>
-    <string name="votre_collection_d_artefact">Votre collection d\'artefacte</string>
+    <string name="votre_collection_d_artefact">Votre collection d\'artefacts</string>
+    <string name="f_licitation">Félicitation</string>
+    <string name="bravo_votre_pioche_est_am_lior_au_maximum">Bravo, votre pioche est améliorée au maximum</string>
+    <string name="objet_manquant">Objets manquant</string>
+    <string name="il_vous_manque">Il vous manque: \n</string>
+    <string name="minerai">Minerai</string>
+    <string name="artefact">Artefact</string>
+    <string name="recette">Recette</string>
+    <string name="pickaxe">Pioche %1$s :\n</string>
+    <string name="manque_d_argent">Manque d\'argent</string>
+    <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">Vous n\'avez pas suffisament d\'argent pour acheter cet objet</string>
+    <string name="se_d_connecter">Se déconnecter</string>
+    <string name="d_connexion">Déconnexion</string>
+    <string name="voulez_vous_vraiment_vous_d_connecter">Voulez-vous vraiment vous déconnecter ?</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

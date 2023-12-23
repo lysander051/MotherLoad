@@ -5,5 +5,6 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <drawable name="background">@drawable/stroke_for_list_day</drawable>>
     <style name="Theme.MotherLoad" parent="Base.Theme.MotherLoad" />
 </resources>

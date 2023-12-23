@@ -12,7 +12,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:background="@drawable/stroke_for_list"
+        android:background="@drawable/background"
         tools:ignore="MissingConstraints">
 
 

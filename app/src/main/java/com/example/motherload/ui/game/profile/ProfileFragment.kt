@@ -56,6 +56,7 @@ class ProfileFragment: Fragment(){
         val reset = ret.findViewById<Button>(R.id.boutonReset)
         val theme = ret.findViewById<Switch>(R.id.theme)
         val langue = ret.findViewById<Spinner>(R.id.selecteurLangue)
+        val deconnexion = ret.findViewById<Button>(R.id.deconnexion)
 
         retour.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
@@ -136,6 +137,18 @@ class ProfileFragment: Fragment(){
 
         langue.onItemSelectedListener = LanguageSelector(requireActivity())
         setArtifact()
+
+        deconnexion.setSafeOnClickListener {
+            PopUpDisplay.cancellablePopUp(requireActivity(),
+                getString(R.string.d_connexion),
+                getString(R.string.voulez_vous_vraiment_vous_d_connecter)
+            ) { confirmed ->
+                if (confirmed) {
+                    requireActivity().finish()
+                }
+            }
+        }
+
         return ret
     }
 
