@@ -124,8 +124,13 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
             override fun getInventory(items: MutableList<Item>) {
                 viewModel!!.getItemsDescription(items, object :
                     ItemCallback {
-                    override fun getItemsDescription(itemsDescri: MutableList<ItemDescription>) {
-                        setItemsSell(itemsDescri)
+                    override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
+                        val updatedItems = items.map { item ->
+                            var correspondingItemDescription = itemsDescription.find { it.id == item.id}
+                            correspondingItemDescription?.quantity = item.quantity
+                            correspondingItemDescription
+                        }
+                        setItemsSell(updatedItems)
                     }
                 }
                 )
@@ -141,7 +146,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         recyclerView.adapter = adapter
         recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
     }
-    private fun setItemsSell(listItemDescription: List<ItemDescription>){
+    private fun setItemsSell(listItemDescription: List<ItemDescription?>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = ShopVenteAdapter(listItemDescription, this)
