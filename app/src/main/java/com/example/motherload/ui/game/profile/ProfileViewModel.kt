@@ -24,6 +24,10 @@ class ProfileViewModel(var profileRepo: Repository): ViewModel() {
         profileRepo.getArtifact(callback, activity)
     }
     @RequiresApi(Build.VERSION_CODES.O)
+    fun getInventory(callback: ProfilCallback, activity: Activity){
+        profileRepo.getInventory(callback, activity)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getItems(item: List<Item>, callback: ItemCallback, activity: Activity){
         profileRepo.getItems(item, callback, activity)
     }

@@ -181,7 +181,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                         PopUpDisplay.simplePopUp(requireActivity(),
                             getString(R.string.objet_achet),
                             getString(R.string.vous_avez_bien_achet, item?.quantity) +
-                                    "${item?.nom} " +
+                                    " ${item?.nom} " +
                                     getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }

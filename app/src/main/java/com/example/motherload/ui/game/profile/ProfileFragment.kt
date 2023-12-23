@@ -82,6 +82,7 @@ class ProfileFragment: Fragment(){
                     }
                 }
                 override fun resetUser() {}
+                override fun getInventory(inventory: List<Item>) {}
                 override fun getArtifact(inventory: List<Item>) {}
             }, requireActivity())
         }
@@ -94,6 +95,7 @@ class ProfileFragment: Fragment(){
                     ProfilCallback {
                         override fun changerPseudo(pseudo: String) {}
                         override fun getArtifact(inventory: List<Item>) {}
+                        override fun getInventory(inventory: List<Item>) {}
                         override fun resetUser() {
                             PopUpDisplay.simplePopUp(
                                 requireActivity(),
@@ -167,32 +169,47 @@ class ProfileFragment: Fragment(){
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
             ProfilCallback {
-            override fun changerPseudo(pseudo: String) {}
-            override fun resetUser() {}
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun getArtifact(inventory: List<Item>) {
-                viewModel!!.getItems(inventory, object :
-                    ItemCallback {
-                    override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                        val updatedItems : MutableList<ItemDescription> = inventory.map { item ->
-                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
-                            correspondingItemDescription?.quantity = item.quantity
-                            correspondingItemDescription
-                        } as MutableList<ItemDescription>
-                        for(i in updatedItems.indices){
-                            if(updatedItems.get(i)!!.quantity.toInt() <= 0 ){
-                                updatedItems.removeAt(i)
-                            }
+                override fun changerPseudo(pseudo: String) {}
+                override fun resetUser() {}
+                override fun getInventory(inventory: List<Item>) {}
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun getArtifact(artifact: List<Item>) {
+                    viewModel!!.getInventory(object :
+                        ProfilCallback {
+                        override fun changerPseudo(pseudo: String) {}
+                        override fun resetUser() {}
+                        override fun getArtifact(artifact: List<Item>) {}
+                        override fun getInventory(inventory: List<Item>) {
+                            viewModel!!.getItems(artifact, object :
+                                ItemCallback {
+                                override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
+                                    for (e in inventory){
+                                        Log.d("coucou", "${e.id} ${e.quantity}")
+                                    }
+                                    Log.d("coucou", "-----------------------------------")
+                                    for (e in artifact){
+                                        Log.d("coucou", "${e.id} ${e.quantity}")
+                                    }
+                                    artifact.forEach { item ->
+                                        val correspondingArtefact = inventory.find { it.id == item.id }
+                                        item.quantity = correspondingArtefact?.quantity ?: "0"
+                                    }
+
+                                    val updatedItems: List<ItemDescription> = itemDescription.map { itemDesc ->
+                                        val correspondingInventoryItem = artifact.find { it.id == itemDesc.id }
+                                        correspondingInventoryItem?.let { itemDesc.copy(quantity = it.quantity) } ?: itemDesc
+                                    }
+
+                                    val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
+                                    val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
+                                    recyclerView.layoutManager = layoutManager
+                                    val adapter = ProfileAdapter(updatedItems)
+                                    recyclerView.adapter = adapter
+                                }
+                            }, requireActivity())
                         }
-                        val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
-                        val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
-                        recyclerView.layoutManager = layoutManager
-                        val adapter = ProfileAdapter(updatedItems)
-                        recyclerView.adapter = adapter
-                    }
+                    }, requireActivity())
                 }
-                , requireActivity())
-            }
             }
         , requireActivity())
     }

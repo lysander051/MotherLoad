@@ -136,6 +136,12 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun getInventory(callback: ProfilCallback, activity: Activity){
+        getSessionSignature()
+        ProfileApi.getInventory(session, signature, callback, activity)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getMarketItems(callback: ShopCallback, activity: Activity) {
         getSessionSignature()
         ShopApi.getMarketItems(session, signature, callback, activity)
