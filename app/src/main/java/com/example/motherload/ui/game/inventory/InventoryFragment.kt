@@ -71,6 +71,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             activity?.supportFragmentManager?.popBackStack()
         }
 
+        //todo on peut faire une pioche d'un id inéxistant?
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
@@ -139,7 +140,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
         if (index < recipeList.size) {
-            recipeString += getString(R.string.pickaxe, keys[index])
+            recipeString += "Pickaxe ${keys[index]} :\n"
             recipeList[keys[index]]?.let {
                 viewModel!!.getItems(it, object : ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
