@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.motherLoad.Injection.ViewModelFactory
-import com.example.motherLoad.UI.Connexion.ConnexionViewModel
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad

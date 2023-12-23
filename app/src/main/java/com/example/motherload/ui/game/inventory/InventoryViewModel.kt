@@ -1,14 +1,12 @@
 package com.example.motherload.ui.game.inventory
 import android.app.Activity
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.Item
 import com.example.motherload.data.Repository
 import com.example.motherload.data.callback.ItemCallback
 
-class InventoryViewModel(var invRepo: Repository): ViewModel() {
+class InventoryViewModel(private var invRepo: Repository): ViewModel() {
     fun getStatus(callback: InventoryCallback, activity: Activity){
         invRepo.getStatus(callback, activity)
     }

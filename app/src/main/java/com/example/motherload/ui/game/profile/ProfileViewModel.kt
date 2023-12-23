@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.example.motherload.data.Item
 import com.example.motherload.data.callback.ProfilCallback
 import com.example.motherload.data.Repository
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 
 class ProfileViewModel(var profileRepo: Repository): ViewModel() {
@@ -19,6 +18,9 @@ class ProfileViewModel(var profileRepo: Repository): ViewModel() {
     }
     fun getArtifact(callback: ProfilCallback, activity: Activity){
         profileRepo.getArtifact(callback, activity)
+    }
+    fun getInventory(callback: ProfilCallback, activity: Activity){
+        profileRepo.getInventory(callback, activity)
     }
     fun getItems(item: List<Item>, callback: ItemCallback, activity: Activity){
         profileRepo.getItems(item, callback, activity)

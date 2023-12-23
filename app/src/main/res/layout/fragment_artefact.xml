@@ -8,6 +8,7 @@
     <LinearLayout
         android:id="@+id/backgroundInventory"
         android:layout_width="110dp"
+        android:minHeight="150dp"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:layout_margin="15dp"
@@ -20,7 +21,8 @@
         android:id="@+id/imageItem"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:src="@drawable/lock"/>
 
     <TextView
         android:id="@+id/name"

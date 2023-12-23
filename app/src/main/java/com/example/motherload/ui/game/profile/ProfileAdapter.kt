@@ -30,8 +30,10 @@ class ProfileAdapter(private val itemList: List<ItemDescription?>) : RecyclerVie
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
 
         fun bind(item: ItemDescription?) {
-            Picasso.get().load(item?.image).into(imageView)
-            nameTextView.text = item?.nom
+            if (item?.quantity?.toInt() != 0) {
+                Picasso.get().load(item?.image).into(imageView)
+                nameTextView.text = item?.nom
+            }
         }
     }
 }

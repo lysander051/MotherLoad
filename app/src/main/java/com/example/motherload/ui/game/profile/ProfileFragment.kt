@@ -1,6 +1,5 @@
 package com.example.motherload.ui.game.profile
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -21,14 +19,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherland.MotherLoad
 import com.example.motherload.R
 import com.example.motherload.data.Item
@@ -81,6 +76,7 @@ class ProfileFragment: Fragment(){
                     }
                 }
                 override fun resetUser() {}
+                override fun getInventory(inventory: List<Item>) {}
                 override fun getArtifact(inventory: List<Item>) {}
             }, requireActivity())
         }
@@ -93,6 +89,7 @@ class ProfileFragment: Fragment(){
                     ProfilCallback {
                         override fun changerPseudo(pseudo: String) {}
                         override fun getArtifact(inventory: List<Item>) {}
+                        override fun getInventory(inventory: List<Item>) {}
                         override fun resetUser() {
                             PopUpDisplay.simplePopUp(
                                 requireActivity(),
@@ -114,7 +111,7 @@ class ProfileFragment: Fragment(){
             theme.isChecked = sharedPref.getInt("theme",1) == 2
         }
 
-        theme.setOnCheckedChangeListener{ buttonView, isChecked ->
+        theme.setOnCheckedChangeListener{ _, isChecked ->
             val themeSharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
             val editor = themeSharedPref.edit()
             if(isChecked){
@@ -171,31 +168,47 @@ class ProfileFragment: Fragment(){
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
             ProfilCallback {
-            override fun changerPseudo(pseudo: String) {}
-            override fun resetUser() {}
-            override fun getArtifact(inventory: List<Item>) {
-                viewModel!!.getItems(inventory, object :
-                    ItemCallback {
-                    override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                        val updatedItems : MutableList<ItemDescription> = inventory.map { item ->
-                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
-                            correspondingItemDescription?.quantity = item.quantity
-                            correspondingItemDescription
-                        } as MutableList<ItemDescription>
-                        for(i in updatedItems.indices){
-                            if(updatedItems.get(i)!!.quantity.toInt() <= 0 ){
-                                updatedItems.removeAt(i)
-                            }
+                override fun changerPseudo(pseudo: String) {}
+                override fun resetUser() {}
+                override fun getInventory(inventory: List<Item>) {}
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun getArtifact(artifact: List<Item>) {
+                    viewModel!!.getInventory(object :
+                        ProfilCallback {
+                        override fun changerPseudo(pseudo: String) {}
+                        override fun resetUser() {}
+                        override fun getArtifact(artifact: List<Item>) {}
+                        override fun getInventory(inventory: List<Item>) {
+                            viewModel!!.getItems(artifact, object :
+                                ItemCallback {
+                                override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
+                                    for (e in inventory){
+                                        Log.d("coucou", "${e.id} ${e.quantity}")
+                                    }
+                                    Log.d("coucou", "-----------------------------------")
+                                    for (e in artifact){
+                                        Log.d("coucou", "${e.id} ${e.quantity}")
+                                    }
+                                    artifact.forEach { item ->
+                                        val correspondingArtefact = inventory.find { it.id == item.id }
+                                        item.quantity = correspondingArtefact?.quantity ?: "0"
+                                    }
+
+                                    val updatedItems: List<ItemDescription> = itemDescription.map { itemDesc ->
+                                        val correspondingInventoryItem = artifact.find { it.id == itemDesc.id }
+                                        correspondingInventoryItem?.let { itemDesc.copy(quantity = it.quantity) } ?: itemDesc
+                                    }
+
+                                    val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
+                                    val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
+                                    recyclerView.layoutManager = layoutManager
+                                    val adapter = ProfileAdapter(updatedItems)
+                                    recyclerView.adapter = adapter
+                                }
+                            }, requireActivity())
                         }
-                        val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
-                        val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
-                        recyclerView.layoutManager = layoutManager
-                        val adapter = ProfileAdapter(updatedItems)
-                        recyclerView.adapter = adapter
-                    }
+                    }, requireActivity())
                 }
-                , requireActivity())
-            }
             }
         , requireActivity())
     }

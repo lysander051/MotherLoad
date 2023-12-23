@@ -9,11 +9,10 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
-import com.example.motherload.Model.AppDatabase
+import com.example.motherload.data.local.AppDatabase
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ConnexionCallback
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ItemCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,8 +22,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ItemApi {
-    val TAG = "ItemApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "ItemApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
     fun getItems(
         session: Long,
         signature: Long,
@@ -33,7 +32,7 @@ object ItemApi {
         callback: ItemCallback,
         activity: Activity
     ) {
-        var itemDescription = mutableListOf<ItemDescription>()
+        val itemDescription = mutableListOf<ItemDescription>()
         var requestCount = 0
 
         // Create a Room database instance

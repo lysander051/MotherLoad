@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso
 import android.widget.Spinner
 import com.example.motherload.utils.setSafeOnClickListener
 
-class ShopVenteAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ShopVenteAdapter.ShopItemClickListener) : RecyclerView.Adapter<ShopVenteAdapter.ViewHolder>() {
+class ShopVenteAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ShopItemClickListener) : RecyclerView.Adapter<ShopVenteAdapter.ViewHolder>() {
     interface ShopItemClickListener {
         fun onSellButtonClick(quantity: Int, item: ItemDescription?, prix: Int)
     }

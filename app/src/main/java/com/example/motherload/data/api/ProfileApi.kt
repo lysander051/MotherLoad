@@ -9,11 +9,8 @@ import com.android.volley.toolbox.StringRequest
 import com.example.motherLoad.Utils.LoginManager
 import com.example.motherland.MotherLoad
 import com.example.motherload.data.Item
-import com.example.motherload.data.ItemDescription
 import com.example.motherload.data.callback.ConnexionCallback
-import com.example.motherload.data.callback.InventoryCallback
 import com.example.motherload.data.callback.ProfilCallback
-import com.example.motherload.data.callback.ShopCallback
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -21,8 +18,8 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ProfileApi {
-    val TAG = "InventoryApi"
-    private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+    private const val TAG = "ProfileApi"
+    private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
     fun changerPseudo(session: Long, signature: Long, pseudo: String, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"changenom.php?session=$session&signature=$signature&nom=$pseudo"
 
@@ -124,14 +121,14 @@ object ProfileApi {
                         val status = statusNode.textContent.trim()
                         if (status == "OK") {
                             Log.d(TAG, "Acces inventaire")
-                            var items = mutableListOf<Item>()
-                            var listItems = doc.getElementsByTagName("ARTEFACTS").item(0).childNodes
+                            val items = mutableListOf<Item>()
+                            val listItems = doc.getElementsByTagName("ARTEFACTS").item(0).childNodes
                             for (i in 0 until listItems.length) {
                                 val node = listItems.item(i)
                                 if (node.nodeType == Node.ELEMENT_NODE) {
                                     val elem = node as Element
                                     val id = elem.getElementsByTagName("ID").item(0).textContent.toInt()
-                                    items.add(Item(id.toString(),"1"))
+                                    items.add(Item(id.toString(),"0"))
                                 }
                             }
                             Log.d(TAG, "inventory:${items.size}")
@@ -158,6 +155,59 @@ object ProfileApi {
             }
         )
 
+        MotherLoad.instance.requestQueue?.add(stringRequest)
+    }
+
+    fun getInventory(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
+        val url = BASE_URL_CREUSER +"status_joueur.php?session=$session&signature=$signature"
+        Log.d(TAG, "session: $session|signature: $signature")
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val docBF: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                    val docBuilder: DocumentBuilder = docBF.newDocumentBuilder()
+                    val doc: Document = docBuilder.parse(response.byteInputStream())
+                    val statusNode = doc.getElementsByTagName("STATUS").item(0)
+                    if (statusNode != null) {
+                        val status = statusNode.textContent.trim()
+                        if (status == "OK") {
+                            Log.d(TAG, "Acces inventaire")
+                            val items = mutableListOf<Item>()
+
+                            val listItems = doc.getElementsByTagName("ITEMS").item(0).childNodes
+                            for (i in 0 until listItems.length) {
+                                val node = listItems.item(i)
+                                if (node.nodeType == Node.ELEMENT_NODE) {
+                                    val elem = node as Element
+                                    val id = elem.getElementsByTagName("ITEM_ID").item(0).textContent.toInt()
+                                    val quantity = elem.getElementsByTagName("QUANTITE").item(0).textContent.toInt()
+                                    items.add(Item(id.toString(),quantity.toString()))
+                                }
+                            }
+                            callback.getInventory(items)
+                        }
+                        else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
+                            ConnexionApi.connectAgain(object : ConnexionCallback {
+                                override fun onConnexion(isConnected: Boolean) {
+                                    LoginManager.checkReconnexion(activity, isConnected)
+                                }
+                            })
+                        }
+                        else {
+                            Log.d(TAG, "Erreur - $status")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Erreur lors de la lecture de la réponse XML", e)
+                }
+            },
+            { error ->
+                Log.d(TAG, "connexion error")
+                error.printStackTrace()
+            }
+        )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 }

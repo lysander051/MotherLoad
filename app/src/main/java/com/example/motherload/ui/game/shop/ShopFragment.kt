@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.motherLoad.Injection.ViewModelFactory
+import com.example.motherload.injection.ViewModelFactory
 import com.example.motherload.R
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
@@ -41,7 +40,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         ret = inflater.inflate(R.layout.fragment_shop, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
         val achat = ret.findViewById<Button>(R.id.buttonAchat)
@@ -89,7 +88,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                             override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
 
                                 val updatedItems = items.map { item ->
-                                    var correspondingItemDescription = itemsDescription.find { it.id == item.second.id}
+                                    val correspondingItemDescription = itemsDescription.find { it.id == item.second.id}
                                     correspondingItemDescription?.quantity = item.second.quantity
                                     Triple(item.first, correspondingItemDescription, item.third)
                                 }
@@ -128,7 +127,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                     ItemCallback {
                     override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
                         val updatedItems = items.map { item ->
-                            var correspondingItemDescription = itemsDescription.find { it.id == item.id}
+                            val correspondingItemDescription = itemsDescription.find { it.id == item.id}
                             correspondingItemDescription?.quantity = item.quantity
                             correspondingItemDescription
                         }
@@ -175,7 +174,7 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                         PopUpDisplay.simplePopUp(requireActivity(),
                             getString(R.string.objet_achet),
                             getString(R.string.vous_avez_bien_achet, item?.quantity) +
-                                    "${item?.nom} " +
+                                    " ${item?.nom} " +
                                     getString(R.string.pour_le_prix_de, prix.toString()))
                     }
                 }
