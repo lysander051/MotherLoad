@@ -27,7 +27,7 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
     private val TAG: String = "Repo"
     private var session: Long = -1
     private var signature: Long = -1
-    val dao = AppDatabase.getDatabase(MotherLoad.instance).itemDescriptionDao()
+    val itemDao = AppDatabase.getDatabase(MotherLoad.instance).itemDescriptionDao()
 
     companion object {
         private var repository: Repository? = null
@@ -80,9 +80,9 @@ class Repository private constructor(private val motherLoad: MotherLoad) {
             Log.d(TAG, "lastreset $lastReset")
             Log.d(TAG, "currenttime $currentTimeHours")
             Log.d(TAG, "reset ${currentTimeHours - lastReset >= 24}")
-            val itemsStockees: MutableList<ItemDescription> = dao.getItemsByIds(itemsIds)
+            val itemsStockees: MutableList<ItemDescription> = itemDao.getItemsByIds(itemsIds)
             if(currentTimeHours - lastReset >= 1){
-                dao.deleteAll()
+                itemDao.deleteAll()
                 val sharedPreferences: SharedPreferences = MotherLoad.instance.getSharedPreferences("Time", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
                 editor.putLong("lastReset", currentTimeHours)

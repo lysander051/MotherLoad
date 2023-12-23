@@ -149,10 +149,20 @@ class ProfileFragment: Fragment(){
                 viewModel!!.getItems(inventory, object :
                     ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
+                        val updatedItems : MutableList<ItemDescription> = inventory.map { item ->
+                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                            correspondingItemDescription?.quantity = item.quantity
+                            correspondingItemDescription
+                        } as MutableList<ItemDescription>
+                        for(i in updatedItems.indices){
+                            if(updatedItems.get(i)!!.quantity.toInt() <= 0 ){
+                                updatedItems.removeAt(i)
+                            }
+                        }
                         val recyclerView: RecyclerView = ret.findViewById(R.id.artefactInventory)
                         val layoutManager = GridLayoutManager(requireActivity(), calculateSpanCount())
                         recyclerView.layoutManager = layoutManager
-                        val adapter = ProfileAdapter(itemDescription)
+                        val adapter = ProfileAdapter(updatedItems)
                         recyclerView.adapter = adapter
                     }
                 }
