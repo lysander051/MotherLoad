@@ -21,7 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 object InventoryApi {
     val TAG = "InventoryApi"
     private val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
-    //todo faire le traitement des autres
     fun getStatus(session: Long, signature: Long, callback: InventoryCallback){
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")

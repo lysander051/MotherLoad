@@ -68,7 +68,6 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             activity?.supportFragmentManager?.popBackStack()
         }
 
-        //todo on peut faire une pioche d'un id inéxistant?
         amelioration.setSafeOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
@@ -219,8 +218,12 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         Picasso.get().load(item.image).into(image)
         name.text = item.nom
-        val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        description.text = item.desc_fr
+        if (MotherLoad.instance.resources.configuration.locales[0].language == "fr"){
+            description.text = item.desc_fr
+        }
+        else{
+            description.text = item.desc_en
+        }
         if (item.type == "M")
             type.text = getString(R.string.minerai)
         else

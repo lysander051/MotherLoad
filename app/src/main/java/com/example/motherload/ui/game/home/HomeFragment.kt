@@ -145,7 +145,6 @@ class HomeFragment : Fragment() {
         }
 
         //bouton pour creuser avec un delai de 10sec
-        //todo ajouter la profondeur à un sharedpreference
         val handler = Handler()
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
@@ -267,7 +266,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun gestionErreur(erreurId: Int){
-        //TODO gestion de toutes les erreurs
         if (erreurId == 0)
             PopUpDisplay.simplePopUp(requireActivity(),
                 getString(R.string.trop_rapide),
