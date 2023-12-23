@@ -11,7 +11,7 @@ import com.example.motherload.data.ItemDescription
 import com.example.motherload.R
 import com.squareup.picasso.Picasso
 
-class InventoryAdapter(private val itemList: List<ItemDescription>, private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
+class InventoryAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
 
     interface ItemClickListener {
         fun onItemClick(item: ItemDescription)
@@ -37,8 +37,8 @@ class InventoryAdapter(private val itemList: List<ItemDescription>, private val 
         private val rarityTextView: TextView = itemView.findViewById(R.id.rarity)
         private val quantityTextView: TextView = itemView.findViewById(R.id.quantity)
 
-        fun bind(item: ItemDescription) {
-            Log.d("item", item.image)
+        fun bind(item: ItemDescription?) {
+            Log.d("item", item!!.image)
             Picasso.get().load(item.image).into(imageView)
             nameTextView.text = item.nom
             rarityTextView.text = item.rarity

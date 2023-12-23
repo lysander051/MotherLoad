@@ -159,7 +159,12 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         viewModel!!.getItems(inventory, object :
             ItemCallback {
             override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                setItems(itemDescription)
+                val updatedItems = inventory.map { item ->
+                    var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                    correspondingItemDescription?.quantity = item.quantity
+                    correspondingItemDescription
+                }
+                setItems(updatedItems)
             }
         }
         )
@@ -174,7 +179,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         ret.findViewById<ImageView>(R.id.pickaxeImage).setImageResource(pick)
     }
 
-    private fun setItems(listItemDescription: List<ItemDescription>){
+    private fun setItems(listItemDescription: List<ItemDescription?>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemInventory)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = InventoryAdapter(listItemDescription, this)

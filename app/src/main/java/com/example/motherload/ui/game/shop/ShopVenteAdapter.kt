@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso
 import android.widget.Spinner
 import com.example.motherload.utils.setSafeOnClickListener
 
-class ShopVenteAdapter(private val itemList: List<ItemDescription>, private val itemClickListener: ShopVenteAdapter.ShopItemClickListener) : RecyclerView.Adapter<ShopVenteAdapter.ViewHolder>() {
+class ShopVenteAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ShopVenteAdapter.ShopItemClickListener) : RecyclerView.Adapter<ShopVenteAdapter.ViewHolder>() {
     interface ShopItemClickListener {
         fun onSellButtonClick(quantity: Int, item: ItemDescription?, prix: Int)
     }
@@ -45,10 +45,10 @@ class ShopVenteAdapter(private val itemList: List<ItemDescription>, private val 
         val price: EditText = itemView.findViewById(R.id.prix)
         val sellButton: ImageView = itemView.findViewById(R.id.buttonVendre)
 
-        fun bind(item: ItemDescription) {
-            Picasso.get().load(item.image).into(imageView)
-            nameTextView.text = item.nom
-            val data = (1..item.quantity.toInt()).map { it.toString() }
+        fun bind(item: ItemDescription?) {
+            Picasso.get().load(item?.image).into(imageView)
+            nameTextView.text = item?.nom
+            val data = (1..item!!.quantity.toInt()).map { it.toString() }
             val adapter = ArrayAdapter(itemView.context, android.R.layout.simple_spinner_item, data)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             quantitySpinner.adapter = adapter
