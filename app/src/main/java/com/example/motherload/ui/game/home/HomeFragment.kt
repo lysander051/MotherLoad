@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.location.Location
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -113,6 +114,7 @@ class HomeFragment : Fragment() {
         val shop = ret.findViewById<ImageView>(R.id.boutonShop)
         val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
+        val pickaxeSound = MediaPlayer.create(context, R.raw.pickaxe)
         creuserBW = ret.findViewById(R.id.boutonCreuserBW)
         depthField = ret.findViewById(R.id.depth)
         creuser = ret.findViewById(R.id.boutonCreuser)
@@ -148,6 +150,7 @@ class HomeFragment : Fragment() {
         creuser.setSafeOnClickListener {
             if (viewModel!!.isButtonClickEnabled.value == true) {
                 viewModel!!.disableButtonClick()
+                pickaxeSound.start()
                 creuserBW.visibility = View.VISIBLE
                 val animationDuration: Long = 10000
                 val fadeAnimator = ObjectAnimator.ofFloat(creuserBW, "alpha", 1f, 0f)
