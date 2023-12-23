@@ -53,6 +53,16 @@
     <string name="achat">購入</string>
     <string name="vente">セール</string>
     <string name="votre_collection_d_artefact">あなたのアーティファクトコレクション</string>
+    <string name="f_licitation">Félicitation</string>
+    <string name="bravo_votre_pioche_est_am_lior_au_maximum">Bravo, votre pioche est amélioré au maximum</string>
+    <string name="objet_manquant">Objet manquant</string>
+    <string name="il_vous_manque">Il vous manque: \n</string>
+    <string name="minerai">Minerai</string>
+    <string name="artefact">Artefact</string>
+    <string name="recette">recette</string>
+    <string name="pickaxe">Pickaxe %1$s :\n</string>
+    <string name="manque_d_argent">Manque d\'argent</string>
+    <string name="vous_n_avez_pas_suffisament_d_argent_pour_acheter_cet_objet">Vous n\'avez pas suffisament d\'argent pour acheter cet objet</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

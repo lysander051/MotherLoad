@@ -93,8 +93,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="10dp"
-            android:visibility="gone"
-            android:background="@drawable/stroke_for_list">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageOneItem"

@@ -130,7 +130,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
     private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
         if (index < recipeList.size) {
-            recipeString += "Pickaxe ${keys[index]} :\n"
+            recipeString += getString(R.string.pickaxe, keys[index])
             recipeList[keys[index]]?.let {
                 viewModel!!.getItems(it, object : ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
@@ -147,7 +147,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
 
         } else {
             if (index == recipeList.size) {
-                PopUpDisplay.simplePopUp(requireActivity(), "recette", recipeString)
+                PopUpDisplay.simplePopUp(requireActivity(),
+                    getString(R.string.recette), recipeString)
                 recipeString = ""
             }
         }
@@ -217,9 +218,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         name.text = item.nom
         description.text = item.desc_fr
         if (item.type == "M")
-            type.text = "Minerai"
+            type.text = getString(R.string.minerai)
         else
-            type.text = "Artefact"
+            type.text = getString(R.string.artefact)
         rarity.text = item.rarity
         quantity.text = item.quantity
     }
@@ -239,7 +240,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                     override fun getStatus(pickaxe: Int, money: Int, inventoryPlayer: List<Item>) {
                                         viewModel!!.getItems(inventoryPlayer, object : ItemCallback {
                                             override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {
-                                                var missing = "Il vous manque: \n"
+                                                var missing = getString(R.string.il_vous_manque)
                                                 for (i in 0 until itemDescription.size) {
                                                     val requiredQuantity = itemDescription[i]
                                                     val playerItem = itemDescriptionPlayer.find { it.id == requiredQuantity.id }
@@ -253,7 +254,10 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                                         missing += "${requiredQuantity.quantity.toInt()} ${requiredQuantity.nom}\n"
                                                     }
                                                 }
-                                                PopUpDisplay.simplePopUp(requireActivity(), "Objet manquant", missing)
+                                                PopUpDisplay.simplePopUp(requireActivity(),
+                                                    getString(
+                                                        R.string.objet_manquant
+                                                    ), missing)
                                             }
                                         })
                                     }
@@ -269,8 +273,8 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
         if (erreurId == 1){
             PopUpDisplay.simplePopUp(requireActivity(),
-                "Félicitation",
-                "Bravo, votre pioche est amélioré au maximum")
+                getString(R.string.f_licitation),
+                getString(R.string.bravo_votre_pioche_est_am_lior_au_maximum))
         }
     }
 }

@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MotherLoad" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="background">@drawable/stroke_for_list_day</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 

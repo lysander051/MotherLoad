@@ -40,7 +40,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:background="@drawable/stroke_for_list"
         android:text="0M"
         android:textAlignment="center"
         android:textSize="25sp"

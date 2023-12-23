@@ -13,7 +13,6 @@
         android:layout_margin="15dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@drawable/stroke_for_list"
         tools:ignore="MissingConstraints">
 
     <ImageView
