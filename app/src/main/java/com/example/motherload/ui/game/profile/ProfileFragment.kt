@@ -58,7 +58,7 @@ class ProfileFragment: Fragment(){
         val reset = ret.findViewById<Button>(R.id.boutonReset)
         val theme = ret.findViewById<Switch>(R.id.theme)
         val langue = ret.findViewById<Spinner>(R.id.selecteurLangue)
-        val deconnexion = ret.findViewById<Button>(R.id.deconnexion)
+        val deconnexion = ret.findViewById<ImageView>(R.id.deconnexion)
 
         retour.setOnClickListener {
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)

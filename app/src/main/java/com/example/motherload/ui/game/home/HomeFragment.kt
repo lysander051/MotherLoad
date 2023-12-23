@@ -115,6 +115,8 @@ class HomeFragment : Fragment() {
         val profil = ret.findViewById<ImageView>(R.id.boutonProfil)
         val bcenter = ret.findViewById<ImageView>(R.id.boutonCenter)
         val pickaxeSound = MediaPlayer.create(context, R.raw.pickaxe)
+        val inventorySound = MediaPlayer.create(context, R.raw.zipper)
+        val shopSound = MediaPlayer.create(context, R.raw.coins)
         creuserBW = ret.findViewById(R.id.boutonCreuserBW)
         depthField = ret.findViewById(R.id.depth)
         creuser = ret.findViewById(R.id.boutonCreuser)
@@ -191,6 +193,7 @@ class HomeFragment : Fragment() {
 
 
         shop.setSafeOnClickListener {
+            shopSound.start()
             activity?.supportFragmentManager?.beginTransaction()?.commit()
             activity?.supportFragmentManager?.commit {
                 replace(R.id.fragmentContainerView, ShopFragment())
@@ -201,6 +204,7 @@ class HomeFragment : Fragment() {
 
         //pour aller sur le fragment de l'inventaire
         inventaire.setSafeOnClickListener {
+            inventorySound.start()
             activity?.supportFragmentManager?.beginTransaction()?.commit()
             activity?.supportFragmentManager?.commit {
                 replace(R.id.fragmentContainerView, InventoryFragment())

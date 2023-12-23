@@ -144,8 +144,13 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             recipeList[keys[index]]?.let {
                 viewModel!!.getItems(it, object : ItemCallback {
                     override fun getItemsDescription(itemDescription: MutableList<ItemDescription>) {
-                        for (e in itemDescription) {
-                            recipeString += "${e.quantity} * ${e.nom}\n"
+                        val updatedItems : List<ItemDescription?> = recipeList[keys[index]]!!.map { item ->
+                            var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                            correspondingItemDescription?.quantity = item.quantity
+                            correspondingItemDescription
+                        }
+                        for (e in updatedItems) {
+                            recipeString += "${e!!.quantity} * ${e.nom}\n"
                             if (index < recipeList.size-1) {
                                 recipeString += "--------------------------\n"
                             }
@@ -261,17 +266,27 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                                         viewModel!!.getItems(inventoryPlayer, object : ItemCallback {
                                             override fun getItemsDescription(itemDescriptionPlayer: MutableList<ItemDescription>) {
                                                 var missing = getString(R.string.il_vous_manque)
-                                                for (i in 0 until itemDescription.size) {
-                                                    val requiredQuantity = itemDescription[i]
-                                                    val playerItem = itemDescriptionPlayer.find { it.id == requiredQuantity.id }
+                                                val updatedItemsRequires : List<ItemDescription?> = recette.map { item ->
+                                                    var correspondingItemDescription = itemDescription.find { it.id == item.id}
+                                                    correspondingItemDescription?.quantity = item.quantity
+                                                    correspondingItemDescription
+                                                }
+                                                val updatedItemsPlayer : List<ItemDescription?> = inventoryPlayer.map { item ->
+                                                    var correspondingItemDescription = itemDescriptionPlayer.find { it.id == item.id}
+                                                    correspondingItemDescription?.quantity = item.quantity
+                                                    correspondingItemDescription
+                                                }
+                                                for (i in 0 until updatedItemsRequires.size) {
+                                                    val requiredQuantity = updatedItemsRequires[i]
+                                                    val playerItem = updatedItemsPlayer.find { it!!.id == requiredQuantity!!.id }
 
                                                     if (playerItem != null) {
-                                                        val diff = requiredQuantity.quantity.toInt() - playerItem.quantity.toInt()
+                                                        val diff = requiredQuantity!!.quantity.toInt() - playerItem.quantity.toInt()
                                                         if (diff > 0) {
                                                             missing += "$diff ${requiredQuantity.nom}\n"
                                                         }
                                                     } else {
-                                                        missing += "${requiredQuantity.quantity.toInt()} ${requiredQuantity.nom}\n"
+                                                        missing += "${requiredQuantity!!.quantity.toInt()} ${requiredQuantity.nom}\n"
                                                     }
                                                 }
                                                 PopUpDisplay.simplePopUp(requireActivity(),
