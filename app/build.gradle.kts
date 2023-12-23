@@ -46,7 +46,7 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("androidx.preference:preference:1.2.1")
-    implementation("org.osmdroid:osmdroid-android:6.0.2")
+    implementation("org.osmdroid:osmdroid-android:6.1.17")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("com.google.android.gms:play-services-location:17.1.0")
     implementation ("com.squareup.picasso:picasso:2.71828")
