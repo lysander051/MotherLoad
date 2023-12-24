@@ -95,6 +95,22 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 }
             }
             , requireActivity())
+            viewModel!!.recipePickaxe(object : InventoryCallback {
+                override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                override fun upgradePickaxe() {}
+                override fun erreur(erreurId: Int) {}
+                override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
+                    val keys = recipeList.keys.toList()
+                    val keyFound = keys.find {
+                        val b = (keys[it.toInt()] == (pickaxeLevel + 1).toString())
+                        if (!b) {
+                            amelioration.isEnabled = false
+                            amelioration.setText("Pioche au max")
+                        }
+                        b  // Retourne la valeur de b
+                    }
+                }
+            }, requireActivity())
         }
 
         recette.setSafeOnClickListener {
