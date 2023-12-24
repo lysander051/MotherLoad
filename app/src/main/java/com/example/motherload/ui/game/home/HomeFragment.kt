@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private lateinit var playerPosition: GeoPoint
+    private var playerPosition: GeoPoint = GeoPoint(0.0, 0.0)
     private lateinit var holePosition: GeoPoint
     private lateinit var joueurOverlay: ItemizedOverlayWithFocus<OverlayItem>
     private lateinit var creuser: ImageView
