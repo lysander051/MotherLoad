@@ -102,10 +102,13 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
                     val keys = recipeList.keys.toList()
                     val keyFound = keys.find {
-                        val b = (keys[it.toInt()] == (pickaxeLevel + 1).toString())
+                        var b : Boolean = false
+                        for (e in keys){
+                            b = b || (e == (pickaxeLevel + 1).toString())
+                        }
                         if (!b) {
                             amelioration.isEnabled = false
-                            amelioration.setText("Pioche au max")
+                            amelioration.setText(getString(R.string.pioche_au_max))
                         }
                         b  // Retourne la valeur de b
                     }
@@ -142,7 +145,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     }
 
     /**
-     * Permet de refresh le contenu de l'inventaire périodiquement
+     * Permet de refresh le contenu de l'inventaire
      */
     private fun refreshInterface(){
         viewModel!!.getStatus( object :

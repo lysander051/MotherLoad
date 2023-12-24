@@ -69,6 +69,7 @@
     <string name="voulez_vous_vraiment_vous_d_connecter">Voulez-vous vraiment vous déconnecter ?</string>
     <string name="probl_me_gps">Problème GPS</string>
     <string name="il_semblerait_qu_il_y_ait_un_probl_me_avec_le_gps_de_votre_t_l_phone">Il semblerait qu\'il y ait un problème avec le GPS de votre téléphone</string>
+    <string name="pioche_au_max">Pioche niveau max</string>
     <string-array name="langues">
         <item>Français</item>
         <item>English</item>

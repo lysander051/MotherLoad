@@ -69,4 +69,5 @@
     <string name="voulez_vous_vraiment_vous_d_connecter">정말로 로그아웃하시겠습니까?</string>
     <string name="probl_me_gps">GPS 문제</string>
     <string name="il_semblerait_qu_il_y_ait_un_probl_me_avec_le_gps_de_votre_t_l_phone">휴대전화의 GPS에 문제가 있는 것 같습니다.</string>
+    <string name="pioche_au_max">최대 레벨 곡괭이</string>
 </resources>
