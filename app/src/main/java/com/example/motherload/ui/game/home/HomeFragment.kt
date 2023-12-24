@@ -50,6 +50,26 @@ import org.osmdroid.views.overlay.OverlayItem
 import java.util.Timer
 
 
+/**
+ * @property map la carte
+ * @property fusedLocationProviderClient le client utilisé pour récupérer la localisation
+ * @property locationCallback le callback de la localisation
+ * @property locationRequest la requête de localisation
+ * @property playerPosition la position du joueur
+ * @property holePosition la position du trou actuel
+ * @property joueurOverlay l'overlay du joueur
+ * @property creuser l'image du bouton creuser
+ * @property creuserBW l'image du bouton creuser en noir et blanc
+ * @property depthField la zone texte renseignent la profondeur du trou actuel
+ * @property permiNotif vrai si on peut demander la permission pour la localisation (pour ne pas spam)
+ * @property creuserAnimationStartTime temps de début de l'animation du bouton creuser
+ * @property center true si la caméra est centrée sur le joueur
+ * @property viewModel le ViewModel utilisé par le fragment
+ * @property timer le timer gérant les actualisations en fonction du temps
+ * @property didDig true si le joueur à creusé (pour pouvoir afficher le trou en un seul exemplaire)
+ * @property depthHole true si un trou doit être affiché
+ * @property firstdisp true si un trou est affiché
+ */
 class HomeFragment : Fragment() {
 
     private lateinit var map: MapView
@@ -187,7 +207,7 @@ class HomeFragment : Fragment() {
                     }
                 }, requireActivity())
 
-                // Bloque le bouton 10secondes si on a cliqué
+                // Bloque le bouton 10 secondes si on a cliqué
                 handler.postDelayed({
                     creuser.setImageResource(R.drawable.pickaxe_icon)
                     creuser.startAnimation(animation)
@@ -259,6 +279,12 @@ class HomeFragment : Fragment() {
     }
 
 
+    /**
+     * Initialise la map d'Open Street Map
+     *
+     * @param ret la vue actuelle
+     * @param bcenter
+     */
     @SuppressLint("ClickableViewAccessibility")
     private fun mapInitialisation(ret: View, bcenter: ImageView){
         map = ret.findViewById(R.id.map)
@@ -277,6 +303,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Gère les différentes erreurs possible renvoyée par les requête
+     *
+     * @param erreurId l'id de l'erreur renvoyé par la requête
+     */
     private fun gestionErreur(erreurId: Int){
         if (erreurId == 0)
             PopUpDisplay.simplePopUp(requireActivity(),
@@ -297,6 +328,11 @@ class HomeFragment : Fragment() {
 
     }
 
+    /**
+     * Récupère la position du joueur pour modifier les icones et les paramètres de la carte
+     *
+     * @param location la position de l'utilisateur
+     */
     private fun getLocation(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
@@ -328,6 +364,9 @@ class HomeFragment : Fragment() {
             map.overlays.add(0, joueurOverlay)
     }
 
+    /**
+     * Gère l'affichage d'un unique trou en dessous du joueur s'il creuse
+     */
     private fun affichageTrou() {
         if(viewModel?.getDepthHole()!!.third   != 0){
             val myGroundOverlay = GroundOverlay2()
@@ -364,6 +403,11 @@ class HomeFragment : Fragment() {
         }
 }
 
+    /**
+     * Gère l'affichage des voisins sur la carte
+     *
+     * @param voisin la liste des voisins sous la forme nom -> position
+     */
     private fun affichageVoisin(voisin: MutableMap<String, GeoPoint>) {
         if (map.overlays.size > 2) {
             map.overlays.subList(2, map.overlays.size).clear()
@@ -394,6 +438,9 @@ class HomeFragment : Fragment() {
         map.overlays.add(2, mOverlay)
     }
 
+    /**
+     * Récupère et affiche la profondeur du trou actuel
+     */
     private fun loadingDepthHole(){
         val dephtHoleInfo = viewModel?.getDepthHole()
         holePosition = GeoPoint(dephtHoleInfo?.first?.toDouble()!!, dephtHoleInfo.second.toDouble())
@@ -404,6 +451,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onPause() {
+        //Mise en pause des demande de localisation
         super.onPause()
         map.onPause()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
@@ -412,6 +460,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onResume() {
+        //Reprise des demandes de localisation
         super.onResume()
         map.onResume()
         if (ActivityCompat.checkSelfPermission(

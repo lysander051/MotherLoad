@@ -21,9 +21,24 @@ import org.w3c.dom.Document
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * @property TAG le tag utiliser pour les logs
+ * @property BASE_URL_CREUSER l'url de base utilisée par les webservices
+ */
 object ItemApi {
     private const val TAG = "ItemApi"
     private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    /**
+     * Récupère le détail des items possédé par le joueur
+     *
+     * @param session la session de connexion utilisateur
+     * @param signature la signature de connexion utilisateur
+     * @param items la list des Item (id, quantité) dont il faut récupérer le détail
+     * @param context le context courant
+     * @param callback getItemsDescription avec une liste d'ItemDescription
+     * @param activity l'activité courante
+     */
     fun getItems(
         session: Long,
         signature: Long,

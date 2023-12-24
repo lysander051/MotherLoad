@@ -17,9 +17,23 @@ import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * @property TAG le tag utiliser pour les logs
+ * @property BASE_URL_CREUSER l'url de base utilisée par les webservices
+ */
 object ProfileApi {
     private const val TAG = "ProfileApi"
     private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    /**
+     * Effectue le changement de pseudonyme
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param pseudo le nouveau pseudonyme de l'utilisateur
+     * @param callback changerPseudo avec pseudo si le pseudo est valide et avec une chaîne vide sinon
+     * @param activity l'activité courante
+     */
     fun changerPseudo(session: Long, signature: Long, pseudo: String, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"changenom.php?session=$session&signature=$signature&nom=$pseudo"
 
@@ -62,6 +76,14 @@ object ProfileApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Effectue le reset du compte utilisateur
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param callback resetUser
+     * @param activity l'activité courante
+     */
     fun resetUser(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"reinit_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, url)
@@ -104,6 +126,14 @@ object ProfileApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Récupère la liste des artéfacts
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param callback getArtifact avec la liste des artefacts
+     * @param activity l'activité courante
+     */
     fun getArtifact(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"artefacts_list.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -158,6 +188,14 @@ object ProfileApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Récupère l'inventaire du joueur
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param callback getInventory avec la liste des objets de l'inventaire
+     * @param activity l'activité courante
+     */
     fun getInventory(session: Long, signature: Long, callback: ProfilCallback, activity: Activity){
         val url = BASE_URL_CREUSER +"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")

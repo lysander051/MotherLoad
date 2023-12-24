@@ -19,10 +19,24 @@ import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * @property TAG le tag utiliser pour les logs
+ * @property BASE_URL_CREUSER l'url de base utilisée par les webservices
+ */
 object HomeApi {
     private const val TAG = "HomeApi"
     private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
 
+    /**
+     * Effectue le déplacement du joueur et récupère la liste des voisins
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param latitude la latitude de la position ou l'utilisateur se déplace
+     * @param longitude la longitude de la position ou l'utilisateur se déplace
+     * @param callback deplacement avec la liste des voisins
+     * @param activity l'activity courante
+     */
     fun deplacement(session: Long, signature: Long, latitude:Double, longitude:Double, callback: HomeCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"deplace.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -78,6 +92,17 @@ object HomeApi {
     }
 
 
+    /**
+     * Effectue l'action de creuser
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param latitude la latitude de la position ou l'utilisateur se déplace
+     * @param longitude la longitude de la position ou l'utilisateur se déplace
+     * @param callback creuse avec l'id de l'item trouvé, la profondeur et les voisins en cas de succès
+     * et erreur avec le numéro de l'erreur en cas d'échec
+     * @param activity l'activité courante
+     */
     fun creuser(session: Long, signature: Long, latitude: Double, longitude: Double, callback: HomeCallback, activity: Activity) {
         Log.d(TAG, "session: $session|signature: $signature")
         val url = BASE_URL_CREUSER+"creuse.php?session=$session&signature=$signature&lon=$longitude&lat=$latitude"
@@ -169,6 +194,10 @@ object HomeApi {
         )
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
+
+    /**
+     * Récupère la profondeur du trou actuel
+     */
     fun getDepthHole(): Triple<Float, Float, Int> {
         val sharedPreferences = MotherLoad.instance.getSharedPreferences("HoleDisplay", Context.MODE_PRIVATE)
         val latitude = sharedPreferences.getFloat("Latitude", 0f)

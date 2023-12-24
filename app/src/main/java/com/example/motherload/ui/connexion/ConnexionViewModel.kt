@@ -8,6 +8,13 @@ import java.net.URLEncoder
 
 class ConnexionViewModel(private var connexionRepo: Repository) : ViewModel() {
 
+    /**
+     * Envoie les informations de connexion au repo afin de commencer la connexion
+     *
+     * @param login le login de l'utilisateur
+     * @param password le mot de passe de l'utilisateur
+     * @param callback le callback de la requête
+     */
     fun getConnected(login: String, password: String, callback: ConnexionCallback) {
         val passwordHash : String = LoginManager.hash(password)
         val encodeLogin = URLEncoder.encode(login,"UTF-8")

@@ -17,9 +17,22 @@ import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * @property TAG le tag utiliser pour les logs
+ * @property BASE_URL_CREUSER l'url de base utilisée par les webservices
+ */
 object InventoryApi {
     private const val TAG = "InventoryApi"
     private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    /**
+     * Récupère la position, l'argent, la pioche et les items de l'utilisateur
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param callback getStatus avec la pioche, l'argent et les objets du joueur
+     * @param activity l'activité courante
+     */
     fun getStatus(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"status_joueur.php?session=$session&signature=$signature"
         Log.d(TAG, "session: $session|signature: $signature")
@@ -77,6 +90,16 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Effectue l'amélioration de la pioche
+     *
+     * @param session la session de la connexion utilisateur
+     * @param signature la signature de la connexion utilisateur
+     * @param pickaxeLevel le niveau de la pioche souhaitée
+     * @param callback upgradePickaxe en cas de succès
+     * et erreur avec le numéro de l'erreur en cas d'échec
+     * @param activity l'activité courante
+     */
     fun upgradePickaxe(session: Long, signature: Long, pickaxeLevel: Int, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"maj_pioche.php?session=$session&signature=$signature&pickaxe_id=${pickaxeLevel}"
         Log.d(TAG, url)
@@ -124,6 +147,14 @@ object InventoryApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Récupère les différentes recettes de fabrication des pioches
+     *
+     * @param session la session de connexion utilisateur
+     * @param signature la signature de connexion utilisateur
+     * @param callback recipePickaxe avec la liste des recettes
+     * @param activity l'activité courante
+     */
     fun recipePickaxe(session: Long, signature: Long, callback: InventoryCallback, activity: Activity){
         val url = BASE_URL_CREUSER+"recettes_pioches.php?session=$session&signature=$signature"
         Log.d(TAG, url)

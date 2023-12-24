@@ -11,6 +11,9 @@ import com.example.motherload.ui.game.profile.ProfileViewModel
 import com.example.motherload.ui.game.shop.ShopViewModel
 
 
+/**
+ * @property repository l'instance de Repository
+ */
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory private constructor() : ViewModelProvider.Factory{
     private var repository: Repository? = null
@@ -20,6 +23,12 @@ class ViewModelFactory private constructor() : ViewModelProvider.Factory{
         repository = Repository.getInstance(MotherLoad.instance)
     }
 
+    /**
+     * Génère un ViewModel particulier sur demande
+     *
+     * @param modelClass la classe de ViewModel à générer
+     * @return le ViewModel ainsi créé
+     */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ConnexionViewModel::class.java)) {
             return ConnexionViewModel(repository!!) as T

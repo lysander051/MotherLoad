@@ -20,6 +20,14 @@ import com.example.motherload.R
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 
+/**
+ * @property viewModel le ViewModel utilisé par l'activité
+ * @property login le champs texte du login de l'utilisateur
+ * @property psw le champs texte du mot de passe de l'utilisateur
+ * @property saveLP true si l'utilisateur souhaite sauvegarder ses informations
+ * @property stayC true si l'utilisateur souhaite rester connecté
+ * @property SHAREDPREF le sharedPreference utilisé par l'activité pour stocker diverses valeurs
+ */
 class ConnexionActivity : AppCompatActivity(){
 
     private var viewModel: ConnexionViewModel? = null
@@ -33,8 +41,11 @@ class ConnexionActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connexion)
 
+        //On demande la permission d'utiliser la localisation de l'utilisateur
         AppPermission.requestLocation(this)
+        //On récupère le ViewModel dont on se servira plus tard
         viewModel = ViewModelProvider(this, ViewModelFactory.getInstance!!)[ConnexionViewModel::class.java]
+        //On récupère les éléments de la vue avec lesquels on va pouvoir intéragir
         val connexion = findViewById<Button>(R.id.boutonConnexion)
         val saveLoginPsw = findViewById<CheckBox>(R.id.saveLoginPsw)
         val stayconnected = findViewById<CheckBox>(R.id.stayConnected)
@@ -42,15 +53,18 @@ class ConnexionActivity : AppCompatActivity(){
         //récupération des données enregistré
         login = findViewById(R.id.login)
         psw = findViewById(R.id.password)
+        //On charge les login et psw si on les connait déjà
         val (loadedLogin, loadedPsw, loadedSaveLP) = loadLoginFromSharedPreferences()
         val loadedStayC = loadStayConnected()
         login.setText(loadedLogin)
         psw.setText(loadedPsw)
+        //On coche les cases selon les précédent choix de l'utilisateur (s'ils existent)
         saveLoginPsw.isChecked = loadedSaveLP
         saveLP = loadedSaveLP
         stayconnected.isChecked = loadedStayC
         stayC = loadedStayC
 
+        //Le bouton connexion effectue la requête de connexion
         connexion.setSafeOnClickListener {
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
@@ -59,7 +73,6 @@ class ConnexionActivity : AppCompatActivity(){
                 }
             })
         }
-
         stayconnected.setOnCheckedChangeListener { _, isChecked ->
             stayC = isChecked
         }
@@ -67,6 +80,7 @@ class ConnexionActivity : AppCompatActivity(){
         saveLoginPsw.setOnCheckedChangeListener { _, isChecked ->
             saveLP = isChecked
         }
+        //Si rester connecté était déjà coché alors on se connecte automatiquement
         if (stayC){
             viewModel!!.getConnected(findViewById<EditText>(R.id.login).text.toString(), findViewById<EditText>(R.id.password).text.toString(), object :
                 ConnexionCallback {
@@ -77,24 +91,41 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * Vérifie le résultat de la requête de la connexion de l'utilisateur
+     *
+     * @param connected le résultat de la requête (true si l'utilisateur à réussi à se connecter)
+     */
     private fun checkConnexion(connected: Boolean) {
         if (connected) {
             val intent = Intent(this, MainActivity::class.java)
+            //Si l'utilisateur veut sauvegarder ses informations ou resté tout le temps connecté
             if(saveLP || stayC) {
+                //On chiffre son mot de passe pour le stocker dans les sharedPreferences
                 val chiffrePassword = LoginManager.savePassword(psw.text.toString())
                 saveLoginToSharedPreferences(login.text.toString(), chiffrePassword, saveLP)
             }
             else {
+                //Sinon on ne sauvegarde rien / on enlève ce que l'on avait jusqu'alors
                 saveLoginToSharedPreferences("", "", false)
             }
             saveStayConnected(stayC)
+            //On termine l'activité et on lance l'activité principale
             finish()
             startActivity(intent)
         } else {
+            //On informe l'utilisateur du problème
             PopUpDisplay.longToast(this, getString(R.string.mot_de_passe_ou_pseudo_incorrect))
         }
     }
 
+    /**
+     * Sauvegarde des informations de l'utilisateur
+     *
+     * @param loginValue le login de l'utilisateur
+     * @param pswValue le mot de passe crypté de l'utilisateur
+     * @param saveLP le choix de sauvegarder les informations
+     */
     private fun saveLoginToSharedPreferences(loginValue: String, pswValue: String, saveLP: Boolean) {
         val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
@@ -105,6 +136,11 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * Sauvegarde le choix de l'utilisateur de rester connecté
+     *
+     * @param stayC le choix de l'utilisateur de rester connecté
+     */
     private fun saveStayConnected(stayC: Boolean){
         val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
@@ -113,6 +149,11 @@ class ConnexionActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * Récupère le login, mot de passe et le choix de sauvegarder les informations de l'utilisateur
+     *
+     * @return le login, le mot de passe et le choix de l'utilisateur de sauvegarder ses informations
+     */
     private fun loadLoginFromSharedPreferences(): Triple<String, String, Boolean> {
         val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         val login = sharedPref.getString("login", "") ?: ""
@@ -121,6 +162,9 @@ class ConnexionActivity : AppCompatActivity(){
         return Triple(login, psw, saveLP)
     }
 
+    /**
+     * Récupère le choix de l'utilisateur de rester connecté
+     */
     private fun loadStayConnected(): Boolean {
         val sharedPref = MotherLoad.instance.getSharedPreferences(SHAREDPREF, Context.MODE_PRIVATE)
         return sharedPref.getBoolean("stayC", false)

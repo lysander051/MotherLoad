@@ -14,9 +14,21 @@ import org.w3c.dom.Document
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * @property TAG le tag utiliser pour les logs
+ * @property BASE_URL_CREUSER l'url de base utilisée par les webservices
+ */
 object ConnexionApi {
     private const val TAG = "ConnexionApi"
     private const val BASE_URL_CREUSER = "https://test.vautard.fr/creuse_srv/"
+
+    /**
+     * Effectue la requète de connexion au serveur
+     *
+     * @param login le nom d'utilisateur
+     * @param password le mot de passe hashé avec SHA-256
+     * @param callback onConnexion true si la requète c'est bien déroulée et false sinon
+     */
     fun getConnected(login: String, password: String, callback: ConnexionCallback){
         val url = BASE_URL_CREUSER+"connexion.php?login=$login&passwd=$password"
 
@@ -64,8 +76,12 @@ object ConnexionApi {
         MotherLoad.instance.requestQueue?.add(stringRequest)
     }
 
+    /**
+     * Effectue la tentative de reconnexion (lorsque l'utilisateur souhaite rester connecté
+     *
+     * @param callback onConnexion avec true si la requète c'est bien déroulée et false sinon
+     */
     fun connectAgain(callback: ConnexionCallback){
-        Log.d("coucou", "try to connect")
         val sharedPref = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
         val login = sharedPref.getString("login", "") ?: ""
         val psw = LoginManager.hash(LoginManager.getDecryptedPassword())
@@ -85,7 +101,6 @@ object ConnexionApi {
                             if (statusNode != null) {
                                 val status = statusNode.textContent.trim()
                                 if (status == "OK") {
-                                    Log.d("coucou", "Connexion avec succès")
                                     val session: Long =
                                         doc.getElementsByTagName("SESSION")
                                             .item(0).textContent.toLong()
@@ -124,7 +139,6 @@ object ConnexionApi {
                 MotherLoad.instance.requestQueue?.add(stringRequest)
             }
         }
-        Log.d("coucou", "pas connecté")
         callback.onConnexion(false)
     }
 }

@@ -9,12 +9,23 @@ import com.example.motherload.data.ItemDescription
 @Database(entities = [ItemDescription::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
+    /**
+     * Permet de récupérer le DAO de la BDD
+     *
+     * @return le DAO
+     */
     abstract fun itemDescriptionDao(): ItemDescriptionDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        /**
+         * Permet de récupérer la BDD
+         *
+         * @param context le context courant
+         * @return la BDD
+         */
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
