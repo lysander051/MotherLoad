@@ -67,10 +67,6 @@
     <string name="se_d_connecter">로그아웃</string>
     <string name="d_connexion">연결 끊기</string>
     <string name="voulez_vous_vraiment_vous_d_connecter">정말로 로그아웃하시겠습니까?</string>
-    <string-array name="langues">
-        <item>Français</item>
-        <item>English</item>
-        <item>한국인</item>
-        <item>日本語</item>
-    </string-array>
+    <string name="probl_me_gps">GPS 문제</string>
+    <string name="il_semblerait_qu_il_y_ait_un_probl_me_avec_le_gps_de_votre_t_l_phone">휴대전화의 GPS에 문제가 있는 것 같습니다.</string>
 </resources>

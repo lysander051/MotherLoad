@@ -67,10 +67,6 @@
     <string name="se_d_connecter">サインアウト</string>
     <string name="d_connexion">切断する</string>
     <string name="voulez_vous_vraiment_vous_d_connecter">ログアウトしてもよろしいですか?</string>
-    <string-array name="langues">
-        <item>Français</item>
-        <item>English</item>
-        <item>한국인</item>
-        <item>日本語</item>
-    </string-array>
+    <string name="probl_me_gps">GPSの問題</string>
+    <string name="il_semblerait_qu_il_y_ait_un_probl_me_avec_le_gps_de_votre_t_l_phone">携帯電話の GPS に問題があるようです</string>
 </resources>

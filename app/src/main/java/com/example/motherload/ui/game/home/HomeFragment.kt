@@ -318,6 +318,11 @@ class HomeFragment : Fragment() {
             PopUpDisplay.simplePopUp(requireActivity(),
                 getString(R.string.trop_loin),
                 getString(R.string.ce_n_est_pas_pokemongo_il_faut_rester_l_universit_pour_travailler_ehhhh_jouer))
+        if (erreurId == 3)
+            PopUpDisplay.simplePopUp(requireActivity(),
+                getString(R.string.probl_me_gps),
+                getString(R.string.il_semblerait_qu_il_y_ait_un_probl_me_avec_le_gps_de_votre_t_l_phone))
+
     }
 
     private fun getLocation(location: Location) {

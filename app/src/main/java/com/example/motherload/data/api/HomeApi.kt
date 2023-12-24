@@ -143,6 +143,10 @@ object HomeApi {
                             Log.d(TAG,"En dehors de l'université")
                             callback.erreur(2)
                         }
+                        else if (status == "KO - BAD LOCATION"){
+                            Log.d(TAG,"Problème de GPS")
+                            callback.erreur(3)
+                        }
                         else if (status == "KO - SESSION INVALID" || status == "KO - SESSION EXPIRED"){
                             ConnexionApi.connectAgain(object : ConnexionCallback {
                                 override fun onConnexion(isConnected: Boolean) {
