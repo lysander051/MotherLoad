@@ -41,7 +41,8 @@
     <string name="quantit">Quantité : </string>
     <string name="ameliorer_la_pioche">Ameliorer la pioche</string>
     <string name="recette_des_pioches">Recette des pioches</string>
-    <string name="nom2">Bloqué</string>
+    <string name="bloque">Bloqué</string>
+    <string name="nom2">Nom</string>
     <string name="raret2">Rareté</string>
     <string name="quantit2">quantité</string>
     <string name="prix">Prix</string>

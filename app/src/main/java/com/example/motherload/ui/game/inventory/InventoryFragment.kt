@@ -222,19 +222,19 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         val quantity: TextView = ret.findViewById(R.id.quantityOneItem)
 
         Picasso.get().load(item.image).into(image)
-        name.text = item.nom
+        name.text = " " + item.nom
         if (MotherLoad.instance.resources.configuration.locales[0].language == "fr"){
-            description.text = item.desc_fr
+            description.text = " " + item.desc_fr
         }
         else{
-            description.text = item.desc_en
+            description.text = " " + item.desc_en
         }
         if (item.type == "M")
-            type.text = getString(R.string.minerai)
+            type.text = " " + getString(R.string.minerai)
         else
-            type.text = getString(R.string.artefact)
-        rarity.text = item.rarity
-        quantity.text = item.quantity
+            type.text = " " + getString(R.string.artefact)
+        rarity.text = " " + item.rarity
+        quantity.text = " " + item.quantity
     }
 
     private fun gestionErreur(erreurId :Int){

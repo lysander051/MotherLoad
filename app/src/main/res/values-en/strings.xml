@@ -41,6 +41,7 @@
     <string name="quantit">Quantity : </string>
     <string name="ameliorer_la_pioche">Upgrade the pickaxe</string>
     <string name="recette_des_pioches">Pickaxes recipes</string>
+    <string name="bloque">Locked</string>
     <string name="nom2">Locked</string>
     <string name="raret2">Rarity</string>
     <string name="quantit2">quantity</string>

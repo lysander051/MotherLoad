@@ -41,7 +41,8 @@
     <string name="quantit">수량 : </string>
     <string name="ameliorer_la_pioche">곡괭이를 개선하세요</string>
     <string name="recette_des_pioches">곡괭이 제조법</string>
-    <string name="nom2">막힌</string>
+    <string name="bloque">막힌</string>
+    <string name="nom2">이름</string>
     <string name="raret2">희박</string>
     <string name="quantit2">수량</string>
     <string name="prix">가격</string>

@@ -64,6 +64,7 @@ class HomeFragment : Fragment() {
     private lateinit var creuser: ImageView
     private lateinit var creuserBW: ImageView
     private lateinit var depthField: TextView
+    private var permiNotif = true
     private var creuserAnimationStartTime: Long = 0L
     private var center = true
     private var viewModel: HomeViewModel? = null
@@ -119,16 +120,37 @@ class HomeFragment : Fragment() {
 
         //comportement du bouton de centrage de la map sur le joueur
         bcenter.setSafeOnClickListener{
-            val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.animation_icon)
-            bcenter.startAnimation(animation)
-            if(center){
-                center = false
-                bcenter.setImageResource(R.drawable.center_black_icon)
-            }
-            else{
-                center = true
-                map.controller.setCenter(playerPosition)
-                bcenter.setImageResource(R.drawable.center_blue_icon)
+            if (ActivityCompat.checkSelfPermission(
+                    requireActivity().applicationContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                    if (location != null) {
+                        getLocation(location)
+                        viewModel!!.deplacement(location, object :
+                            HomeCallback {
+                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
+                                affichageVoisin(voisin)
+                            }
+                            override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                            override fun erreur(erreurId: Int) {}
+                        }
+                            , requireActivity())
+                    }
+                }
+                val animation = AnimationUtils.loadAnimation(
+                    requireActivity().applicationContext,
+                    R.anim.animation_icon
+                )
+                bcenter.startAnimation(animation)
+                if (center) {
+                    center = false
+                    bcenter.setImageResource(R.drawable.center_black_icon)
+                } else {
+                    center = true
+                    map.controller.setCenter(playerPosition)
+                    bcenter.setImageResource(R.drawable.center_blue_icon)
+                }
             }
         }
 
@@ -145,8 +167,25 @@ class HomeFragment : Fragment() {
         //bouton pour creuser avec un delai de 10sec
         val handler = Handler()
         creuser.setSafeOnClickListener {
-            if (viewModel!!.isButtonClickEnabled.value == true) {
+            if (viewModel!!.isButtonClickEnabled.value == true && ActivityCompat.checkSelfPermission(
+                    requireActivity().applicationContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED) {
                 viewModel!!.disableButtonClick()
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                    if (location != null) {
+                        getLocation(location)
+                        viewModel!!.deplacement(location, object :
+                            HomeCallback {
+                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
+                                affichageVoisin(voisin)
+                            }
+                            override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
+                            override fun erreur(erreurId: Int) {}
+                        }
+                            , requireActivity())
+                    }
+                }
                 pickaxeSound.start()
                 creuserBW.visibility = View.VISIBLE
                 val animationDuration: Long = 10000
@@ -220,7 +259,10 @@ class HomeFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            AppPermission.requestLocation(requireActivity())
+            if(permiNotif) {
+                AppPermission.requestLocation(requireActivity())
+                permiNotif = false
+            }
         }
         else{
             //cette partie permet une initialisation rapide de la position du joueur
@@ -403,7 +445,10 @@ class HomeFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            AppPermission.requestLocation(requireActivity())
+            if(permiNotif) {
+                AppPermission.requestLocation(requireActivity())
+                permiNotif = false
+            }
         }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest,
             locationCallback,
