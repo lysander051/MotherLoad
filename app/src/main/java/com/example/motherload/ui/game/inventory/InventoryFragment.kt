@@ -43,6 +43,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     private var lastItemClick: String = ""
     private var pickaxeLevel = 0
     private var recipeString = ""
+    private lateinit var amelioration: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,25 +96,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
                 }
             }
             , requireActivity())
-            viewModel!!.recipePickaxe(object : InventoryCallback {
-                override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
-                override fun upgradePickaxe() {}
-                override fun erreur(erreurId: Int) {}
-                override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
-                    val keys = recipeList.keys.toList()
-                    val keyFound = keys.find {
-                        var b : Boolean = false
-                        for (e in keys){
-                            b = b || (e == (pickaxeLevel + 1).toString())
-                        }
-                        if (!b) {
-                            amelioration.isEnabled = false
-                            amelioration.setText(getString(R.string.pioche_au_max))
-                        }
-                        b  // Retourne la valeur de b
-                    }
-                }
-            }, requireActivity())
+            refreshInterface()
         }
 
         recette.setSafeOnClickListener {
@@ -152,6 +135,25 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
             InventoryCallback {
             override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {
                 pickaxeLevel = pickaxe
+                viewModel!!.recipePickaxe(object : InventoryCallback {
+                    override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
+                    override fun upgradePickaxe() {}
+                    override fun erreur(erreurId: Int) {}
+                    override fun recipePickaxe(recipeList: MutableMap<String, List<Item>>) {
+                        val keys = recipeList.keys.toList()
+                        val keyFound = keys.find {
+                            var b : Boolean = false
+                            for (e in keys){
+                                b = b || (e == (pickaxeLevel + 1).toString())
+                            }
+                            if (!b) {
+                                amelioration.isEnabled = false
+                                amelioration.setText(getString(R.string.pioche_au_max))
+                            }
+                            b  // Retourne la valeur de b
+                        }
+                    }
+                }, requireActivity())
                 setIterface(money, inventory)
             }
             override fun upgradePickaxe() {}

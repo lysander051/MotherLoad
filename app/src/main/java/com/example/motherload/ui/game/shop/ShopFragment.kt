@@ -95,11 +95,12 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
                         viewModel!!.getItemsDescription(listItems, object :
                             ItemCallback {
                             override fun getItemsDescription(itemsDescription: MutableList<ItemDescription>) {
-
-                                val updatedItems = items.map { item ->
-                                    val correspondingItemDescription = itemsDescription.find { it.id == item.second.id}
-                                    correspondingItemDescription?.quantity = item.second.quantity
-                                    Triple(item.first, correspondingItemDescription, item.third)
+                                val updatedItems = mutableListOf<Triple<Int, ItemDescription, Int>>()
+                                for (j in items) {
+                                    itemsDescription.find { it.id == j.second.id }?.let { i ->
+                                        val newItemDescription = ItemDescription(i.id, i.nom, i.type,i.rarity,i.image,i.desc_fr,i.desc_en,j.second.quantity)
+                                        updatedItems.add(Triple(j.first, newItemDescription, j.third))
+                                    }
                                 }
                                 setItemsBuy(updatedItems)
                             }
