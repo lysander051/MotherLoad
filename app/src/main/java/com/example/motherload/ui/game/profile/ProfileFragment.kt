@@ -100,6 +100,7 @@ class ProfileFragment: Fragment(){
                                 getString(R.string.r_initialisation),
                                 getString(R.string.votre_compte_a_t_r_initialis)
                             )
+                            setArtifact()
                         }
                     }, requireActivity())
                 }
