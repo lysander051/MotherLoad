@@ -57,7 +57,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     ): View {
         ret = inflater.inflate(R.layout.fragment_inventory, container, false)
         val retour = ret.findViewById<ImageView>(R.id.boutonRetour)
-        val amelioration = ret.findViewById<Button>(R.id.boutonAmelioration)
+        amelioration = ret.findViewById<Button>(R.id.boutonAmelioration)
         val pickaxe = ret.findViewById<ImageView>(R.id.pickaxeImage)
         val recette = ret.findViewById<Button>(R.id.boutonRecette)
         val descriptionItemsLayout = ret.findViewById<LinearLayout>(R.id.descriptionItems)
