@@ -11,7 +11,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        AppPermission.requestLocation(this)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.add(R.id.fragmentContainerView, HomeFragment())
         transaction.commit()
