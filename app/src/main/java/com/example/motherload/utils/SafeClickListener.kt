@@ -8,6 +8,12 @@ class SafeClickListener (
     private val onSafeClick: (View) -> Unit
 ) :View.OnClickListener {
     private var lastTimeClicked: Long = 0
+
+    /**
+     * Permet de cliquer 1 seule fois par seconde grâce au time
+     *
+     * @param v la vue ou se trouve le bouton
+     */
     override fun onClick(v: View) {
         if (SystemClock.elapsedRealtime() - lastTimeClicked < defaultInterval){
             return
@@ -17,6 +23,12 @@ class SafeClickListener (
     }
 
 }
+
+/**
+ * Permet d'attribuer ce listener à un bouton
+ *
+ * @param onSafeClick la fonction à effectuer en cas de clic
+ */
 fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
     val safeClickListener = SafeClickListener {
         onSafeClick(it)

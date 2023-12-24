@@ -11,8 +11,15 @@ import com.example.motherload.R
 
 class AppPermission {
     companion object {
+        /**
+         * Demande la permission d'utiliser la localisation de l'utilisateur
+         *
+         * @param context le context courant
+         */
         fun requestLocation(context: Context){
+            //Si on a pas la permission
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                //On explique à l'utilisateur pourquoi on en a besoin
                 val explanationMessage =
                     context.getString(R.string.nous_avons_besoin_de_votre_permission_pour_acc_der_votre_localisation_pr_cise_afin_que_vous_puissiez_jouer)
                 AlertDialog.Builder(context)

@@ -30,6 +30,13 @@ import com.example.motherload.utils.setSafeOnClickListener
 import com.squareup.picasso.Picasso
 
 
+/**
+ * @property viewModel le ViewModel utilisé par le fragment
+ * @property ret la vue du fragment
+ * @property lastItemClick l'id du dernier objet cliqué (dont son détail est donc affiché)
+ * @property pickaxeLevel le niveau de la pioche
+ * @property recipeString chaîne de charactère pour stocker les différentes recettes de pioche
+ */
 class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     private var viewModel: InventoryViewModel? = null
     private lateinit var ret: View
@@ -69,6 +76,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
 
         amelioration.setSafeOnClickListener {
+            //Si on clique sur améliorer la pioche on fait la requête à l'aide du ViewModel
             val animation = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.amelioration_pioche)
             viewModel!!.upgradePickaxe(pickaxeLevel, object :
                 InventoryCallback {
@@ -90,6 +98,7 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
 
         recette.setSafeOnClickListener {
+            //Si on clique sur les recettes on fait la requête pour les récupérer
             viewModel!!.recipePickaxe(object : InventoryCallback {
                 override fun getStatus(pickaxe: Int, money: Int, inventory: List<Item>) {}
                 override fun upgradePickaxe() {}
@@ -116,6 +125,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         return ret
     }
 
+    /**
+     * Permet de refresh le contenu de l'inventaire périodiquement
+     */
     private fun refreshInterface(){
         viewModel!!.getStatus( object :
             InventoryCallback {
@@ -130,6 +142,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         , requireActivity())
     }
 
+    /**
+     * Affiche dans une pop-up les différentes recettes de pioches possible
+     */
     private fun recipePickaxeDisplay(keys: List<String>, index: Int, recipeList: MutableMap<String, List<Item>>) {
         if (index < recipeList.size) {
             recipeString += "Pickaxe ${keys[index]} :\n"
@@ -161,6 +176,12 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
     }
 
+    /**
+     * Initialise l'interface avec son contenu
+     *
+     * @param money l'argent du joueur
+     * @param inventory la liste d'objet du joueur
+     */
     private fun setIterface(money: Int, inventory: List<Item>){
         ret.findViewById<TextView>(R.id.moneyInBank).text = money.toString()
         setPickaxe()
@@ -178,6 +199,9 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         , requireActivity())
     }
 
+    /**
+     * Définit qu'elle image de pioche utiliser (en fonction du niveau)
+     */
     private fun setPickaxe(){
         var pick = R.drawable.pickaxe_5
         if (pickaxeLevel==1) pick = R.drawable.pickaxe_1
@@ -187,6 +211,11 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         ret.findViewById<ImageView>(R.id.pickaxeImage).setImageResource(pick)
     }
 
+    /**
+     * Définit la vue des items complet (ItemDescription)
+     *
+     * @param listItemDescription la liste d'items à gérer dans la vue
+     */
     private fun setItems(listItemDescription: List<ItemDescription?>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemInventory)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
@@ -197,15 +226,18 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
     override fun onItemClick(item: ItemDescription) {
         val descriptionItemsLayout = ret.findViewById<LinearLayout>(R.id.descriptionItems)
 
+        //Si c'est pas le dernier item sur lequel on clique alors on l'affiche
         if (item.id != lastItemClick) {
             descriptionItemsLayout.visibility = View.VISIBLE
             lastItemClick = item.id
             setOneItemDescription(item)
         } else {
+            //Sinon si c'est le même que le dernier clique on le cache
             if (descriptionItemsLayout.visibility == View.VISIBLE) {
                 descriptionItemsLayout.visibility = View.GONE
                 lastItemClick = ""
             } else {
+                //Sinon on le rend visible
                 descriptionItemsLayout.visibility = View.VISIBLE
                 lastItemClick = item.id
                 setOneItemDescription(item)
@@ -213,6 +245,11 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         }
     }
 
+    /**
+     * Rempli les champs texte correspondant au détail d'un item
+     *
+     * @param item l'item dont on défini les champs
+     */
     private fun setOneItemDescription(item: ItemDescription){
         val image: ImageView = ret.findViewById(R.id.imageOneItem)
         val name: TextView = ret.findViewById(R.id.nameOneItem)
@@ -237,6 +274,11 @@ class InventoryFragment : Fragment(), InventoryAdapter.ItemClickListener {
         quantity.text = " " + item.quantity
     }
 
+    /**
+     * Gère les différentes erreur renvoyé par la requête d'amélioration de la pioche
+     *
+     * @param erreurId l'id de l'erreur. 0 s'il manque des objets à l'utilisateur, et 1 si le joueur à une pioche de niveau maximum
+     */
     private fun gestionErreur(erreurId :Int){
         if (erreurId == 0){
             viewModel!!.recipePickaxe(object : InventoryCallback {

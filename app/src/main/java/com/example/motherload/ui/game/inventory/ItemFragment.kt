@@ -19,6 +19,7 @@ class ItemFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val ret = inflater.inflate(R.layout.fragment_item, container, false)
+        //Si la version de l'API du device du joueur est >= 30 on peut alors connaître si son mode nuit est activé
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (resources.configuration.isNightModeActive) {
                 ret.findViewById<LinearLayout>(R.id.backgroundInventory)
@@ -28,6 +29,7 @@ class ItemFragment : Fragment() {
                     .setBackgroundResource(R.drawable.background_for_list_title_day)
             }
         } else {
+            //Sinon on met la valeur du sharedPreference en partant du principe que si on la connait pas on met le mode jour
             val sharedPref =
                 MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
             if (sharedPref.getInt("theme", 1) == 2) {

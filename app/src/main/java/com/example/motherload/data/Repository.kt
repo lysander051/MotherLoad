@@ -25,6 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 /**
+ * @param motherLoad l'instance de l'application
  * @property TAG le tag utilisé pour les logs
  * @property session la session de la connexion utilisateur
  * @property signature la signature de la connexion utilisateur

@@ -7,6 +7,13 @@ import com.example.motherload.R
 
 class PopUpDisplay {
     companion object{
+        /**
+         * Affiche une pop-up à l'écran
+         *
+         * @param context le context courant
+         * @param title titre de la pop-up
+         * @param text contenu de la pop-up
+         */
         fun simplePopUp(context:Context, title: String, text: String){
             AlertDialog.Builder(context)
                 .setTitle(title)
@@ -15,6 +22,14 @@ class PopUpDisplay {
                 }.show()
         }
 
+        /**
+         * Créer une pop-up avec des boutons "ok" et "annuler"
+         *
+         * @param context le context courant
+         * @param title le titre de la pop-up
+         * @param text le contenu de la pop-up
+         * @param onConfirmed fonction de réaction au clic sur "ok" ou "annuler"
+         */
         fun cancellablePopUp(context: Context, title: String, text: String, onConfirmed: (Boolean) -> Unit){
             val alertDialogBuilder = AlertDialog.Builder(context)
             alertDialogBuilder.setTitle(title)
@@ -32,6 +47,12 @@ class PopUpDisplay {
             alertDialog.show()
         }
 
+        /**
+         * Affiche un Toast court à l'écran
+         *
+         * @param context le context courant
+         * @param text le contenu du Toast
+         */
         fun shortToast(context: Context, text: String){
             Toast.makeText(
                 context,
@@ -39,6 +60,13 @@ class PopUpDisplay {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+        /**
+         * Affiche un Toast long à l'écran
+         *
+         * @param context le context courant
+         * @param text le contenu du Toast
+         */
         fun longToast(context: Context, text: String){
             Toast.makeText(
                 context,

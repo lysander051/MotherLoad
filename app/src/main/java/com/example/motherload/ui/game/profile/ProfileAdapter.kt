@@ -10,6 +10,9 @@ import com.example.motherload.R
 import com.example.motherload.data.ItemDescription
 import com.squareup.picasso.Picasso
 
+/**
+ * @param itemList la liste des ItemDescritpion du joueur
+ */
 class ProfileAdapter(private val itemList: List<ItemDescription?>) : RecyclerView.Adapter<ProfileAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_artefact, parent, false)
@@ -29,6 +32,9 @@ class ProfileAdapter(private val itemList: List<ItemDescription?>) : RecyclerVie
         private val imageView: ImageView = itemView.findViewById(R.id.imageItem)
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
 
+        /**
+         * Définit et charge l'interface de chaque objet
+         */
         fun bind(item: ItemDescription?) {
             if (item?.quantity?.toInt() != 0) {
                 Picasso.get().load(item?.image).into(imageView)

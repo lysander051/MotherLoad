@@ -22,6 +22,13 @@ import javax.crypto.spec.IvParameterSpec
 class LoginManager {
     companion object{
         private val TAG = "LoginManager"
+
+        /**
+         * Permet de hasher un string avec SHA-256
+         *
+         * @param string la chaîne à hasher
+         * @return la chaîne hashée
+         */
         fun hash(string : String): String {
             val bytes = string.toByteArray()
             val md = MessageDigest.getInstance("SHA256")
@@ -29,6 +36,11 @@ class LoginManager {
             return digest.fold("", { str, it -> str + "%02x".format(it) })
         }
 
+        /**
+         * Génère une clé secrète pour les opérations de chiffrement
+         *
+         * @return la clé secrète
+         */
         private fun generateKey() : SecretKey {
             val keyGenerator : KeyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             keyGenerator.init(
@@ -39,6 +51,13 @@ class LoginManager {
                     .build())
             return keyGenerator.generateKey()
         }
+
+        /**
+         * Crypte le mot de passe et le stock chiffré dans les sharedPreferences
+         *
+         * @param password le mot de passe en clair
+         * @return le mot de passe chiffré avec AES-256 mode CBC
+         */
         fun savePassword(password: String) : String {
             val secretKey : SecretKey = generateKey()
             val ciph : Cipher = Cipher.getInstance(
@@ -64,6 +83,11 @@ class LoginManager {
             return chiffrePassword
         }
 
+        /**
+         * Déchiffre le mot de passe des sharedPreference
+         *
+         * @return le mot de passe déchiffré
+         */
         fun getDecryptedPassword() : String {
             val sharedPreferences = MotherLoad.instance.getSharedPreferences("Connexion", Context.MODE_PRIVATE)
             val chiffrePassword : String? = sharedPreferences.getString("psw","")
@@ -90,6 +114,12 @@ class LoginManager {
             return ""
         }
 
+        /**
+         * Si la connexion c'est mal déroulée on ferme l'activité principale et on lance l'activité de connexion
+         *
+         * @param activity l'activité courante
+         * @param boolean le résultat de la requête connexion obtenu via le callback
+         */
         fun checkReconnexion(activity : Activity, boolean: Boolean) {
             if (!boolean){
                 activity.finish()

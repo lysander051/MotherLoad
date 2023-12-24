@@ -17,6 +17,7 @@ class LanguageSelector(private val activity: FragmentActivity) : Activity(), Ada
         position: Int,
         id: Long
     ) {
+        //On récupère la langue correspondante à la position dans la liste
         var lang = "fr-FR"
         var pos = 0
         when(position){
@@ -35,7 +36,9 @@ class LanguageSelector(private val activity: FragmentActivity) : Activity(), Ada
             editor.putString("langue",lang)
             editor.putInt("posLangue",pos)
             editor.apply()
+            //On change ensuite la langue de l'app
             AppCompatDelegate.setApplicationLocales(appLocales)
+            //On redémarre l'activité pour appliquer les changements
             if (activity != null){
                 activity?.finish()
                 activity?.startActivity(activity?.intent)
@@ -47,6 +50,9 @@ class LanguageSelector(private val activity: FragmentActivity) : Activity(), Ada
     }
 
     companion object {
+        /**
+         * Retourne la position de la liste correspondant à la langue de l'app
+         */
         fun getPosSelecteurLangue(): Int {
             val userLanguage = MotherLoad.instance.resources.configuration.locales[0].language
             var pos : Int = -1

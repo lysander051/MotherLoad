@@ -19,6 +19,7 @@ class VenteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val ret = inflater.inflate(R.layout.fragment_item_top_banner, container, false)
+        //Si la version de l'Api du device le permet, on peut savoir si le mode nuit est activé
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (resources.configuration.isNightModeActive) {
                 ret.findViewById<LinearLayout>(R.id.backgroundInventory)

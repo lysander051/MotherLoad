@@ -36,6 +36,10 @@ import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 import java.lang.Double.max
 
+/**
+ * @property viewModel le ViewModel utilisé par le fragment
+ * @property ret la vue affichée par le fragment
+ */
 class ProfileFragment: Fragment(){
 
     private var viewModel: ProfileViewModel? = null
@@ -103,17 +107,19 @@ class ProfileFragment: Fragment(){
 
         }
 
+        //Si l'utilisateur ne possède pas une version d'Api >= 30 on récupère son thème dans les sharedPreferences
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             theme.isChecked = resources.configuration.isNightModeActive
         }
         else{
             val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-            theme.isChecked = sharedPref.getInt("theme",1) == 2
+            theme.isChecked = sharedPref.getInt("theme", MODE_NIGHT_NO) == MODE_NIGHT_YES
         }
 
         theme.setOnCheckedChangeListener{ _, isChecked ->
             val themeSharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
             val editor = themeSharedPref.edit()
+            //On change le thème de l'app et stock le nouveau thème dans les sharedPréférences
             if(isChecked){
                 AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
                 editor.putInt("theme", MODE_NIGHT_YES)
@@ -123,10 +129,12 @@ class ProfileFragment: Fragment(){
                 editor.putInt("theme", MODE_NIGHT_NO)
             }
             editor.apply()
+            //On redémarre l'activité pour prendre en compte le changement de thème
             requireActivity().finish()
             startActivity(requireActivity().intent)
         }
 
+        //Gestion du sélecteur de langues
         ArrayAdapter.createFromResource(
             requireActivity(),
             R.array.langues,
@@ -165,6 +173,9 @@ class ProfileFragment: Fragment(){
     }
 
 
+    /**
+     * Défini les artéfact de la liste panini selon leur obtention
+     */
     private fun setArtifact() {
         viewModel!!.getArtifact(object :
             ProfilCallback {
@@ -213,6 +224,9 @@ class ProfileFragment: Fragment(){
         , requireActivity())
     }
 
+    /**
+     * Définit le nombre de décalages nécessaire selon la taille de l'écran
+     */
     private fun calculateSpanCount(): Int {
         val screenWidth = resources.displayMetrics.widthPixels
         val itemWidth = resources.getDimensionPixelSize(R.dimen.column_width)

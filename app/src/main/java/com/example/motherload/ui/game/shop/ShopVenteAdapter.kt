@@ -14,6 +14,10 @@ import com.squareup.picasso.Picasso
 import android.widget.Spinner
 import com.example.motherload.utils.setSafeOnClickListener
 
+/**
+ * @param itemList la liste des items du joueur
+ * @param itemClickListener
+ */
 class ShopVenteAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ShopItemClickListener) : RecyclerView.Adapter<ShopVenteAdapter.ViewHolder>() {
     interface ShopItemClickListener {
         fun onSellButtonClick(quantity: Int, item: ItemDescription?, prix: Int)
@@ -45,6 +49,9 @@ class ShopVenteAdapter(private val itemList: List<ItemDescription?>, private val
         val price: EditText = itemView.findViewById(R.id.prix)
         val sellButton: ImageView = itemView.findViewById(R.id.buttonVendre)
 
+        /**
+         * Définit l'affichage de l'onglet vente du shop
+         */
         fun bind(item: ItemDescription?) {
             Picasso.get().load(item?.image).into(imageView)
             nameTextView.text = item?.nom

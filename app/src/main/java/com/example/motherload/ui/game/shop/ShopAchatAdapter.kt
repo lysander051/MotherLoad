@@ -11,6 +11,10 @@ import com.example.motherload.data.ItemDescription
 import com.example.motherload.utils.setSafeOnClickListener
 import com.squareup.picasso.Picasso
 
+/**
+ * @param itemList triple contenant l'id de l'offre, l'item, et le prix
+ * @param itemClickListener le listener du click sur une offre
+ */
 class ShopAchatAdapter(private val itemList: List<Triple<Int, ItemDescription?,Int>>, private val itemClickListener: ShopItemClickListener) : RecyclerView.Adapter<ShopAchatAdapter.ViewHolder>() {
 
     interface ShopItemClickListener {
@@ -44,6 +48,9 @@ class ShopAchatAdapter(private val itemList: List<Triple<Int, ItemDescription?,I
         private val prixTextView: TextView = itemView.findViewById(R.id.prix)
         val buyButton: ImageView = itemView.findViewById(R.id.buttonAcheter)
 
+        /**
+         * Définit les champs pour l'affichage de la vue
+         */
         fun bind(item: Triple<Int, ItemDescription?, Int>) {
             Picasso.get().load(item.second?.image).into(imageView)
             nameTextView.text = item.second?.nom

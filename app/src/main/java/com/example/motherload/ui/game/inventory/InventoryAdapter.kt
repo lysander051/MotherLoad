@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso
 
 class InventoryAdapter(private val itemList: List<ItemDescription?>, private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
 
+    //Permet de réagir au clic d'un utilisateur sur un item de la liste
     interface ItemClickListener {
         fun onItemClick(item: ItemDescription)
     }
@@ -31,12 +32,25 @@ class InventoryAdapter(private val itemList: List<ItemDescription?>, private val
         return itemList.size
     }
 
+    /**
+     * @param itemView la vue de l'objet
+     * @param itemClickListener le listener des objets
+     * @property imageView zone de l'image de l'objet
+     * @property nameTextView zone de texte du nom de l'objet
+     * @property rarityTextView zone de texte de la rareté de l'objet
+     * @property quantityTextView zone de texte de la quantité de l'objet
+     */
     class ViewHolder(itemView: View, private val itemClickListener: ItemClickListener) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.imageItem)
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
         private val rarityTextView: TextView = itemView.findViewById(R.id.rarity)
         private val quantityTextView: TextView = itemView.findViewById(R.id.quantity)
 
+        /**
+         * Défini les champs texte d'un objet et son listener
+         *
+         * @param item l'item défini
+         */
         fun bind(item: ItemDescription?) {
             Log.d("item", item!!.image)
             Picasso.get().load(item.image).into(imageView)

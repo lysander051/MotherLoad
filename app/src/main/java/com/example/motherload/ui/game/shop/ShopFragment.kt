@@ -24,6 +24,12 @@ import com.example.motherload.data.callback.ShopCallback
 import com.example.motherload.utils.PopUpDisplay
 import com.example.motherload.utils.setSafeOnClickListener
 
+/**
+ * @property viewModel le ViewModel utilisé par le fragment
+ * @property ret la vue affichée par le fragment
+ * @property handler un handler pour l'actualisation périodique du shop
+ * @property isRefreshing true si le raffraichissement du shop est en cours
+ */
 class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVenteAdapter.ShopItemClickListener {
     private var viewModel: ShopViewModel? = null
     private lateinit var ret: View
@@ -66,6 +72,9 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         return ret
     }
 
+    /**
+     * Gère l'affichage de l'onglet d'achat du shop
+     */
     fun buyDiplay(){
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -110,6 +119,10 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
             }
         }, 0)
     }
+
+    /**
+     * Gère l'affichage de l'onglet de vente du shop
+     */
     fun sellDiplay(){
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -139,6 +152,12 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         }
         , requireActivity())
     }
+
+    /**
+     * Définit les offres achetable
+     *
+     * @param items la liste des offres (id de l'offre, item, prix)
+     */
     private fun setItemsBuy(items: List<Triple<Int, ItemDescription?, Int>>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
         val layoutManagerState = recyclerView.layoutManager?.onSaveInstanceState()
@@ -147,12 +166,19 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
         recyclerView.adapter = adapter
         recyclerView.layoutManager?.onRestoreInstanceState(layoutManagerState)
     }
+
+    /**
+     * Définit les items vendable par le joueur
+     *
+     * @param listItemDescription les items du joueurs
+     */
     private fun setItemsSell(listItemDescription: List<ItemDescription?>){
         val recyclerView: RecyclerView = ret.findViewById(R.id.itemAchat)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = ShopVenteAdapter(listItemDescription, this)
         recyclerView.adapter = adapter
     }
+
     override fun onBuyButtonClick(order_id: Int, item: ItemDescription?, prix: Int) {
         PopUpDisplay.cancellablePopUp(this.requireActivity(),
             getString(R.string.acheter),
@@ -207,6 +233,10 @@ class ShopFragment : Fragment(), ShopAchatAdapter.ShopItemClickListener, ShopVen
             }
         }
     }
+
+    /**
+     * Stop le raffraichissement du shop
+     */
     private fun stopRefreshing() {
         // Arrêtez le rafraîchissement s'il est en cours
         if (isRefreshing) {

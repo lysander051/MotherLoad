@@ -14,6 +14,7 @@ import com.example.motherload.data.callback.ItemCallback
 import org.osmdroid.util.GeoPoint
 
 /**
+ * @param homeRepo l'instance du repo
  * @property _isButtonClickEnabled true si le bouton creuser est clicable
  * @property isButtonClickEnabled true si le bouton creuser est clicable
  */

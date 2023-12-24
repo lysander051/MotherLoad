@@ -6,6 +6,9 @@ import com.example.motherload.data.callback.ConnexionCallback
 import com.example.motherload.data.Repository
 import java.net.URLEncoder
 
+/**
+ * @param connexionRepo l'instance de repository
+ */
 class ConnexionViewModel(private var connexionRepo: Repository) : ViewModel() {
 
     /**
