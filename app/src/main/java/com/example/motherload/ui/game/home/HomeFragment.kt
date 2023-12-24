@@ -122,20 +122,6 @@ class HomeFragment : Fragment() {
                     requireActivity().applicationContext,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED) {
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
-                    if (location != null) {
-                        getLocation(location)
-                        viewModel!!.deplacement(location, object :
-                            HomeCallback {
-                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
-                                affichageVoisin(voisin)
-                            }
-                            override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
-                            override fun erreur(erreurId: Int) {}
-                        }
-                            , requireActivity())
-                    }
-                }
                 val animation = AnimationUtils.loadAnimation(
                     requireActivity().applicationContext,
                     R.anim.animation_icon
@@ -170,20 +156,6 @@ class HomeFragment : Fragment() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED) {
                 viewModel!!.disableButtonClick()
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
-                    if (location != null) {
-                        getLocation(location)
-                        viewModel!!.deplacement(location, object :
-                            HomeCallback {
-                            override fun deplacement(voisin: MutableMap<String, GeoPoint>) {
-                                affichageVoisin(voisin)
-                            }
-                            override fun creuse(itemId: Int, depht: String, voisin: MutableMap<String, GeoPoint>) {}
-                            override fun erreur(erreurId: Int) {}
-                        }
-                            , requireActivity())
-                    }
-                }
                 pickaxeSound.start()
                 creuserBW.visibility = View.VISIBLE
                 val animationDuration: Long = 10000
