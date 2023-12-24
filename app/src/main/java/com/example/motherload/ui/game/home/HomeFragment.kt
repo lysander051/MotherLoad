@@ -352,6 +352,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun affichageTrou() {
+
         val myGroundOverlay = GroundOverlay2()
         if(didDig && firstdisp) {
             holePosition = playerPosition
