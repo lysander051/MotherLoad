@@ -3,10 +3,12 @@ package com.example.motherload.ui.game.home
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.location.Location
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.example.motherload.injection.ViewModelFactory
 import com.example.motherLoad.Utils.AppPermission
+import com.example.motherland.MotherLoad
 import com.example.motherload.R
 import com.example.motherload.data.Item
 import com.example.motherload.data.ItemDescription
@@ -39,6 +42,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.TileOverlay
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -47,6 +51,7 @@ import org.osmdroid.views.overlay.GroundOverlay2
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.OverlayItem
+import org.osmdroid.views.overlay.TilesOverlay
 import java.util.Timer
 
 
@@ -275,6 +280,19 @@ class HomeFragment : Fragment() {
                 locationCallback,
                 Looper.getMainLooper())
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (resources.configuration.isNightModeActive){
+                this.map.getOverlayManager().getTilesOverlay().setColorFilter(TilesOverlay.INVERT_COLORS)
+            }
+        }
+        else{
+            val sharedPref = MotherLoad.instance.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+            if (sharedPref.getInt("theme", 1) == 2) {
+                this.map.getOverlayManager().getTilesOverlay().setColorFilter(TilesOverlay.INVERT_COLORS)
+            }
+        }
+
         return ret
     }
 
