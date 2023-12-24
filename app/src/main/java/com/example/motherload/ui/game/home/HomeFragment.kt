@@ -352,38 +352,39 @@ class HomeFragment : Fragment() {
     }
 
     private fun affichageTrou() {
+        if(viewModel?.getDepthHole()!!.third   != 0){
+            val myGroundOverlay = GroundOverlay2()
+            if (didDig && firstdisp) {
+                holePosition = playerPosition
+                didDig = false
+            }
+            val centerPoint = GeoPoint(holePosition.latitude, holePosition.longitude)
+            val overlayWidth = 0.0003
+            val overlayHeight = 0.00015
+            val topLeft = GeoPoint(
+                centerPoint.latitude + overlayHeight / 2,
+                centerPoint.longitude - overlayWidth / 2
+            )
+            val bottomRight = GeoPoint(
+                centerPoint.latitude - overlayHeight / 2,
+                centerPoint.longitude + overlayWidth / 2
+            )
 
-        val myGroundOverlay = GroundOverlay2()
-        if(didDig && firstdisp) {
-            holePosition = playerPosition
-            didDig = false
+            myGroundOverlay.setPosition(topLeft, bottomRight)
+            val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
+            myGroundOverlay.image = d
+
+            if (depthHole)
+                myGroundOverlay.transparency = 0f
+            else
+                myGroundOverlay.transparency = 1f
+
+            // Ajouter le trou à l'indice 0 dans la liste des overlays
+            if (map.overlays.size > 0)
+                map.overlays[0] = myGroundOverlay
+            else
+                map.overlays.add(0, myGroundOverlay)
         }
-        val centerPoint = GeoPoint(holePosition.latitude, holePosition.longitude)
-        val overlayWidth = 0.0003
-        val overlayHeight = 0.00015
-        val topLeft = GeoPoint(
-            centerPoint.latitude + overlayHeight / 2,
-            centerPoint.longitude - overlayWidth / 2
-        )
-        val bottomRight = GeoPoint(
-            centerPoint.latitude - overlayHeight / 2,
-            centerPoint.longitude + overlayWidth / 2
-        )
-
-        myGroundOverlay.setPosition(topLeft, bottomRight)
-        val d = BitmapFactory.decodeResource(requireContext().resources, R.drawable.hole)
-        myGroundOverlay.image = d
-
-        if (depthHole)
-            myGroundOverlay.transparency = 0f
-        else
-            myGroundOverlay.transparency = 1f
-
-        // Ajouter le trou à l'indice 0 dans la liste des overlays
-        if (map.overlays.size > 0)
-            map.overlays[0] = myGroundOverlay
-        else
-            map.overlays.add(0, myGroundOverlay)
 }
 
     private fun affichageVoisin(voisin: MutableMap<String, GeoPoint>) {
