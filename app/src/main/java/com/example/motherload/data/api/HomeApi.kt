@@ -143,7 +143,7 @@ object HomeApi {
                             Log.d(TAG,"En dehors de l'université")
                             callback.erreur(2)
                         }
-                        else if (status == "KO - BAD LOCATION"){
+                        else if (status == "KO - BAD LOCATION FORMAT"){
                             Log.d(TAG,"Problème de GPS")
                             callback.erreur(3)
                         }
